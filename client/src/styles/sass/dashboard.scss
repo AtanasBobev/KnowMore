@@ -1,0 +1,55 @@
+
+.dashboard {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1vmax;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    #noCardText {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5vw;
+        color: #aeaeae;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        font-family: "Paytone One", sans-serif;
+      }
+    &__title {
+      font-size: 3.5vmax;
+      font-weight: 900;
+      color: #f02eaa;
+      margin-bottom: 1vmax;
+    }
+  
+    &__empty-state {
+      font-size: 2vmax;
+      color: #555;
+    }
+  
+    &__flashcards-list {
+      list-style: none;
+      padding: 0;
+  
+      & > li {
+        margin-bottom: 1.5vmax;
+        border: 1px solid #f02eaa;
+        border-radius: 5px;
+        padding: 1vmax;
+  
+        &__flashcard-title {
+          font-size: 2.5vmax;
+          font-weight: 700;
+          color: #f02eaa;
+          margin-bottom: 0.5vmax;
+        }
+  
+        &__flashcard-description {
+          font-size: 1.8vmax;
+          color: #555;
+        }
+      }
+    }
+  }
+  

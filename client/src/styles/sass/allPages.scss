@@ -1,0 +1,139 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  transition: 0.2s;
+}
+.editQuill * {
+  transition: 0s !important;
+}
+body {
+  background: #f2f2f2;
+}
+nav {
+  background: #fff;
+  box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.1);
+  padding: 30px 100px;
+}
+*::selection {
+  background-color: orange;
+}
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background-color: #f5f5f5;
+  padding: 2vmax;
+  overflow: auto;
+
+  & > * {
+    margin: 0.5vmax;
+  }
+
+  & > .modal-footer {
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    bottom: 0vmax;
+    width: 100vw;
+  }
+  & > .modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    & > * {
+      margin: 0.5vmax;
+    }
+
+    & > p {
+      font-size: 1.3vmax;
+      color: gray;
+    }
+    textarea {
+      border-radius: 0.5vmax;
+      border: 3px solid gray;
+      outline: none;
+      padding: 0.5vmax;
+      font-size: 1.1vmax;
+      resize: none;
+      width: 50vw;
+      height: 50vh;
+    }
+    textarea:focus,
+    textarea:hover {
+      border: 3px solid orange;
+    }
+  }
+}
+button {
+  padding: 0.5vmax;
+  border-radius: 0.5vmax;
+  color: white;
+  outline: none;
+  border: none;
+  font-size: 1.1vmax;
+  margin: 0.5vmax;
+  background-color: #ec9f05;
+}
+input {
+  border-radius: 0.5vmax;
+  border: 3px solid gray;
+  outline: none;
+  padding: 0.5vmax;
+  font-size: 1.1vmax;
+  width: 10ch;
+}
+input:hover,
+input:focus {
+  border: 3px solid orange;
+}
+#infoText {
+  color: rgb(168, 168, 168);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  text-align: center;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  font-size: 1.8vmax;
+  user-select: none;
+}
+.progressBar {
+  width: 80vw;
+  height: 2vh;
+  background-color: orange;
+  position: fixed;
+  top: 10vh;
+  left: 0;
+}
+.disabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
+select {
+  border-radius: 0.5vmax;
+  border: 3px solid gray;
+  outline: none;
+  padding: 0.5vmax;
+  font-size: 1.1vmax;
+  min-width: 10ch;
+  background-color: white;
+}
+select:hover,
+select:focus {
+  border: 3px solid orange;
+}
+center > * {
+  margin: 0.3vmax;
+}
+.category::first-letter {
+  text-transform: capitalize;
+}
+button.searchBtn {
+  background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
+}

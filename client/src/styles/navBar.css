@@ -1,0 +1,104 @@
+.navbar {
+  z-index: 9999;
+  user-select: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 10px 20px;
+  box-shadow: 0 3px 6px rgba(18, 9, 9, 0.16), 0 3px 6px rgba(246, 6, 6, 0.23);
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 10vh;
+}
+.navbar.auth {
+  justify-content: space-between;
+  box-shadow: 0 3px 6px rgba(18, 9, 9, 0.16), 0 3px 6px rgba(246, 6, 6, 0.23);
+}
+.navbar .logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.navbar .logo .logo-text {
+  font-size: 1.5rem;
+  background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-right: 20px;
+}
+.navbar .ql-editor.ql-blank::before {
+  font-size: 20px;
+  color: red;
+}
+.navbar .nav-links {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: center;
+  list-style: none;
+}
+.navbar .nav-links li {
+  margin-right: 20px;
+}
+.navbar .nav-links li a {
+  text-decoration: none;
+  color: black;
+  font-size: 1.2rem;
+  position: relative;
+  transition: 0.3s;
+}
+.navbar .nav-links li a span {
+  margin-right: 5px;
+  font-size: 1.2rem;
+}
+.navbar .nav-links li a:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  bottom: -7px;
+  left: 0;
+  background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: 0.3s ease-in-out;
+}
+.navbar .nav-links li a:hover:before, .navbar .nav-links li a:focus:before {
+  visibility: visible;
+  transform: scaleX(1);
+}
+.navbar .nav-links li a.active:before {
+  visibility: visible;
+  transform: scaleX(1);
+}
+.navbar .centered-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+}
+.navbar .right-aligned-links {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  list-style: none;
+}
+.navbar .common-set {
+  background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
+  padding: 0.5vmax;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  color: #ffffff !important;
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.navbar .btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+}
+
+/*# sourceMappingURL=navBar.css.map */

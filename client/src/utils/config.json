@@ -1,0 +1,4 @@
+{
+    "baseURL": "http://localhost:5000",
+    "apiVersion": "v1"
+}

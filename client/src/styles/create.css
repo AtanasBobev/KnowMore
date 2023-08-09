@@ -1,0 +1,165 @@
+@import url("https://fonts.googleapis.com/css2?family=Paytone+One&display=swap");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#createContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  width: 100vw;
+  padding: 2vmax;
+}
+#createContainer .flashcard {
+  background-color: white;
+}
+#createContainer .flashcard {
+  border-radius: 1vmax;
+  padding: 2vw;
+  margin-bottom: 2vw;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+#createContainer .flashcard__input {
+  width: 100%;
+  padding: 1vw;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 1vw;
+  font-size: 1.6vw;
+  transition: border-color 0.3s ease;
+}
+#createContainer .flashcard__input:focus {
+  outline: none;
+  border-color: #7e57c2;
+}
+#createContainer .flashcard__top-button {
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6vw 1.2vw;
+  font-size: 1.4vw;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#createContainer .flashcard__top-button:hover {
+  transform: scale(1.2);
+}
+#createContainer h3,
+#createContainer h2 {
+  color: #aeaeae;
+}
+#createContainer .flashcard-button {
+  background-color: transparent;
+  padding: 0.8vw 1.6vw;
+  font-size: 3vw;
+  cursor: pointer;
+  position: fixed;
+  left: 2vmax;
+  bottom: 2vmax;
+  border: none;
+}
+#createContainer .flashcard-button:hover {
+  transform: scale(1.2);
+}
+
+#createContainer > section > div > h3:nth-child(3) {
+  margin-top: 2vw;
+}
+
+#flex {
+  display: flex;
+  justify-content: space-between;
+}
+
+#done {
+  background-color: transparent;
+  padding: 1vw;
+  font-size: 3vw;
+  cursor: pointer;
+  position: fixed;
+  right: 2vmax;
+  bottom: 2vmax;
+  border: none;
+}
+#done:hover {
+  transform: scale(1.2);
+}
+
+#noCardText {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5vw;
+  color: #aeaeae;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  font-family: "Paytone One", sans-serif;
+}
+
+#exit {
+  position: fixed;
+  background-color: transparent;
+  padding: 1vmax;
+  border: none;
+  top: 7vmax;
+  left: 2vmax;
+  font-size: 3vw;
+  cursor: pointer;
+}
+#exit:hover {
+  transform: scale(1.2);
+}
+
+.main {
+  width: 70vw !important;
+  border: 3.5px dotted #ff9a9e;
+}
+
+.ql-editor p,
+.ql-editor ol,
+.ql-editor ul,
+.ql-editor pre,
+.ql-editor blockquote,
+.ql-editor h1,
+.ql-editor h2,
+.ql-editor h3,
+.ql-editor h4,
+.ql-editor h5,
+.ql-editor h6 {
+  font-size: 1.2vmax;
+}
+
+.ql-toolbar {
+  border: 2px solid orange !important;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.ql-toolbar:nth-child(odd) {
+  margin-top: 1vmax;
+}
+
+.ql-container {
+  border: 2px solid orange !important;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-top: none !important;
+}
+
+.quill {
+  max-width: 90vw !important;
+}
+
+/*# sourceMappingURL=create.css.map */

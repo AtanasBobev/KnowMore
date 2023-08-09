@@ -1,0 +1,119 @@
+.setContainer {
+  padding: 1vmax;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+#page {
+  margin: 1vmax;
+}
+#page h1 {
+  color: gray;
+  font-size: 3vmax;
+  margin: 2vmax;
+}
+.card-text {
+  font-size: 1vmax;
+  color: whitesmoke;
+  margin: 1vmax;
+}
+.card-title {
+  font-size: 1.5vmax;
+  color: white;
+  margin: 1vmax;
+}
+.card {
+  text-decoration: none;
+  max-width: 20vw;
+  & > * {
+    cursor: pointer;
+    text-decoration: none;
+  }
+  background-color: #fce043;
+  background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
+  background-size: 400% 400%;
+
+  -webkit-animation: SetsBackground 54s ease infinite;
+  -moz-animation: SetsBackground 54s ease infinite;
+  -o-animation: SetsBackground 54s ease infinite;
+  animation: SetsBackground 54s ease infinite;
+  border-radius: 0.4vmax;
+  margin: 1vmax;
+  padding: 1vmax;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  .btn-group {
+    display: flex;
+    justify-content: space-between;
+    a {
+      text-decoration: none;
+      color: gray;
+      font-size: 1vmax;
+      padding: 0.2vmax;
+      border-radius: 1vmax;
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+.card:hover {
+  box-shadow: rgba(255, 154, 158, 0.4) 5px 5px,
+    rgba(255, 154, 158, 0.3) 10px 10px, rgba(250, 208, 196, 0.2) 15px 15px,
+    rgba(250, 208, 196, 0.1) 20px 20px, rgba(250, 208, 196, 0.05) 25px 25px;
+}
+
+@-webkit-keyframes SetsBackground {
+  0% {
+    background-position: 0% 88%;
+  }
+  50% {
+    background-position: 100% 13%;
+  }
+  100% {
+    background-position: 0% 88%;
+  }
+}
+@-moz-keyframes SetsBackground {
+  0% {
+    background-position: 0% 88%;
+  }
+  50% {
+    background-position: 100% 13%;
+  }
+  100% {
+    background-position: 0% 88%;
+  }
+}
+@-o-keyframes SetsBackground {
+  0% {
+    background-position: 0% 88%;
+  }
+  50% {
+    background-position: 100% 13%;
+  }
+  100% {
+    background-position: 0% 88%;
+  }
+}
+@keyframes SetsBackground {
+  0% {
+    background-position: 0% 88%;
+  }
+  50% {
+    background-position: 100% 13%;
+  }
+  100% {
+    background-position: 0% 88%;
+  }
+}

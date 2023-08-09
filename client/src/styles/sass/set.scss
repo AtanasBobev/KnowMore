@@ -1,0 +1,195 @@
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  margin-top: 2vmax;
+  button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 2vmax;
+  }
+
+  .cardModern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60vw;
+    background-color: #fff !important;
+    border-radius: 0.5vmax;
+    padding: 1rem;
+    margin: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    & > * {
+      margin: 1vmax;
+    }
+    & button:hover {
+      transform: scale(1.2);
+    }
+    & > *:nth-child(odd) {
+      font-size: 1.3vmax;
+    }
+    div {
+      min-width: 15%;
+    }
+  }
+}
+button#flipButton {
+  width: 20vw;
+  bottom: 0;
+  position: fixed;
+}
+#statisticsBox {
+  background: linear-gradient(233deg, #5433ff, #20bdff, #a5fecb);
+  background-size: 600% 600%;
+  color: white;
+  -webkit-animation: SetsBackground 50s ease infinite;
+  -moz-animation: SetsBackground 50s ease infinite;
+  -o-animation: SetsBackground 50s ease infinite;
+  animation: SetsBackground 50s ease infinite;
+  font-weight: 100;
+  max-height: 30vh;
+  max-width: 80vw;
+  margin-left: 10vw;
+  border-radius: 0.5vmax;
+  padding: 1rem;
+  margin-top: 1vmax;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  color: white;
+}
+p {
+  display: inline-block;
+}
+img {
+  cursor: pointer !important;
+  max-width: 80%;
+  max-height: 80%;
+}
+#mainBar {
+  background: linear-gradient(233deg, #5433ff, #20bdff, #a5fecb);
+  background-size: 600% 600%;
+  color: white;
+  -webkit-animation: SetsBackground 50s ease infinite;
+  -moz-animation: SetsBackground 50s ease infinite;
+  -o-animation: SetsBackground 50s ease infinite;
+  animation: SetsBackground 50s ease infinite;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 80vw;
+  margin-left: 10vw;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  padding: 1vmax;
+  border-radius: 0.5vmax;
+  button {
+    border: none;
+    margin: 0.5vmax;
+    padding: 0.5vmax;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 0.3vmax;
+    color: white;
+    font-size: 1.2vmax;
+    border: 5px solid transparent;
+  }
+  button:hover {
+    border: 5px solid white;
+  }
+  h1 {
+    font-size: 3vmax;
+    font-weight: 900;
+  }
+  h2 {
+    font-size: 2vmax;
+    font-weight: 100;
+  }
+  & > * {
+    margin: 0.5vmax;
+  }
+  .individualSet {
+    border: 2px solid red;
+  }
+}
+#allSetsContainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+#allSetsContainer div {
+  margin: 0.5vmax;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  padding: 0.7vmax;
+  border-radius: 0.3vmax;
+  h1 {
+    font-size: 1.5vmax;
+    font-weight: 900;
+  }
+  h2 {
+    font-size: 1.2vmax;
+    font-weight: 100;
+  }
+  h3 {
+    font-size: 1vmax;
+    font-weight: 100;
+    color: grey;
+  }
+}
+.buttonGroupSmall {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  button {
+    margin: 0;
+    padding: 0;
+  }
+}
+@-webkit-keyframes SetsBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+@-moz-keyframes SetsBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+@-o-keyframes SetsBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+@keyframes SetsBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+.editQuill {
+  max-width: 40vw !important;
+}

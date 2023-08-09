@@ -1,0 +1,133 @@
+.centerWrapper, #verify, #register, #login {
+  transition: 1s;
+  position: absolute;
+  top: 53%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1vmax;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+.centerWrapper > *, #verify > *, #register > *, #login > * {
+  margin: 0.5vmax;
+}
+.centerWrapper > h2, #verify > h2, #register > h2, #login > h2 {
+  font-size: 3.5vmax;
+  font-weight: 900;
+  color: #ff9a9e;
+}
+.centerWrapper input, #verify input, #register input, #login input,
+.centerWrapper select,
+#verify select,
+#register select,
+#login select {
+  width: 20vmax;
+  height: 3vmax;
+  border-radius: 5px;
+  border: 1px solid #ff9a9e;
+  background-color: #fff;
+  padding: 0.5vmax;
+  font-size: 1.5vmax;
+  color: #555;
+}
+.centerWrapper input:focus, #verify input:focus, #register input:focus, #login input:focus,
+.centerWrapper select:focus,
+#verify select:focus,
+#register select:focus,
+#login select:focus {
+  outline: none;
+  border-color: #ff9a9e;
+}
+.centerWrapper button, #verify button, #register button, #login button {
+  transform: 0.3s;
+  width: 20vmax;
+  height: 3vmax;
+  border-radius: 5px;
+  border: none;
+  background: linear-gradient(230deg, #ff9a9e, #fad0c4);
+  background-size: 400% 400%;
+  -webkit-animation: ButtonBackground 8s ease infinite;
+  -moz-animation: ButtonBackground 8s ease infinite;
+  -o-animation: ButtonBackground 8s ease infinite;
+  animation: ButtonBackground 8s ease infinite;
+  padding: 0.5vmax;
+  font-size: 1.5vmax;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+.centerWrapper button:focus, #verify button:focus, #register button:focus, #login button:focus {
+  outline: none;
+}
+.centerWrapper a, #verify a, #register a, #login a {
+  padding: 0.2vmax;
+  font-size: 1.5vmax;
+  text-decoration: none;
+  color: #ff9a9e;
+  border-bottom: 1px solid #ff9a9e;
+  transition: color 0.3s, background-color 0.3s;
+}
+.centerWrapper a:hover, #verify a:hover, #register a:hover, #login a:hover {
+  color: #fff;
+  background-color: #ff9a9e;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+form > * {
+  margin: 0.2vmax;
+}
+
+@-webkit-keyframes ButtonBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+@-moz-keyframes ButtonBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+@-o-keyframes ButtonBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+@keyframes ButtonBackground {
+  0% {
+    background-position: 99% 0%;
+  }
+  50% {
+    background-position: 2% 100%;
+  }
+  100% {
+    background-position: 99% 0%;
+  }
+}
+
+/*# sourceMappingURL=forms.css.map */

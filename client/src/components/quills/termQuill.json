@@ -1,0 +1,29 @@
+{
+  "toolbar": [
+    [{ "header": "1" }, { "header": "2" }, { "font": [] }],
+    [{ "size": [] }],
+    [
+      "bold",
+      "italic",
+      "underline",
+      "size",
+      "font",
+      "blockquote",
+      "color",
+      "strike",
+      "script"
+    ],
+    [
+      { "list": "ordered" },
+      { "list": "bullet" },
+      { "indent": "-1" },
+      { "indent": "+1" }
+    ],
+    ["link"],
+    ["clean"]
+  ],
+  "clipboard": {
+    "matchVisual": false
+  },
+  "imageCompress": {}
+}
