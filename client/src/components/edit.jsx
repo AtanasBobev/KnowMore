@@ -29,6 +29,7 @@ import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../styles/create.css";
 import "react-toastify/dist/ReactToastify.css";
+import { id } from "date-fns/locale"
 
 const Create = () => {
   const [flashcards, setFlashcards] = useState([]);

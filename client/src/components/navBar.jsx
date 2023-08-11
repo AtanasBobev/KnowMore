@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { convert as convertToText } from "html-to-text";
 import axiosInstance from "../utils/axiosConfig";
@@ -9,15 +9,36 @@ import "../styles/navBar.css";
 const NavBar = () => {
   const [isAuth, setIsAuth] = useState(false); // State for register/login mode
   const [mostCommonSets, setMostCommonSets] = useState([]); // State for most common set
+  const [showCreateOptions, setShowCreateOptions] = useState(false); // State for showing create options
   const location = useLocation(); // Get the current location
-
+  const createButtonRef = useRef(null); // Create a ref for the "Create" button
   const getMostCommonSets = async () => {
     axiosInstance.get("/sets/most/common").then((res) => {
       setMostCommonSets(res.data);
       console.log(res.data);
     });
   };
+  const toggleCreateOptions = () => {
+    setShowCreateOptions(!showCreateOptions);
+  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        createButtonRef.current &&
+        !createButtonRef.current.contains(event.target)
+      ) {
+        setShowCreateOptions(false);
+      }
+    };
 
+    // Attach the event listener when the component mounts
+    document.addEventListener("click", handleClickOutside);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
   useEffect(() => {
     localStorage.getItem("jwt") ? setIsAuth(true) : setIsAuth(false);
   }, [localStorage.getItem("jwt")]);
@@ -27,7 +48,7 @@ const NavBar = () => {
   }, []);
   return (
     <nav className={`navbar ${isAuth ? "auth" : ""}`}>
-      <Link style={{textDecoration:"none"}} to="/" className="logo">
+      <Link style={{ textDecoration: "none" }} to="/" className="logo">
         <h1 className="logo-text">{t.logoText}</h1>
       </Link>
       <div className="nav-links">
@@ -44,27 +65,67 @@ const NavBar = () => {
                 Explore
               </Link>
             </li>
+
             <li>
               <Link
                 to="/sets"
                 className={location.pathname === "/sets" ? "active" : ""}
               >
-                <span role="img" aria-label="Flashcards">
-                  🗂️
+                <span role="img" aria-label="Sets">
+                  🧮
                 </span>{" "}
                 Sets
               </Link>
             </li>
             <li>
               <Link
-                to="/create-set"
-                className={location.pathname === "/create-set" ? "active" : ""}
+                to="/folders"
+                className={location.pathname === "/folders" ? "active" : ""}
               >
-                <span role="img" aria-label="Create">
-                  ✏️
+                <span role="img" aria-label="Folders">
+                  🗂️
                 </span>{" "}
-                Create
+                Folders
               </Link>
+            </li>
+            <li>
+              <div ref={createButtonRef} className="create-button">
+                <Link
+                  className={
+                    location.pathname === "/create-set" ||
+                    location.pathname === "/create-folder"
+                      ? "active"
+                      : ""
+                  }
+                  to={window.location.pathname}
+                  onClick={toggleCreateOptions}
+                >
+                  <span role="img" aria-label="Create">
+                    ✏️
+                  </span>
+                  Create
+                </Link>
+                {showCreateOptions && (
+                  <div className="create-options">
+                    <Link
+                      className={
+                        location.pathname === "/create-set" ? "active" : ""
+                      }
+                      to="/create-set"
+                    >
+                      Create Set
+                    </Link>
+                    <Link
+                      className={
+                        location.pathname === "/create-folder" ? "active" : ""
+                      }
+                      to="/create-folder"
+                    >
+                      Create Folder
+                    </Link>
+                  </div>
+                )}
+              </div>
             </li>
             <li>
               <Link
@@ -81,7 +142,8 @@ const NavBar = () => {
               <div className="btn-container">
                 {mostCommonSets.map((set) => (
                   <li key={set.id}>
-                    <Link onClick={() => window.location.reload()}
+                    <Link
+                      onClick={() => window.location.reload()}
                       to={`/set/${set.set_id}`}
                       className={
                         location.pathname === `/set/${set.id}`

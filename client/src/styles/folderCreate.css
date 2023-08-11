@@ -1,0 +1,22 @@
+.center {
+  padding: 1vmax;
+  border-radius: 1vmax;
+  color: gray;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2vmax;
+  margin-bottom: 3vmax;
+  width: 90vmax !important;
+}
+
+#createFolder {
+  display: flex;
+  justify-content: center;
+}
+
+#allSetsContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/*# sourceMappingURL=folderCreate.css.map */

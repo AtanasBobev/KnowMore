@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./components/register";
 import Login from "./components/login";
-import Create from "./components/create";
+import CreateSet from "./components/createSet";
+import CreateFolder from "./components/createFolder";
 import VerifyEmail from "./components/verify-email";
 import Study from "./components/study";
 import NavBar from "./components/navBar";
@@ -20,7 +21,8 @@ export function App() {
           <Routes>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/create-set" element={<Create />} />
+            <Route path="/create-set" element={<CreateSet />} />
+            <Route path="/create-folder" element={<CreateFolder />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/study/:id" element={<Study />} />
             <Route path="/set/:id" element={<ViewSet />} />

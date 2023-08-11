@@ -549,7 +549,6 @@ app.post("/v1/sets/all/", (req, res) => {
   }
 });
 
-
 app.get("/v1/set/export/:id", authorizeToken, (req, res) => {
   const set_id = req.params.id;
   if (
@@ -837,7 +836,7 @@ app.put("/v1/flashcard", authorizeToken, (req, res) => {
             res.status(200).end();
           }
         );
-      }else{
+      } else {
         pool.query(
           'INSERT INTO "reviewsFlashcards" (set_id, flashcard_id, user_id,confidence) VALUES ($1, $2, $3,$4) ON CONFLICT (set_id, flashcard_id, user_id) DO UPDATE SET confidence = EXCLUDED.confidence',
           [
@@ -1054,7 +1053,9 @@ app.post("/v1/set/delete", authorizeToken, (req, res) => {
           res.status(403).send("Forbidden");
           return false;
         }
-        pool.query(`DELETE FROM "likedSets" WHERE set_id=$1`, [req.body.set_id]);
+        pool.query(`DELETE FROM "likedSets" WHERE set_id=$1`, [
+          req.body.set_id,
+        ]);
         pool.query(
           'DELETE FROM "reviewsSets" WHERE set_id=$1',
           [req.body.set_id],
@@ -1092,7 +1093,6 @@ app.post("/v1/set/delete", authorizeToken, (req, res) => {
           "DELETE FROM flashcards WHERE set_id=$1",
           [req.body.set_id],
           (err, results) => {
-
             if (err) {
               console.log(err);
               res.status(500).end();
@@ -1108,10 +1108,10 @@ app.post("/v1/set/delete", authorizeToken, (req, res) => {
                   return false;
                 }
               }
-            );/*  */
+            ); /*  */
           }
         );
-      
+
         res.status(200).end();
       }
     }
@@ -1164,6 +1164,65 @@ app.get("/v1/statstics/personal/flashcards/:id", authorizeToken, (req, res) => {
         return false;
       }
       res.status(200).send(result.rows);
+    }
+  );
+});
+
+app.post("/v1/folders/create", authorizeToken, (req, res) => {
+  if (convert(req.body.title).length > 100000) {
+    res.status(409).send("Excessive size");
+    return;
+  }
+  if (convert(req.body.title).length < 1) {
+    res.status(409).send("Name is empty");
+    return;
+  }
+  if (convert(req.body.description).length > 100000) {
+    res.status(409).send("Excessive size");
+    return;
+  }
+  if (convert(req.body.description).length < 1) {
+    res.status(409).send("Description is empty");
+    return;
+  }
+  if (req.body.sets.length > 100) {
+    res.status(409).send("Too many sets");
+    return;
+  }
+  pool.query(
+    "INSERT INTO folders (title, description, date_created, date_modified, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING folder_id",
+    [
+      req.body.title,
+      req.body.description,
+      new Date().toISOString(),
+      new Date().toISOString(),
+      req.user_id,
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("DBError: " + err.message);
+        res.status(500).json({ message: "Error creating folder" });
+        return false;
+      }
+      const folder_id = result.rows[0].folder_id;
+      req.body.sets.forEach((set) => {
+        pool.query(
+          'INSERT INTO "foldersSets" (folder_id, set_id) VALUES ($1, $2)',
+          [folder_id, set],
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              pool.query("DELETE FROM folders WHERE folder_id = $1", [
+                folder_id,
+              ]);
+              return false;
+            }
+          }
+        );
+      });
+      res
+        .status(200)
+        .json({ message: "Folder created successfully", folder_id });
     }
   );
 });
