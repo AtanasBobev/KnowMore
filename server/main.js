@@ -1167,7 +1167,6 @@ app.get("/v1/statstics/personal/flashcards/:id", authorizeToken, (req, res) => {
     }
   );
 });
-
 app.post("/v1/folders/create", authorizeToken, (req, res) => {
   if (convert(req.body.title).length > 100000) {
     res.status(409).send("Excessive size");
@@ -1185,7 +1184,7 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
     res.status(409).send("Description is empty");
     return;
   }
-  if (req.body.sets.length > 100) {
+  if (req.body.sets.length > 2000) {
     res.status(409).send("Too many sets");
     return;
   }
@@ -1226,7 +1225,21 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
     }
   );
 });
-
+app.get("/v1/folder/:id", (req, res) => {
+  let id = req.params.id;
+  pool.query(
+    `SELECT users.username, title, description, title, description, folders.folder_id, set_id, bind_id FROM folders LEFT JOIN "foldersSets" ON folders.folder_id = "foldersSets".folder_id JOIN users ON users.user_id=folders.user_id WHERE folders.folder_id = $1`,
+    [id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal error occured");
+        return false;
+      }
+      res.status(200).send(result.rows);
+    }
+  );
+});
 app.listen(port, () => {
   console.log(`Server listening on the port::${port}`);
 });

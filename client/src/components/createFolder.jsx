@@ -52,8 +52,11 @@ const CreateFolder = () => {
       setSetsChosen([...setsChosen, id]);
     }
   };
-
   const createFolder = async () => {
+    if(setsChosen.length>2000){
+      toast.error("More than 2000 sets are not allowed in a folder")
+      return;
+    }
     if (convertToText(title).length > 50) {
       toast.error("Title is too long");
       return;

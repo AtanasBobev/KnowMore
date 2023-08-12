@@ -11,6 +11,7 @@ import Sets from "./components/sets";
 import Review from "./components/review";
 import Explore from "./components/mainPage";
 import Edit from "./components/edit";
+import Folder from "./components/folder";
 
 export function App() {
   return (
@@ -20,6 +21,7 @@ export function App() {
         <div style={{ marginTop: "15vh" }}>
           <Routes>
             <Route path="/register" element={<Register />} />
+            <Route path="/folder/:id" element={<Folder />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-set" element={<CreateSet />} />
             <Route path="/create-folder" element={<CreateFolder />} />
