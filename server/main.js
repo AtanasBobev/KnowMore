@@ -1228,7 +1228,20 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
 app.get("/v1/folder/:id", (req, res) => {
   let id = req.params.id;
   pool.query(
-    `SELECT users.username, title, description, title, description, folders.folder_id, set_id, bind_id FROM folders LEFT JOIN "foldersSets" ON folders.folder_id = "foldersSets".folder_id JOIN users ON users.user_id=folders.user_id WHERE folders.folder_id = $1`,
+    `SELECT
+    users.username,
+    sets.name AS set_title,
+    sets.description AS set_description,
+    folders.folder_id,
+    folders.title,
+    folders.description,
+    "foldersSets".set_id,
+    "foldersSets".bind_id
+FROM folders
+LEFT JOIN "foldersSets" ON folders.folder_id = "foldersSets".folder_id
+JOIN users ON users.user_id = folders.user_id
+JOIN sets ON sets.set_id = "foldersSets".set_id
+WHERE folders.folder_id = $1;`,
     [id],
     (err, result) => {
       if (err) {
