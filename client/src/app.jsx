@@ -12,7 +12,7 @@ import Review from "./components/review";
 import Explore from "./components/mainPage";
 import Edit from "./components/edit";
 import Folder from "./components/folder";
-
+import Folders from "./components/folders";
 export function App() {
   return (
     <>
@@ -22,6 +22,7 @@ export function App() {
           <Routes>
             <Route path="/register" element={<Register />} />
             <Route path="/folder/:id" element={<Folder />} />
+            <Route path="/folders" element={<Folders />} />
             <Route path="/login" element={<Login />} />
             <Route path="/create-set" element={<CreateSet />} />
             <Route path="/create-folder" element={<CreateFolder />} />

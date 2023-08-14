@@ -505,7 +505,7 @@ const ViewSet = () => {
         />
         <div id="mainBar">
           <h1>{set.length ? convertToText(set[0].name) : "Loading..."}</h1>
-          <h2>
+          <h2 style={{color:"white"}}>
             {set.length ? convertToText(set[0].description) : "Loading..."}
           </h2>
           <p className="category">

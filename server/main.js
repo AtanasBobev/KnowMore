@@ -1227,21 +1227,12 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
 });
 app.get("/v1/folder/:id", (req, res) => {
   let id = req.params.id;
+
   pool.query(
     `SELECT
-    users.username,
-    sets.name AS set_title,
-    sets.description AS set_description,
-    folders.folder_id,
-    folders.title,
-    folders.description,
-    "foldersSets".set_id,
-    "foldersSets".bind_id
-FROM folders
-LEFT JOIN "foldersSets" ON folders.folder_id = "foldersSets".folder_id
-JOIN users ON users.user_id = folders.user_id
-JOIN sets ON sets.set_id = "foldersSets".set_id
-WHERE folders.folder_id = $1;`,
+    COUNT(*) AS count
+  FROM folders
+  WHERE folders.folder_id = $1;`,
     [id],
     (err, result) => {
       if (err) {
@@ -1249,10 +1240,117 @@ WHERE folders.folder_id = $1;`,
         res.status(500).send("Internal error occured");
         return false;
       }
-      res.status(200).send(result.rows);
+      if (result.rows.length) {
+        pool.query(
+          `SELECT
+          users.username,
+          sets.name AS set_title,
+          sets.description AS set_description,
+          folders.folder_id,
+          folders.title,
+          folders.description,
+          "foldersSets".set_id,
+          "foldersSets".bind_id
+      FROM folders
+      LEFT JOIN "foldersSets" ON folders.folder_id = "foldersSets".folder_id
+      JOIN users ON users.user_id = folders.user_id
+      JOIN sets ON sets.set_id = "foldersSets".set_id
+      WHERE folders.folder_id = $1;`,
+          [id],
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              res.status(500).send("Internal error occured");
+              return false;
+            }
+            if (result.rows.length) {
+              res.status(200).send(result.rows);
+            } else {
+              res.status(204).send("Folder empty");
+            }
+          }
+        );
+      } else {
+        res.status(404).send("Not found");
+      }
     }
   );
 });
+app.post("/v1/folders/user", authorizeToken, (req, res) => {
+  let limit = 100;
+  if (req.body.limit) {
+    limit = req.query.limit;
+  }
+  let category = "";
+  if (req.body.category) {
+    category = `AND category = '${req.body.category}'`;
+  }
+  let searchQuery = "";
+  if (req.body.query) {
+    searchQuery = `AND (title ILIKE '%${req.body.query}%' OR description ILIKE '%${req.body.query}%')`;
+  }
+
+  pool.query(
+    `SELECT
+    folders.folder_id,
+    folders.title,
+    folders.description,
+    folders.date_created,
+    folders.date_modified
+FROM folders
+JOIN users ON users.user_id = folders.user_id
+WHERE folders.user_id = $1
+${searchQuery}
+${category}
+LIMIT $2`,
+    [req.user_id, limit],
+    (err, result) => {
+      if (err) {
+        console.error("DBError: " + err.message);
+        res.json({ message: "Error fetching flashcard sets" }).status(500);
+      } else {
+        res.json(result.rows).status(200);
+      }
+    }
+  );
+});
+app.post("/v1/folder/set/remove", authorizeToken, (req, res) => {
+let id = req.body.folder_id;
+let set_id = req.body.set_id;
+if (!id || !set_id) {
+  res.status(409).send("Missing parameters");
+  return false;
+}
+  pool.query(
+    "SELECT user_id FROM folders WHERE folder_id=$1",
+    [id],
+    (err, results) => {
+      if (err) {
+        res.status(500);
+        return false;
+      }
+      if (results.rows.length) {
+        if (results.rows[0].user_id !== req.user_id) {
+          res.status(403).send("Forbidden");
+          return false;
+        }
+        pool.query(
+          'DELETE FROM "foldersSets" WHERE folder_id=$1 AND set_id=$2',
+          [id, set_id],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              res.status(500).end();
+              return false;
+            }
+            res.status(200).end();
+          }
+        );
+      }
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Server listening on the port::${port}`);
 });

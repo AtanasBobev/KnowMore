@@ -12,27 +12,58 @@ const Folder = () => {
   const [sets, setSets] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  const getData = () => {
+    axiosInstance
+      .get(`/folder/${id}`)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 204) {
+          setFolder({
+            title: "Hmm, this folder is empty",
+            description: "Nothing to see here...",
+            owner: "a mysterious stranger🕵️‍♂️",
+          });
+          setLoading(false);
+        } else {
+          setFolder({
+            title: res.data[0].title,
+            description: res.data[0].description,
+            owner: res.data[0].username,
+          });
+          setSets(res.data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (err.status == 404) {
+          setFolder({
+            title: "Folder not found",
+            description: "404",
+            owner: "an alien👽",
+          });
+          setLoading(false);
+        } else {
+          toast.error("Ooops, something went wrong");
+        }
+      });
+  };
   useEffect(() => {
-    axiosInstance.get(`/folder/${id}`).then((res) => {
-      if (!res.data.length) {
-        setFolder({
-          title: "Folder not found",
-          description: "404",
-          owner: "an alien👽",
-        });
-        setLoading(false);
-      } else {
-        setFolder({
-          title: res.data[0].title,
-          description: res.data[0].description,
-          owner: res.data[0].username,
-        });
-        setSets(res.data);
-        setLoading(false);
-      }
-    });
+    getData();
   }, []);
+  const removeFromFolder = () => {
+    if (!confirm("Are you sure you want to remove this set from the folder?")) {
+      return false;
+    }
+    axiosInstance
+      .post(`/folder/set/remove`, { folder_id:id, set_id: sets[0].set_id })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("Set removed from folder");
+        } else {
+          toast.error("Ooops, something went wrong");
+        }
+      });
+  };
 
   return (
     <div id="page">
@@ -54,12 +85,12 @@ const Folder = () => {
             {sets.length
               ? sets[0].set_id
                 ? sets.map((el) => (
-                    <Link
-                      style={{ textDecoration: "none" }}
-                      to={`/set/${el.set_id}`}
-                      key={el.id}
-                    >
-                      <section className="card">
+                    <section className="card">
+                      <Link
+                        style={{ textDecoration: "none" }}
+                        to={`/set/${el.set_id}`}
+                        key={el.id}
+                      >
                         <section className="card-body">
                           <div className="card-title">
                             {parse(
@@ -76,8 +107,9 @@ const Folder = () => {
                             )}
                           </div>
                         </section>
-                      </section>
-                    </Link>
+                      </Link>
+                      <button onClick={removeFromFolder}>Remove</button>
+                    </section>
                   ))
                 : ""
               : ""}
