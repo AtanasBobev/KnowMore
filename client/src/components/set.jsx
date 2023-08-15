@@ -20,11 +20,18 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 import { useNavigate } from "react-router-dom";
 import CombineModal from "./helpers/combineModal";
+import AddToFolderModal from "./helpers/addToFolderModal";
 window.katex = katex;
 
 const ViewSet = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [addToFolderPopup, setAddToFolderPopup] = useState({
+    open: false,
+    foldersChosen: [],
+    allFolders: [],
+    set_id: Number(id),
+  });
   const [set, setSet] = useState([]);
   const [setStats, setSetStats] = useState([]);
   const [flashcardStats, setFlashcardStats] = useState([]);
@@ -39,7 +46,6 @@ const ViewSet = () => {
     query: "",
     totalFlashcards: 0,
   });
-
   const [cardEdit, setCardEdit] = useState({
     edit: false,
     cardBeingEdited: null,
@@ -464,6 +470,40 @@ const ViewSet = () => {
       });
     }
   };
+  const selectItemFolder = (id) => {
+    if (addToFolderPopup.foldersChosen.includes(id)) {
+      setAddToFolderPopup((prev) => {
+        return {
+          ...prev,
+          foldersChosen: prev.foldersChosen.filter((el) => el !== id),
+        };
+      });
+    } else {
+      setAddToFolderPopup((prev) => {
+        return {
+          ...prev,
+          foldersChosen: [...prev.foldersChosen, id],
+        };
+      });
+    }
+  };
+  const getFolders = () => {
+    axiosInstance
+      .post("/folders/user")
+      .then((res) => {
+        setAddToFolderPopup((prev) => ({
+          ...prev,
+          allFolders: res.data,
+        }));
+      })
+      .catch((err) => {
+        toast.error("Ooops, something went wrong");
+      });
+  };
+  useEffect(() => {
+    getFolders();
+  }, []);
+
   useEffect(() => {
     if (set.length && cardEdit.edit && cardEdit.cardBeingEdited) {
       const container = flashcardsContainerRef.current;
@@ -476,6 +516,13 @@ const ViewSet = () => {
 
   return (
     <>
+      <AddToFolderModal
+        addToFolderPopup={addToFolderPopup}
+        setAddToFolderPopup={setAddToFolderPopup}
+        selectItemFolder={selectItemFolder}
+        set={set}
+        toast={toast}
+      />
       <CombineModal
         combineModal={combineModal}
         setCombineModal={setCombineModal}
@@ -505,7 +552,7 @@ const ViewSet = () => {
         />
         <div id="mainBar">
           <h1>{set.length ? convertToText(set[0].name) : "Loading..."}</h1>
-          <h2 style={{color:"white"}}>
+          <h2 style={{ color: "white" }}>
             {set.length ? convertToText(set[0].description) : "Loading..."}
           </h2>
           <p className="category">
@@ -551,12 +598,20 @@ const ViewSet = () => {
 
               {moreOpen ? (
                 <>
-                  <Link
-                    style={{ textDecoration: "none" }}
-                    to={`/review/${set[0].set_id}`}
-                  >
-                    <button>Add to folder</button>
-                  </Link>
+                  {set.length && token.user_id ? (
+                    <button
+                      onClick={() =>
+                        setAddToFolderPopup((prev) => ({
+                          ...prev,
+                          open: true,
+                        }))
+                      }
+                    >
+                      Add to folder
+                    </button>
+                  ) : (
+                    ""
+                  )}
                   {set.length && token.user_id == set[0].user_id ? (
                     <button onClick={() => navigate(`/edit/${id}`)}>
                       Edit

@@ -1249,12 +1249,13 @@ app.get("/v1/folder/:id", (req, res) => {
           folders.folder_id,
           folders.title,
           folders.description,
+          folders.user_id,
           "foldersSets".set_id,
           "foldersSets".bind_id
       FROM folders
       LEFT JOIN "foldersSets" ON folders.folder_id = "foldersSets".folder_id
       JOIN users ON users.user_id = folders.user_id
-      JOIN sets ON sets.set_id = "foldersSets".set_id
+      LEFT JOIN sets ON sets.set_id = "foldersSets".set_id
       WHERE folders.folder_id = $1;`,
           [id],
           (err, result) => {
@@ -1276,6 +1277,162 @@ app.get("/v1/folder/:id", (req, res) => {
     }
   );
 });
+app.post("/v1/folder/update", authorizeToken, (req, res) => {
+  if (!req.body.folder_id || !req.body.title || !req.body.description) {
+    res.status(409).send("Missing parameters");
+    return false;
+  }
+  pool.query(
+    "SELECT user_id FROM folders WHERE folder_id=$1",
+    [req.body.folder_id],
+    (err, results) => {
+      if (err) {
+        res.status(500);
+        return false;
+      }
+      if (results.rows.length) {
+        if (results.rows[0].user_id !== req.user_id) {
+          res.status(403).send("Forbidden");
+          return false;
+        }
+        //get all sets that are already part of the folder
+        pool.query(
+          'SELECT set_id FROM "foldersSets" WHERE folder_id=$1',
+          [req.body.folder_id],
+          (err, results) => {
+            if (err) {
+              res.status(500);
+              return false;
+            }
+
+            if (results.rows.length) {
+              let setsAlreadyInFolder = [];
+              results.rows.forEach((set) => {
+                setsAlreadyInFolder.push(set.set_id);
+              });
+              //get all sets that are not part of the folder
+              let setsToAdd = [];
+              req.body.setsChosen.forEach((set) => {
+                if (!setsAlreadyInFolder.includes(set)) {
+                  setsToAdd.push(set);
+                }
+              });
+              console.log(setsChosen);
+              //add sets that are not part of the folder
+              setsToAdd.forEach((set) => {
+                pool.query(
+                  'INSERT INTO "foldersSets" (folder_id, set_id) VALUES ($1, $2)',
+                  [req.body.folder_id, set],
+                  (err, result) => {
+                    if (err) {
+                      console.log(err);
+                      console.log("4");
+                      pool.query(
+                        'DELETE FROM "foldersSets" WHERE folder_id=$1',
+                        [req.body.folder_id],
+                        (err, results) => {
+                          if (err) {
+                            console.log(err);
+                            res.status(500).end();
+                            return false;
+                          }
+                          console.log("5");
+                        }
+                      );
+                      return false;
+                    }
+                  }
+                );
+              });
+            } else {
+              req.body.setsChosen.forEach((set) => {
+                pool.query(
+                  'INSERT INTO "foldersSets" (folder_id, set_id) VALUES ($1, $2)',
+                  [req.body.folder_id, set],
+                  (err, result) => {
+                    if (err) {
+                      console.log(err);
+                      console.log("4");
+                      pool.query(
+                        'DELETE FROM "foldersSets" WHERE folder_id=$1',
+                        [req.body.folder_id],
+                        (err, results) => {
+                          if (err) {
+                            console.log(err);
+                            res.status(500).end();
+                            return false;
+                          }
+                          console.log("5");
+                        }
+                      );
+                      return false;
+                    }
+                  }
+                );
+              });
+            }
+          }
+        );
+        //update folder title and description
+        pool.query(
+          "UPDATE folders SET title=$1, description=$2, date_modified=$3 WHERE folder_id=$4",
+          [
+            req.body.title,
+            req.body.description,
+            new Date().toISOString(),
+            req.body.folder_id,
+          ],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              res.status(500).end();
+              return false;
+            }
+            res.status(200).end();
+          }
+        );
+      }
+    }
+  );
+});
+app.post("/v1/folders/sets/add", authorizeToken, (req, res) => {
+  if (!req.body.set_id || !req.body.folder_ids) {
+    res.status(409).send("Missing parameters");
+    return false;
+  }
+  //check if user is owner of set, then add the set to folders. Keep in mind that some of the folders may already have this set.
+  pool.query(
+    "SELECT user_id FROM sets WHERE set_id=$1",
+    [req.body.set_id],
+    (err, results) => {
+      if (err) {
+        res.status(500);
+        return false;
+      }
+      if (results.rows.length) {
+        if (results.rows[0].user_id !== req.user_id) {
+          res.status(403).send("Forbidden");
+          return false;
+        }
+        req.body.folder_ids.forEach((folder_id) => {
+          pool.query(
+            'INSERT INTO "foldersSets" (folder_id, set_id) VALUES ($1, $2)',
+            [folder_id, req.body.set_id],
+            (err, result) => {
+              if (err) {
+                console.log(err);
+                res.status(500).end();
+                return false;
+              }
+            }
+          );
+        });
+        res.status(200).end();
+      }
+    }
+  );
+});
+
 app.post("/v1/folders/user", authorizeToken, (req, res) => {
   let limit = 100;
   if (req.body.limit) {
@@ -1296,7 +1453,8 @@ app.post("/v1/folders/user", authorizeToken, (req, res) => {
     folders.title,
     folders.description,
     folders.date_created,
-    folders.date_modified
+    folders.date_modified,
+    folders.user_id
 FROM folders
 JOIN users ON users.user_id = folders.user_id
 WHERE folders.user_id = $1
@@ -1315,12 +1473,12 @@ LIMIT $2`,
   );
 });
 app.post("/v1/folder/set/remove", authorizeToken, (req, res) => {
-let id = req.body.folder_id;
-let set_id = req.body.set_id;
-if (!id || !set_id) {
-  res.status(409).send("Missing parameters");
-  return false;
-}
+  let id = req.body.folder_id;
+  let set_id = req.body.set_id;
+  if (!id || !set_id) {
+    res.status(409).send("Missing parameters");
+    return false;
+  }
   pool.query(
     "SELECT user_id FROM folders WHERE folder_id=$1",
     [id],
@@ -1337,6 +1495,53 @@ if (!id || !set_id) {
         pool.query(
           'DELETE FROM "foldersSets" WHERE folder_id=$1 AND set_id=$2',
           [id, set_id],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              res.status(500).end();
+              return false;
+            }
+            res.status(200).end();
+          }
+        );
+      }
+    }
+  );
+});
+app.post("/v1/folder/delete", authorizeToken, (req, res) => {
+  let id = req.body.folder_id;
+  if (!id) {
+    res.status(409).send("Missing parameters");
+    return false;
+  }
+  //check if user is owner of set
+  pool.query(
+    "SELECT user_id FROM folders WHERE folder_id=$1",
+    [id],
+    (err, results) => {
+      if (err) {
+        res.status(500);
+        return false;
+      }
+      if (results.rows.length) {
+        if (results.rows[0].user_id !== req.user_id) {
+          res.status(403).send("Forbidden");
+          return false;
+        }
+        pool.query(
+          'DELETE FROM "foldersSets" WHERE folder_id=$1',
+          [id],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              res.status(500).end();
+              return false;
+            }
+          }
+        );
+        pool.query(
+          "DELETE FROM folders WHERE folder_id=$1",
+          [id],
           (err, results) => {
             if (err) {
               console.log(err);

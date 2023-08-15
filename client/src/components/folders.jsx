@@ -5,13 +5,17 @@ import "../styles/allPages.css";
 import axiosInstance from "../utils/axiosConfig";
 import SelectOptions from "./helpers/selectOptions";
 import SelectLimit from "./helpers/selectLimit";
+import token from "../utils/jwtParser";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "../styles/sets.css";
+import axios from "axios";
 const Folders = () => {
   const [folders, setFolders] = useState([]);
   const [category, setCategory] = useState("");
   const [limit, setLimit] = useState(100);
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
   const search = () => {
     axiosInstance
       .post("/folders/user", {
@@ -21,12 +25,46 @@ const Folders = () => {
         onlyPersonal: true,
       })
       .then((res) => {
+        console.log(res.data);
         setFolders(res.data);
       })
       .catch((err) => {
         toast.error("Ooops, something went wrong");
       });
   };
+  const shareFolderOutside = (folder_id) => {
+    try {
+      let url = `${window.location.origin}/folder/${folder_id}`;
+      window.navigator.clipboard.writeText(url);
+      toast.success("Share link has been copied to clipboard");
+    } catch (err) {
+      toast.error(
+        "It seems like the share functionality doesn't work on your browser"
+      );
+    }
+  };
+  const removeFolder = (folder_id, user_id) => {
+    //check if the user is the owner of the folder
+    if (token.user_id !== user_id) {
+      toast.error("You are not the owner of this folder");
+      return false;
+    }
+    if (!confirm("Are you sure you want to delete this folder?")) {
+      return false;
+    }
+    axiosInstance
+      .post(`/folder/delete`, { folder_id })
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("Folder deleted successfully");
+          search();
+        }
+      })
+      .catch((err) => {
+        toast.error("Ooops, something went wrong");
+      });
+  };
+
   useEffect(search, []);
 
   return (
@@ -56,16 +94,15 @@ const Folders = () => {
       </center>
       {folders.length ? (
         <>
-          {/*  */}
           <div className="setContainer">
             {folders.length
               ? folders.map((el) => (
-                  <Link
-                    style={{ textDecoration: "none" }}
-                    to={`/folder/${el.folder_id}`}
-                    key={el.folder_id}
-                  >
-                    <section className="card">
+                  <section className="card">
+                    <Link
+                      style={{ textDecoration: "none" }}
+                      to={`/folder/${el.folder_id}`}
+                      key={el.folder_id}
+                    >
                       <section className="card-body">
                         <div className="card-title">
                           {parse(el.title).length > 50
@@ -78,8 +115,34 @@ const Folders = () => {
                             : parse(el.description)}
                         </div>
                       </section>
+                    </Link>
+                    <section className="btnGroup">
+                      <button onClick={() => shareFolderOutside(el.folder_id)}>
+                        Share
+                      </button>
+                      {el.user_id === token.user_id ? (
+                        <button
+                          onClick={() => {
+                            navigate("/folder/edit/" + el.folder_id);
+                          }}
+                        >
+                          Edit
+                        </button>
+                      ) : (
+                        ""
+                      )}
+                      <button className="disabled">Merge</button>
+                      {el.user_id === token.user_id ? (
+                        <button
+                          onClick={() => removeFolder(el.folder_id, el.user_id)}
+                        >
+                          Delete
+                        </button>
+                      ) : (
+                        ""
+                      )}
                     </section>
-                  </Link>
+                  </section>
                 ))
               : ""}
           </div>

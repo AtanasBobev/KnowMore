@@ -13,6 +13,7 @@ import Explore from "./components/mainPage";
 import Edit from "./components/edit";
 import Folder from "./components/folder";
 import Folders from "./components/folders";
+import FolderEdit from "./components/editFolder";
 export function App() {
   return (
     <>
@@ -20,6 +21,7 @@ export function App() {
         <NavBar />
         <div style={{ marginTop: "15vh" }}>
           <Routes>
+            <Route path="/folder/edit/:id" element={<FolderEdit />} />
             <Route path="/register" element={<Register />} />
             <Route path="/folder/:id" element={<Folder />} />
             <Route path="/folders" element={<Folders />} />

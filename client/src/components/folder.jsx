@@ -4,6 +4,7 @@ import axiosInstance from "../utils/axiosConfig";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import parse from "html-react-parser";
+import { shareSet as Share } from "../utils/_setOpertaions";
 import "../styles/folder.css";
 import { set } from "date-fns";
 const Folder = () => {
@@ -16,7 +17,6 @@ const Folder = () => {
     axiosInstance
       .get(`/folder/${id}`)
       .then((res) => {
-        console.log(res);
         if (res.status === 204) {
           setFolder({
             title: "Hmm, this folder is empty",
@@ -47,23 +47,20 @@ const Folder = () => {
         }
       });
   };
+  const removeFromFolder = (set_id) => {
+    axiosInstance
+      .post("/folder/set/remove", { folder_id: id, set_id })
+      .then((res) => {
+        toast.success("Removed from folder");
+        setSets((prev) => prev.filter((el) => el.set_id !== set_id));
+      })
+      .catch((err) => {
+        toast.error("Ooops, something went wrong");
+      });
+  };
   useEffect(() => {
     getData();
   }, []);
-  const removeFromFolder = () => {
-    if (!confirm("Are you sure you want to remove this set from the folder?")) {
-      return false;
-    }
-    axiosInstance
-      .post(`/folder/set/remove`, { folder_id:id, set_id: sets[0].set_id })
-      .then((res) => {
-        if (res.status === 200) {
-          toast.success("Set removed from folder");
-        } else {
-          toast.error("Ooops, something went wrong");
-        }
-      });
-  };
 
   return (
     <div id="page">
@@ -108,7 +105,9 @@ const Folder = () => {
                           </div>
                         </section>
                       </Link>
-                      <button onClick={removeFromFolder}>Remove</button>
+                      <button onClick={() => removeFromFolder(el.set_id)}>
+                        Remove
+                      </button>
                     </section>
                   ))
                 : ""
