@@ -97,7 +97,7 @@ const Folders = () => {
           <div className="setContainer">
             {folders.length
               ? folders.map((el) => (
-                  <section className="card">
+                  <section className="card folder-background">
                     <Link
                       style={{ textDecoration: "none" }}
                       to={`/folder/${el.folder_id}`}
@@ -117,11 +117,11 @@ const Folders = () => {
                       </section>
                     </Link>
                     <section className="btnGroup">
-                      <button onClick={() => shareFolderOutside(el.folder_id)}>
+                      <button style={{backgroundColor:"transparent"}} onClick={() => shareFolderOutside(el.folder_id)}>
                         Share
                       </button>
                       {el.user_id === token.user_id ? (
-                        <button
+                        <button style={{backgroundColor:"transparent"}}
                           onClick={() => {
                             navigate("/folder/edit/" + el.folder_id);
                           }}
@@ -131,9 +131,9 @@ const Folders = () => {
                       ) : (
                         ""
                       )}
-                      <button className="disabled">Merge</button>
+                      <button style={{backgroundColor:"transparent"}} className="disabled">Merge</button>
                       {el.user_id === token.user_id ? (
-                        <button
+                        <button style={{backgroundColor:"transparent"}}
                           onClick={() => removeFolder(el.folder_id, el.user_id)}
                         >
                           Delete

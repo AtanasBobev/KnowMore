@@ -1189,13 +1189,14 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
     return;
   }
   pool.query(
-    "INSERT INTO folders (title, description, date_created, date_modified, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING folder_id",
+    "INSERT INTO folders (title, description, date_created, date_modified, user_id, category) VALUES ($1, $2, $3, $4, $5, $6) RETURNING folder_id",
     [
       req.body.title,
       req.body.description,
       new Date().toISOString(),
       new Date().toISOString(),
       req.user_id,
+      req.body.category
     ],
     (err, result) => {
       if (err) {
@@ -1225,6 +1226,85 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
     }
   );
 });
+app.post("/v1/folders/all", (req,res)=>{
+//this is the same router as sets/all expects you are searching for folders. 
+
+  let limit = 10;
+  if (req.body.limit) {
+    limit = req.body.limit;
+  }
+  let searchQuery = "";
+  if (req.body.search) {
+    searchQuery = `AND (folders.title ILIKE '%${req.body.search}%' OR folders.description ILIKE '%${req.body.search}%')`;
+  }
+  let onlyPersonal = "";
+  if (req.body.onlyPersonal) {
+    onlyPersonal = `AND folders.user_id = ${req.user_id}`;
+  }
+  let category = "";
+  if (req.body.category) {
+    category = `AND folders.category = '${req.body.category}'`;
+  }
+  let sortBy = "";
+  if (req.body.sortBy) {
+    switch (req.body.sortBy) {
+      case "date_created":
+        sortBy = `ORDER BY folders.date_created DESC`;
+        break;
+      case "date_modified":
+        sortBy = `ORDER BY folders.date_modified DESC`;
+        break;
+      case "name":
+        sortBy = `ORDER BY folders.title ASC`;
+        break;
+      default:
+        sortBy = `ORDER BY folders.date_created DESC`;
+        break;
+    }
+  }
+  //return folders and data about them, you don't have to return sets in the folders
+  pool.query(
+    `SELECT
+    COUNT(*) AS count
+  FROM folders
+  WHERE 1=1 ${searchQuery} ${onlyPersonal} ${category};`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal error occured");
+        return false;
+      }
+      if (result.rows.length) {
+        pool.query(
+          `SELECT
+          users.username,
+          folders.folder_id,
+          folders.title AS name,
+          folders.description,
+          folders.category,
+          folders.user_id
+      FROM folders
+      JOIN users ON users.user_id = folders.user_id
+      WHERE 1=1 ${searchQuery} ${onlyPersonal} ${category} ${sortBy} LIMIT ${limit};`,
+          (err, result) => {
+            if (err) {
+              console.log(err);
+              res.status(500).send("Internal error occured");
+              return false;
+            }
+            if (result.rows.length) {
+              res.status(200).send(result.rows);
+            } else {
+              res.status(204).send("No folders");
+            }
+          }
+        );
+      } else {
+        res.status(404).send("Not found");
+      }
+    }
+  );
+})
 app.get("/v1/folder/:id", (req, res) => {
   let id = req.params.id;
 
@@ -1249,6 +1329,7 @@ app.get("/v1/folder/:id", (req, res) => {
           folders.folder_id,
           folders.title,
           folders.description,
+          folders.category,
           folders.user_id,
           "foldersSets".set_id,
           "foldersSets".bind_id
@@ -1434,7 +1515,6 @@ app.post("/v1/folders/sets/add", authorizeToken, (req, res) => {
     }
   );
 });
-
 app.post("/v1/folders/user", authorizeToken, (req, res) => {
   let limit = 100;
   if (req.body.limit) {

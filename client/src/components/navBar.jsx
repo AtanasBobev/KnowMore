@@ -113,7 +113,7 @@ const NavBar = () => {
                       }
                       to="/create-set"
                     >
-                      Create Set
+                      Set
                     </Link>
                     <Link
                       className={
@@ -121,7 +121,7 @@ const NavBar = () => {
                       }
                       to="/create-folder"
                     >
-                      Create Folder
+                      Folder
                     </Link>
                   </div>
                 )}

@@ -4,7 +4,7 @@ import ImageResize from "quill-image-resize-module-react";
 import { Link } from "react-router-dom";
 import ImageCompress from "quill-image-compress";
 import { convert as convertToText } from "html-to-text";
-import { formatDistance } from "date-fns";
+import { formatDistance, set } from "date-fns";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { toast, ToastContainer } from "react-toastify";
@@ -37,25 +37,24 @@ const EditFolder = () => {
   const navigate = useNavigate();
 
   const getFolder = async () => {
-    axiosInstance
-      .get(`/folder/${id}`)
-      .then((res) => {
-        setTitle(res.data[0].title);
-        setDescription(res.data[0].description);
-        //get set ids from the array of res.data and set it to setsChosen
-        let setIds = [];
-        console.log(res.data);
-        res.data.forEach((el) => {
-          setIds.push(el.set_id);
-        });
-        setOriginalData({
-          title: res.data[0].title,
-          description: res.data[0].description,
-          sets: setIds,
-        });
-        setSetsChosen(setIds);
-      })
-      
+    axiosInstance.get(`/folder/${id}`).then((res) => {
+      setTitle(res.data[0].title);
+      setDescription(res.data[0].description);
+      //get set ids from the array of res.data and set it to setsChosen
+      let setIds = [];
+      console.log(res.data);
+      res.data.forEach((el) => {
+        setIds.push(el.set_id);
+      });
+      setFolderCategory(res.data[0].category);
+      setOriginalData({
+        title: res.data[0].title,
+        description: res.data[0].description,
+        sets: setIds,
+        category: res.data[0].category,
+      });
+      setSetsChosen(setIds);
+    });
   };
 
   const getSets = async () => {
@@ -121,7 +120,7 @@ const EditFolder = () => {
         description,
         setsChosen,
         folder_id: id,
-        folderCategory
+        folderCategory,
       })
       .then((res) => {
         toast.success("Folder edited successfully");
@@ -136,7 +135,7 @@ const EditFolder = () => {
     getFolder();
     getSets();
   }, []);
-
+  useEffect(() => console.log(originalData.category), [originalData.category]);
   return (
     <section>
       <ToastContainer
@@ -223,7 +222,16 @@ const EditFolder = () => {
               },
             }}
           />
-          <SelectOptions setCategory={setFolderCategory} initialState={originalData.category}/>
+          <div style={{margin:"1vmax"}}>
+          {originalData?.category ? (
+            <SelectOptions
+              setCategory={setFolderCategory}
+              initialState={originalData.category}
+            />
+          ) : (
+            ""
+          )}
+          </div>
           <div id="setsChosenContainer">
             <center>
               {" "}

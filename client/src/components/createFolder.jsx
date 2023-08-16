@@ -6,7 +6,7 @@ import ImageCompress from "quill-image-compress";
 import { convert as convertToText } from "html-to-text";
 import { formatDistance } from "date-fns";
 import parse from "html-react-parser";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import SelectLimit from "./helpers/selectLimit";
 import SelectOptions from "./helpers/selectOptions";
@@ -27,7 +27,7 @@ const CreateFolder = () => {
   const [onlyPersonalSets, setOnlyPersonalSets] = useState(false);
   const [limit, setLimit] = useState(10);
   const [category, setCategory] = useState("");
-
+  const [folderCategory, setFolderCategory] = useState("");
   Quill.register("modules/imageResize", ImageResize);
   Quill.register("modules/imageCompress", ImageCompress);
 
@@ -85,6 +85,7 @@ const CreateFolder = () => {
         title: title,
         description: description,
         sets: setsChosen,
+        category: folderCategory,
       })
       .then((res) => {
         toast.success("Folder created successfully");
@@ -185,6 +186,9 @@ const CreateFolder = () => {
               },
             }}
           />
+          <div style={{ margin: "1vmax" }}>
+            <SelectOptions setCategory={setFolderCategory} />
+          </div>
           <div id="setsChosenContainer">
             <center>
               {" "}
@@ -213,8 +217,9 @@ const CreateFolder = () => {
               {allSets.length ? (
                 allSets.map((el) => (
                   <div
-                    className={"individualSet "}
+                    className={"individualSet"}
                     style={{
+                      maxWidth: "20vmax",
                       boxShadow: setsChosen.includes(el.set_id)
                         ? "0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)"
                         : "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",

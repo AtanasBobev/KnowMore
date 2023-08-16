@@ -151,4 +151,17 @@ button.searchBtn {
   background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
 }
 
+.folder-background {
+  background: #2193b0 !important;
+  background: -webkit-linear-gradient(315deg, #2193b0, #6dd5ed) !important;
+  background: linear-gradient(315deg, #2193b0, #6dd5ed) !important;
+}
+
+.folder-background:hover {
+  background: #2193b0 !important;
+  background: -webkit-linear-gradient(315deg, #2193b0, #6dd5ed) !important;
+  background: linear-gradient(315deg, #2193b0, #6dd5ed) !important;
+  box-shadow: rgba(33, 147, 176, 0.4) 5px 5px, rgba(33, 147, 176, 0.3) 10px 10px, rgba(250, 208, 196, 0.2) 15px 15px, rgba(250, 208, 196, 0.1) 20px 20px, rgba(250, 208, 196, 0.05) 25px 25px !important;
+}
+
 /*# sourceMappingURL=allPages.css.map */
