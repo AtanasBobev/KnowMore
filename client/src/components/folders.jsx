@@ -66,7 +66,6 @@ const Folders = () => {
   };
 
   useEffect(search, []);
-
   return (
     <div id="page">
       <ToastContainer
