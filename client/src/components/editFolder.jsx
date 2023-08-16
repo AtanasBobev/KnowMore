@@ -29,6 +29,7 @@ const EditFolder = () => {
   const [onlyPersonalSets, setOnlyPersonalSets] = useState(false);
   const [limit, setLimit] = useState(10);
   const [category, setCategory] = useState("");
+  const [folderCategory, setFolderCategory] = useState("");
 
   Quill.register("modules/imageResize", ImageResize);
   Quill.register("modules/imageCompress", ImageCompress);
@@ -39,12 +40,12 @@ const EditFolder = () => {
     axiosInstance
       .get(`/folder/${id}`)
       .then((res) => {
-        console.log(res.data[0])
         setTitle(res.data[0].title);
         setDescription(res.data[0].description);
         //get set ids from the array of res.data and set it to setsChosen
         let setIds = [];
-        res.data[0].sets.forEach((el) => {
+        console.log(res.data);
+        res.data.forEach((el) => {
           setIds.push(el.set_id);
         });
         setOriginalData({
@@ -54,9 +55,7 @@ const EditFolder = () => {
         });
         setSetsChosen(setIds);
       })
-      .catch((err) => {
-        toast.error("Something went wrong");
-      });
+      
   };
 
   const getSets = async () => {
@@ -110,7 +109,8 @@ const EditFolder = () => {
       title === originalData.title &&
       description === originalData.description &&
       setsChosen.length === originalData.sets.length &&
-      setsChosen.every((val, index) => val === originalData.sets[index])
+      setsChosen.every((val, index) => val === originalData.sets[index]) &&
+      folderCategory === originalData.folderCategory
     ) {
       toast.error("You didn't make any changes");
       return;
@@ -121,6 +121,7 @@ const EditFolder = () => {
         description,
         setsChosen,
         folder_id: id,
+        folderCategory
       })
       .then((res) => {
         toast.success("Folder edited successfully");
@@ -222,6 +223,7 @@ const EditFolder = () => {
               },
             }}
           />
+          <SelectOptions setCategory={setFolderCategory} initialState={originalData.category}/>
           <div id="setsChosenContainer">
             <center>
               {" "}

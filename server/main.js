@@ -1317,7 +1317,6 @@ app.post("/v1/folder/update", authorizeToken, (req, res) => {
                   setsToAdd.push(set);
                 }
               });
-              console.log(setsChosen);
               //add sets that are not part of the folder
               setsToAdd.forEach((set) => {
                 pool.query(
@@ -1375,11 +1374,12 @@ app.post("/v1/folder/update", authorizeToken, (req, res) => {
         );
         //update folder title and description
         pool.query(
-          "UPDATE folders SET title=$1, description=$2, date_modified=$3 WHERE folder_id=$4",
+          "UPDATE folders SET title=$1, description=$2, date_modified=$3, category=$4 WHERE folder_id=$5",
           [
             req.body.title,
             req.body.description,
             new Date().toISOString(),
+            req.body.folderCategory,
             req.body.folder_id,
           ],
           (err, results) => {
@@ -1391,6 +1391,8 @@ app.post("/v1/folder/update", authorizeToken, (req, res) => {
             res.status(200).end();
           }
         );
+      }else{
+        res.status(403).send("You are not the owner of this folder")
       }
     }
   );
