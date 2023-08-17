@@ -45,6 +45,8 @@ const ViewSet = () => {
     query: "",
     totalFlashcards: 0,
   });
+  const [bugTrac2, setBugTrac2] = useState();
+
   const [cardEdit, setCardEdit] = useState({
     edit: false,
     cardBeingEdited: null,
@@ -136,6 +138,12 @@ const ViewSet = () => {
 
     if (flashcardToEdit) {
       setCardEdit({
+        edit: true,
+        cardBeingEdited: flashcardId,
+        term: flashcardToEdit.term,
+        definition: flashcardToEdit.definition,
+      });
+      setBugTrac2({
         edit: true,
         cardBeingEdited: flashcardId,
         term: flashcardToEdit.term,
@@ -570,7 +578,15 @@ const ViewSet = () => {
                 : "No category"
               : ""}
           </p>
-          {set.length ? (
+          {set.length &&
+          token.user_id == set[0].user_id &&
+          set.length == 1 &&
+          !set[0].title ? (
+            <button onClick={() => navigate(`/edit/${id}`)}>Edit</button>
+          ) : (
+            ""
+          )}
+          {set.length > 1 ? (
             <div className="buttonGroup">
               <Link
                 style={{ textDecoration: "none" }}
@@ -693,7 +709,7 @@ const ViewSet = () => {
         )}
         <div id="leadboards"></div>
         <div className="cardContainer">
-          {set.length && set[0].term
+          {set.length && !set[0].term
             ? set.map((el) => (
                 <div
                   className="cardModern"

@@ -261,15 +261,17 @@ app.patch("/v1/set", authorizeToken, (req, res) => {
     }
   );
   req.body.flashcards.forEach((flashcard) => {
+
     pool.query(
       "UPDATE flashcards SET term=$1, definition=$2 WHERE set_id=$3 AND flashcard_id=$4",
       [
         flashcard.term,
         flashcard.definition,
-        req.body.set_id,
-        flashcard.flashcard_id,
+        Number(req.body.set_id),
+        Number(flashcard.flashcard_id),
       ],
       (err, results) => {
+        console.log(err,results)
         if (err) {
           res.status(500).end();
           return false;

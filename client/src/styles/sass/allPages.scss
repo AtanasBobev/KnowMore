@@ -43,11 +43,14 @@ nav {
   }
   & > .modal-content {
     display: flex;
+    flex-wrap:wrap;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     & > * {
       margin: 0.5vmax;
+      display:flex;
+      flex-wrap:wrap;
     }
 
     & > p {
