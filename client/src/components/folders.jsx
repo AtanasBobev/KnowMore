@@ -130,7 +130,6 @@ const Folders = () => {
                       ) : (
                         ""
                       )}
-                      <button style={{backgroundColor:"transparent"}} className="disabled">Merge</button>
                       {el.user_id === token.user_id ? (
                         <button style={{backgroundColor:"transparent"}}
                           onClick={() => removeFolder(el.folder_id, el.user_id)}
