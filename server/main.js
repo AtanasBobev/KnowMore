@@ -261,27 +261,31 @@ app.patch("/v1/set", authorizeToken, (req, res) => {
     }
   );
   req.body.flashcards.forEach((flashcard) => {
-
-    pool.query(
-      "UPDATE flashcards SET term=$1, definition=$2 WHERE set_id=$3 AND flashcard_id=$4",
-      [
-        flashcard.term,
-        flashcard.definition,
-        Number(req.body.set_id),
-        Number(flashcard.flashcard_id),
-      ],
-      (err, results) => {
-        console.log(err,results)
-        if (err) {
-          res.status(500).end();
-          return false;
+    //some of the flashcards are new and some are old. You have to update the old ones and insert the new ones
+    if (flashcard.flashcard_id) {
+      pool.query(
+        "UPDATE flashcards SET term=$1, definition=$2 WHERE flashcard_id=$3",
+        [flashcard.term, flashcard.definition, flashcard.flashcard_id],
+        (err, results) => {
+          if (err) {
+            res.status(500).end();
+            return false;
+          }
         }
-        if (!results.rowCount) {
-          res.status(404).end();
-          return false;
+      );
+    }
+    if (!flashcard.flashcard_id) {
+      pool.query(
+        "INSERT INTO flashcards (term, definition, set_id) VALUES ($1, $2, $3)",
+        [flashcard.term, flashcard.definition, req.body.set_id],
+        (err, results) => {
+          if (err) {
+            res.status(500).end();
+            return false;
+          }
         }
-      }
-    );
+      );
+    }
   });
   res.status(200).end();
 });
@@ -1080,7 +1084,7 @@ app.post("/v1/set/delete", authorizeToken, (req, res) => {
             }
           }
         );
-        pool.query('DELETE FROM "folderSets" WHERE set_id=$1', [
+        pool.query('DELETE FROM "foldersSets" WHERE set_id=$1', [
           req.body.set_id,
         ]);
         pool.query(

@@ -578,15 +578,38 @@ const ViewSet = () => {
                 : "No category"
               : ""}
           </p>
-          {set.length &&
-          token.user_id == set[0].user_id &&
-          set.length == 1 &&
-          !set[0].title ? (
-            <button onClick={() => navigate(`/edit/${id}`)}>Edit</button>
+          {set.length && !set[0].flashcard_id ? (
+            <div>
+              <button onClick={() => navigate(`/edit/${id}`)}>Edit</button>
+              <button
+                onClick={() => {
+                  if (!confirm("Are you sure you want to delete this set?")) {
+                    return false;
+                  }
+                  axiosInstance
+                    .post(`/set/delete`, {
+                      set_id: set[0].set_id,
+                    })
+                    .then((response) => {
+                      toast.success("Set deleted! Navigating...");
+                      setTimeout(() => {
+                        navigate(`/sets`);
+                      }, 1000);
+                    })
+                    .catch((err) => {
+                      toast.error(
+                        "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
+                      );
+                    });
+                }}
+              >
+                Delete
+              </button>
+            </div>
           ) : (
             ""
           )}
-          {set.length > 1 ? (
+          {set.length && set[0].flashcard_id ? (
             <div className="buttonGroup">
               <Link
                 style={{ textDecoration: "none" }}
@@ -709,7 +732,7 @@ const ViewSet = () => {
         )}
         <div id="leadboards"></div>
         <div className="cardContainer">
-          {set.length && !set[0].term
+          {set.length && set[0].flashcard_id
             ? set.map((el) => (
                 <div
                   className="cardModern"
@@ -829,8 +852,15 @@ const ViewSet = () => {
                   <div className="buttonGroupSmall">
                     {!cardEdit.edit ||
                     cardEdit.cardBeingEdited !== el.flashcard_id ? (
-                      <button onClick={() => like(el.flashcard_id)}>
-                        {el.liked ? "❤️‍🔥" : "❤️"}
+                      <button
+                        style={{
+                          filter: el.liked
+                            ? "grayscale(0%)"
+                            : "grayscale(100%)",
+                        }}
+                        onClick={() => like(el.flashcard_id)}
+                      >
+                        ❤️
                       </button>
                     ) : (
                       ""
@@ -879,13 +909,24 @@ const ViewSet = () => {
                               .then((response) => {
                                 toast.success("Flashcard deleted!");
                                 setCardEdit({ edit: false });
-                                setSet((prev) =>
-                                  prev.filter(
-                                    (el) =>
-                                      el.flashcard_id !==
-                                      cardEdit.cardBeingEdited
-                                  )
-                                );
+                                if (set.length > 1) {
+                                  setSet((prev) =>
+                                    prev.filter(
+                                      (el) =>
+                                        el.flashcard_id !==
+                                        cardEdit.cardBeingEdited
+                                    )
+                                  );
+                                } else {
+                                  setSet((prev) => [
+                                    {
+                                      ...prev,
+                                      flashcard_id: null,
+                                      term: null,
+                                      definition: null,
+                                    },
+                                  ]);
+                                }
                                 if (!Number(set.length)) {
                                   toast(
                                     "Hmm, it seems there are no flashcards in this set. Click Add!"
