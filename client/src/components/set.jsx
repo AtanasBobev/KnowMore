@@ -12,6 +12,8 @@ import "../styles/set.css";
 import token from "../utils/jwtParser";
 import ImageResize from "quill-image-resize-module-react";
 import ImageCompress from "quill-image-compress";
+import SelectLiked from "./helpers/selectLiked";
+import SelectRefineSet from "./helpers/selectRefineSet";
 //DEPRECATED
 //import sortByTerm from "../utils/arraySort";
 import ImportModal from "./helpers/importModal";
@@ -26,16 +28,15 @@ window.katex = katex;
 const ViewSet = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [addToFolderPopup, setAddToFolderPopup] = useState({
-    open: false,
-    foldersChosen: [],
-    allFolders: [],
-    set_id: Number(id),
-  });
+  //FOR DEV PURPOSES
+  const [bugTract, setBugTrack] = useState();
+
   const [set, setSet] = useState([]);
+  const [tempSets, setTempSets] = useState([]);
   const [setStats, setSetStats] = useState([]);
-  const [flashcardStats, setFlashcardStats] = useState([]);
   const flashcardsContainerRef = useRef(null);
+  const [likedState, setLikedState] = useState("all");
+  const [flashcardStats, setFlashcardStats] = useState([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const [likedSet, setLikedSet] = useState(false);
   const [combineModal, setCombineModal] = useState({
@@ -46,6 +47,8 @@ const ViewSet = () => {
     query: "",
     totalFlashcards: 0,
   });
+  const [bugTrac2, setBugTrac2] = useState();
+
   const [cardEdit, setCardEdit] = useState({
     edit: false,
     cardBeingEdited: null,
@@ -53,6 +56,15 @@ const ViewSet = () => {
     definition: "",
   });
   const [isSetValid, setIsSetValid] = useState(true);
+
+  const [addToFolderPopup, setAddToFolderPopup] = useState({
+    open: false,
+    foldersChosen: [],
+    allFolders: [],
+    set_id: Number(id),
+  });
+
+  const [furtherRefinements, setFurtherRefinements] = useState("id");
 
   Quill.register("modules/imageResize", ImageResize);
   Quill.register("modules/imageCompress", ImageCompress);
@@ -75,6 +87,8 @@ const ViewSet = () => {
       .get(`/set/${id}`)
       .then((response) => {
         setSet(response.data);
+        setBugTrack(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         setSet([]);
@@ -128,6 +142,12 @@ const ViewSet = () => {
 
     if (flashcardToEdit) {
       setCardEdit({
+        edit: true,
+        cardBeingEdited: flashcardId,
+        term: flashcardToEdit.term,
+        definition: flashcardToEdit.definition,
+      });
+      setBugTrac2({
         edit: true,
         cardBeingEdited: flashcardId,
         term: flashcardToEdit.term,
@@ -501,6 +521,39 @@ const ViewSet = () => {
       });
   };
   useEffect(() => {
+    setTempSets(set);
+    if (likedState === "liked") {
+      setSet((prev) => prev.filter((el) => el.liked));
+    } else if (likedState === "all") {
+      setSet(tempSets);
+    }
+  }, [likedState]);
+
+  useEffect(() => {
+    let sortedSet = [...set]; 
+    if (furtherRefinements === "a-z") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termA.localeCompare(termB);
+      });
+    } else if (furtherRefinements === "z-a") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termB.localeCompare(termA);
+      });
+    } else if (furtherRefinements === "mostconfident") {
+      sortedSet.sort((a, b) => Number(b.confidence) - Number(a.confidence));
+    } else if (furtherRefinements === "leastconfident") {
+      sortedSet.sort((a, b) => Number(a.confidence) - Number(b.confidence));
+    } else if (furtherRefinements === "id") {
+      sortedSet.sort((a, b) => Number(a.flashcard_id) - Number(b.flashcard_id));
+    }
+    setSet(sortedSet); 
+  }, [furtherRefinements]);
+
+  useEffect(() => {
     getFolders();
   }, []);
 
@@ -551,19 +604,49 @@ const ViewSet = () => {
           closeOnClick
         />
         <div id="mainBar">
-          <h1>{set.length ? convertToText(set[0].name) : "Loading..."}</h1>
+          <h1>{set?.[0] ? convertToText(set[0].name) : "Loading..."}</h1>
           <h2 style={{ color: "white" }}>
             {set.length ? convertToText(set[0].description) : "Loading..."}
           </h2>
           <p className="category">
-            {" "}
             {set.length
               ? set[0].category
                 ? set[0].category
                 : "No category"
               : ""}
           </p>
-          {set.length ? (
+          {set.length && !set[0].flashcard_id ? (
+            <div>
+              <button onClick={() => navigate(`/edit/${id}`)}>Edit</button>
+              <button
+                onClick={() => {
+                  if (!confirm("Are you sure you want to delete this set?")) {
+                    return false;
+                  }
+                  axiosInstance
+                    .post(`/set/delete`, {
+                      set_id: set[0].set_id,
+                    })
+                    .then((response) => {
+                      toast.success("Set deleted! Navigating...");
+                      setTimeout(() => {
+                        navigate(`/sets`);
+                      }, 1000);
+                    })
+                    .catch((err) => {
+                      toast.error(
+                        "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
+                      );
+                    });
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
+          {set.length && set[0].flashcard_id ? (
             <div className="buttonGroup">
               <Link
                 style={{ textDecoration: "none" }}
@@ -684,9 +767,18 @@ const ViewSet = () => {
         ) : (
           ""
         )}
-        <div id="leadboards"></div>
+        <section id="btnSetFilters">
+          <SelectLiked
+            initialState={likedState}
+            setLikedState={setLikedState}
+          />
+          <SelectRefineSet
+            initialState={furtherRefinements}
+            setFurtherRefinements={setFurtherRefinements}
+          />
+        </section>
         <div className="cardContainer">
-          {set.length
+          {set.length && set[0].flashcard_id
             ? set.map((el) => (
                 <div
                   className="cardModern"
@@ -806,8 +898,15 @@ const ViewSet = () => {
                   <div className="buttonGroupSmall">
                     {!cardEdit.edit ||
                     cardEdit.cardBeingEdited !== el.flashcard_id ? (
-                      <button onClick={() => like(el.flashcard_id)}>
-                        {el.liked ? "❤️‍🔥" : "❤️"}
+                      <button
+                        style={{
+                          filter: el.liked
+                            ? "grayscale(0%)"
+                            : "grayscale(100%)",
+                        }}
+                        onClick={() => like(el.flashcard_id)}
+                      >
+                        ❤️
                       </button>
                     ) : (
                       ""
@@ -856,13 +955,24 @@ const ViewSet = () => {
                               .then((response) => {
                                 toast.success("Flashcard deleted!");
                                 setCardEdit({ edit: false });
-                                setSet((prev) =>
-                                  prev.filter(
-                                    (el) =>
-                                      el.flashcard_id !==
-                                      cardEdit.cardBeingEdited
-                                  )
-                                );
+                                if (set.length > 1) {
+                                  setSet((prev) =>
+                                    prev.filter(
+                                      (el) =>
+                                        el.flashcard_id !==
+                                        cardEdit.cardBeingEdited
+                                    )
+                                  );
+                                } else {
+                                  setSet((prev) => [
+                                    {
+                                      ...prev,
+                                      flashcard_id: null,
+                                      term: null,
+                                      definition: null,
+                                    },
+                                  ]);
+                                }
                                 if (!Number(set.length)) {
                                   toast(
                                     "Hmm, it seems there are no flashcards in this set. Click Add!"
@@ -882,6 +992,8 @@ const ViewSet = () => {
                   </div>
                 </div>
               ))
+            : set.length
+            ? "My pet 🐈 told me there are no flashcards in this set"
             : "Loading..."}
         </div>
       </section>

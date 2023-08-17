@@ -47,12 +47,15 @@ nav {
 }
 .modal > .modal-content {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 .modal > .modal-content > * {
   margin: 0.5vmax;
+  display: flex;
+  flex-wrap: wrap;
 }
 .modal > .modal-content > p {
   font-size: 1.3vmax;

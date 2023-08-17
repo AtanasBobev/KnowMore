@@ -1,3 +1,5 @@
+import { convert as convertToText } from "html-to-text";
+
 if ("speechSynthesis" in window) {
   console.log("Speech synthesis supported and will be used");
 }
@@ -14,6 +16,7 @@ const speak = (text="",language="en-US") => {
     synthesis.cancel();
   }
   let textToSpeech = new SpeechSynthesisUtterance(text);
+  textToSpeech.text = convertToText(text);
   textToSpeech.lang = language;
   textToSpeech.volume = 1;
   textToSpeech.rate = 1;
