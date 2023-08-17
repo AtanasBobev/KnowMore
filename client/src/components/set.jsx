@@ -12,6 +12,8 @@ import "../styles/set.css";
 import token from "../utils/jwtParser";
 import ImageResize from "quill-image-resize-module-react";
 import ImageCompress from "quill-image-compress";
+import SelectLiked from "./helpers/selectLiked";
+import SelectRefineSet from "./helpers/selectRefineSet";
 //DEPRECATED
 //import sortByTerm from "../utils/arraySort";
 import ImportModal from "./helpers/importModal";
@@ -30,10 +32,10 @@ const ViewSet = () => {
   const [bugTract, setBugTrack] = useState();
 
   const [set, setSet] = useState([]);
-
+  const [tempSets, setTempSets] = useState([]);
   const [setStats, setSetStats] = useState([]);
   const flashcardsContainerRef = useRef(null);
-
+  const [likedState, setLikedState] = useState("all");
   const [flashcardStats, setFlashcardStats] = useState([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const [likedSet, setLikedSet] = useState(false);
@@ -61,6 +63,8 @@ const ViewSet = () => {
     allFolders: [],
     set_id: Number(id),
   });
+
+  const [furtherRefinements, setFurtherRefinements] = useState("id");
 
   Quill.register("modules/imageResize", ImageResize);
   Quill.register("modules/imageCompress", ImageCompress);
@@ -517,6 +521,39 @@ const ViewSet = () => {
       });
   };
   useEffect(() => {
+    setTempSets(set);
+    if (likedState === "liked") {
+      setSet((prev) => prev.filter((el) => el.liked));
+    } else if (likedState === "all") {
+      setSet(tempSets);
+    }
+  }, [likedState]);
+
+  useEffect(() => {
+    let sortedSet = [...set]; 
+    if (furtherRefinements === "a-z") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termA.localeCompare(termB);
+      });
+    } else if (furtherRefinements === "z-a") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termB.localeCompare(termA);
+      });
+    } else if (furtherRefinements === "mostconfident") {
+      sortedSet.sort((a, b) => Number(b.confidence) - Number(a.confidence));
+    } else if (furtherRefinements === "leastconfident") {
+      sortedSet.sort((a, b) => Number(a.confidence) - Number(b.confidence));
+    } else if (furtherRefinements === "id") {
+      sortedSet.sort((a, b) => Number(a.flashcard_id) - Number(b.flashcard_id));
+    }
+    setSet(sortedSet); 
+  }, [furtherRefinements]);
+
+  useEffect(() => {
     getFolders();
   }, []);
 
@@ -730,7 +767,16 @@ const ViewSet = () => {
         ) : (
           ""
         )}
-        <div id="leadboards"></div>
+        <section id="btnSetFilters">
+          <SelectLiked
+            initialState={likedState}
+            setLikedState={setLikedState}
+          />
+          <SelectRefineSet
+            initialState={furtherRefinements}
+            setFurtherRefinements={setFurtherRefinements}
+          />
+        </section>
         <div className="cardContainer">
           {set.length && set[0].flashcard_id
             ? set.map((el) => (

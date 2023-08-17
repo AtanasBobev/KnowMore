@@ -154,7 +154,19 @@ img {
   filter: grayscale(100%);
 }
 .buttonGroupSmall button:hover {
-  filter: grayscale(0%);
+  filter: grayscale(0%) !important;
+}
+
+#btnSetFilters {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 80vw;
+  margin-left: 10vw;
+  margin-top: 2vmax;
+}
+#btnSetFilters > * {
+  margin: 0.5vmax;
 }
 
 @-webkit-keyframes SetsBackground {

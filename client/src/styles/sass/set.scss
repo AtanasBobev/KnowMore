@@ -142,12 +142,23 @@ img {
   align-items: center;
   flex-direction: column;
   button {
-    margin: .2vmax;
-    padding: .2vmax;
+    margin: 0.2vmax;
+    padding: 0.2vmax;
     filter: grayscale(100%);
   }
   button:hover {
-    filter: grayscale(0%);
+    filter: grayscale(0%) !important;
+  }
+}
+#btnSetFilters {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 80vw;
+  margin-left: 10vw;
+  margin-top:2vmax;
+  & > *{
+    margin:0.5vmax;
   }
 }
 @-webkit-keyframes SetsBackground {
