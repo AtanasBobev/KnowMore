@@ -26,16 +26,15 @@ window.katex = katex;
 const ViewSet = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [addToFolderPopup, setAddToFolderPopup] = useState({
-    open: false,
-    foldersChosen: [],
-    allFolders: [],
-    set_id: Number(id),
-  });
+  //FOR DEV PURPOSES
+  const [bugTract, setBugTrack] = useState();
+
   const [set, setSet] = useState([]);
+
   const [setStats, setSetStats] = useState([]);
-  const [flashcardStats, setFlashcardStats] = useState([]);
   const flashcardsContainerRef = useRef(null);
+
+  const [flashcardStats, setFlashcardStats] = useState([]);
   const [moreOpen, setMoreOpen] = useState(false);
   const [likedSet, setLikedSet] = useState(false);
   const [combineModal, setCombineModal] = useState({
@@ -53,6 +52,13 @@ const ViewSet = () => {
     definition: "",
   });
   const [isSetValid, setIsSetValid] = useState(true);
+
+  const [addToFolderPopup, setAddToFolderPopup] = useState({
+    open: false,
+    foldersChosen: [],
+    allFolders: [],
+    set_id: Number(id),
+  });
 
   Quill.register("modules/imageResize", ImageResize);
   Quill.register("modules/imageCompress", ImageCompress);
@@ -75,6 +81,8 @@ const ViewSet = () => {
       .get(`/set/${id}`)
       .then((response) => {
         setSet(response.data);
+        setBugTrack(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         setSet([]);
@@ -551,12 +559,11 @@ const ViewSet = () => {
           closeOnClick
         />
         <div id="mainBar">
-          <h1>{set.length ? convertToText(set[0].name) : "Loading..."}</h1>
+          <h1>{set?.[0] ? convertToText(set[0].name) : "Loading..."}</h1>
           <h2 style={{ color: "white" }}>
             {set.length ? convertToText(set[0].description) : "Loading..."}
           </h2>
           <p className="category">
-            {" "}
             {set.length
               ? set[0].category
                 ? set[0].category
@@ -686,7 +693,7 @@ const ViewSet = () => {
         )}
         <div id="leadboards"></div>
         <div className="cardContainer">
-          {set.length
+          {set.length && set[0].term
             ? set.map((el) => (
                 <div
                   className="cardModern"
@@ -882,6 +889,8 @@ const ViewSet = () => {
                   </div>
                 </div>
               ))
+            : set.length
+            ? "My pet 🐈 told me there are no flashcards in this set"
             : "Loading..."}
         </div>
       </section>

@@ -178,7 +178,7 @@ app.get("/v1/set/:id", authorizeToken, (req, res) => {
     f.term, f.definition, f.flashcard_id, u.username, rf.confidence, u.user_id,
     CASE WHEN lf.flashcard_id IS NOT NULL THEN true ELSE false END AS liked
   FROM sets s
-  JOIN flashcards f ON s.set_id = f.set_id
+  LEFT JOIN flashcards f ON s.set_id = f.set_id
   JOIN users u ON s.user_id = u.user_id
   LEFT JOIN "reviewsFlashcards" rf ON rf.set_id = s.set_id AND rf.flashcard_id = f.flashcard_id
   LEFT JOIN "likedFlashcards" lf ON u.user_id = lf.user_id AND f.flashcard_id = lf.flashcard_id
@@ -1078,6 +1078,9 @@ app.post("/v1/set/delete", authorizeToken, (req, res) => {
             }
           }
         );
+        pool.query('DELETE FROM "folderSets" WHERE set_id=$1', [
+          req.body.set_id,
+        ]);
         pool.query(
           'DELETE FROM "reviewsFlashcards" WHERE set_id=$1',
           [req.body.set_id],
@@ -1196,7 +1199,7 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
       new Date().toISOString(),
       new Date().toISOString(),
       req.user_id,
-      req.body.category
+      req.body.category,
     ],
     (err, result) => {
       if (err) {
@@ -1226,8 +1229,8 @@ app.post("/v1/folders/create", authorizeToken, (req, res) => {
     }
   );
 });
-app.post("/v1/folders/all", (req,res)=>{
-//this is the same router as sets/all expects you are searching for folders. 
+app.post("/v1/folders/all", (req, res) => {
+  //this is the same router as sets/all expects you are searching for folders.
 
   let limit = 10;
   if (req.body.limit) {
@@ -1304,7 +1307,7 @@ app.post("/v1/folders/all", (req,res)=>{
       }
     }
   );
-})
+});
 app.get("/v1/folder/:id", (req, res) => {
   let id = req.params.id;
 
@@ -1472,8 +1475,8 @@ app.post("/v1/folder/update", authorizeToken, (req, res) => {
             res.status(200).end();
           }
         );
-      }else{
-        res.status(403).send("You are not the owner of this folder")
+      } else {
+        res.status(403).send("You are not the owner of this folder");
       }
     }
   );

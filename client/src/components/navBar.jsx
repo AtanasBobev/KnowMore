@@ -15,7 +15,6 @@ const NavBar = () => {
   const getMostCommonSets = async () => {
     axiosInstance.get("/sets/most/common").then((res) => {
       setMostCommonSets(res.data);
-      console.log(res.data);
     });
   };
   const toggleCreateOptions = () => {
@@ -30,11 +29,8 @@ const NavBar = () => {
         setShowCreateOptions(false);
       }
     };
-
-    // Attach the event listener when the component mounts
     document.addEventListener("click", handleClickOutside);
 
-    // Clean up the event listener when the component unmounts
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
@@ -143,7 +139,6 @@ const NavBar = () => {
                 {mostCommonSets.map((set) => (
                   <li key={set.id}>
                     <Link
-                      onClick={() => window.location.reload()}
                       to={`/set/${set.set_id}`}
                       className={
                         location.pathname === `/set/${set.id}`
