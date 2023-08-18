@@ -151,23 +151,40 @@ const handlePushUp = (el, setFlashcards, flashcards) => {
   const index = flashcards.findIndex(
     (flashcard) => flashcard.flashcard_id === el
   );
-  const updatedFlashcards = [...flashcards];
-  const temp = updatedFlashcards[index];
-  updatedFlashcards[index] = updatedFlashcards[index - 1];
-  updatedFlashcards[index - 1] = temp;
-  setFlashcards(updatedFlashcards);
+
+  if (index > 0) {
+    const updatedFlashcards = [...flashcards];
+    const temp = updatedFlashcards[index];
+    updatedFlashcards[index] = updatedFlashcards[index - 1];
+    updatedFlashcards[index - 1] = temp;
+
+    // Swap flashcard IDs
+    [updatedFlashcards[index].flashcard_id, updatedFlashcards[index - 1].flashcard_id] =
+      [updatedFlashcards[index - 1].flashcard_id, updatedFlashcards[index].flashcard_id];
+
+    setFlashcards(updatedFlashcards);
+  }
 };
 
 const handlePushDown = (el, setFlashcards, flashcards) => {
   const index = flashcards.findIndex(
     (flashcard) => flashcard.flashcard_id === el
   );
-  const updatedFlashcards = [...flashcards];
-  const temp = updatedFlashcards[index];
-  updatedFlashcards[index] = updatedFlashcards[index + 1];
-  updatedFlashcards[index + 1] = temp;
-  setFlashcards(updatedFlashcards);
+
+  if (index < flashcards.length - 1) {
+    const updatedFlashcards = [...flashcards];
+    const temp = updatedFlashcards[index];
+    updatedFlashcards[index] = updatedFlashcards[index + 1];
+    updatedFlashcards[index + 1] = temp;
+
+    // Swap flashcard IDs
+    [updatedFlashcards[index].flashcard_id, updatedFlashcards[index + 1].flashcard_id] =
+      [updatedFlashcards[index + 1].flashcard_id, updatedFlashcards[index].flashcard_id];
+
+    setFlashcards(updatedFlashcards);
+  }
 };
+
 const handleCopyFlashcard = (el, flashcards, setFlashcards, toast) => {
   const index = flashcards.findIndex(
     (flashcard) => flashcard.flashcard_id === el

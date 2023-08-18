@@ -10,6 +10,7 @@ import SelectLimit from "./helpers/selectLimit";
 import token from "../utils/jwtParser";
 import "../styles/sets.css";
 import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 const SetsComponent = () => {
   const [sets, setSets] = useState([]);
   const [category, setCategory] = useState();
@@ -52,7 +53,7 @@ const SetsComponent = () => {
       .then((res) => {
         if (res.status === 200) {
           toast.success("Set deleted successfully");
-          search();
+          setSets(sets.filter((el) => el.set_id !== set_id));
         }
       })
       .catch((err) => {
@@ -71,7 +72,7 @@ const SetsComponent = () => {
         theme="colored"
         closeOnClick
       />
-      <h1>Your sets 🗂️</h1>
+      <h1 style={{margin:"2vmax"}}>Your sets 🧮</h1>
 
       {sets.length ? (
         <>

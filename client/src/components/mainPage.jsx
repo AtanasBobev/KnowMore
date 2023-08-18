@@ -87,7 +87,7 @@ const Explore = () => {
         theme="colored"
         closeOnClick
       />{" "}
-      <h1>Explore community creations 🔍</h1>
+      <h1 style={{margin:"2vmax"}}>Explore community creations 🔍</h1>
       <center>
         <select onChange={(e) => setTypeSearch(e.target.value)}>
           <option selected value="Sets">

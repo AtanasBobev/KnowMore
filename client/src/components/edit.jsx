@@ -67,6 +67,9 @@ const Create = () => {
     axiosInstance
       .get(`/set/${id}`)
       .then((response) => {
+        response.data.sort((a, b) => {
+          return Number(a.flashcard_id) - Number(b.flashcard_id);
+        });
         setFlashcards(response.data);
         setTitle(response.data[0].name);
         setDescription(response.data[0].description);

@@ -88,7 +88,6 @@ const ViewSet = () => {
       .then((response) => {
         setSet(response.data);
         setBugTrack(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         setSet([]);
@@ -120,7 +119,30 @@ const ViewSet = () => {
       }
     });
   };
-
+  const sortFlashcards = () => {
+    let sortedSet = [...set];
+    console.log(furtherRefinements);
+    if (furtherRefinements === "a-z") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termA.localeCompare(termB);
+      });
+    } else if (furtherRefinements === "z-a") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termB.localeCompare(termA);
+      });
+    } else if (furtherRefinements === "mostconfident") {
+      sortedSet.sort((a, b) => Number(b.confidence) - Number(a.confidence));
+    } else if (furtherRefinements === "leastconfident") {
+      sortedSet.sort((a, b) => Number(a.confidence) - Number(b.confidence));
+    } else if (furtherRefinements === "id") {
+      sortedSet.sort((a, b) => Number(a.flashcard_id) - Number(b.flashcard_id));
+    }
+    setSet(sortedSet);
+  };
   useEffect(() => {
     getSet();
   }, []);
@@ -241,17 +263,17 @@ const ViewSet = () => {
       }
       setCardEdit({ edit: false });
     }
-
+    let newId = Number(set[set.length - 1].flashcard_id) + 2;
     const newFlashcard = {
       term: "",
       definition: "",
-      flashcard_id: set.length,
+      flashcard_id: newId,
       new: true,
     };
     setSet((prev) => [...prev, newFlashcard]);
     setCardEdit({
       edit: true,
-      cardBeingEdited: set.length,
+      cardBeingEdited: newId,
       term: "",
       definition: "",
     });
@@ -278,8 +300,6 @@ const ViewSet = () => {
       }
       setCardEdit({ edit: false });
     }
-
-    //define liked based on the flashcard_id you are recieving. You need to check which flashcard_id is being liked
 
     const liked = set.filter((el) => el.flashcard_id === flashcard_id)[0].liked;
     if (liked) {
@@ -530,27 +550,7 @@ const ViewSet = () => {
   }, [likedState]);
 
   useEffect(() => {
-    let sortedSet = [...set]; 
-    if (furtherRefinements === "a-z") {
-      sortedSet.sort((a, b) => {
-        const termA = convertToText(a.term).toLowerCase();
-        const termB = convertToText(b.term).toLowerCase();
-        return termA.localeCompare(termB);
-      });
-    } else if (furtherRefinements === "z-a") {
-      sortedSet.sort((a, b) => {
-        const termA = convertToText(a.term).toLowerCase();
-        const termB = convertToText(b.term).toLowerCase();
-        return termB.localeCompare(termA);
-      });
-    } else if (furtherRefinements === "mostconfident") {
-      sortedSet.sort((a, b) => Number(b.confidence) - Number(a.confidence));
-    } else if (furtherRefinements === "leastconfident") {
-      sortedSet.sort((a, b) => Number(a.confidence) - Number(b.confidence));
-    } else if (furtherRefinements === "id") {
-      sortedSet.sort((a, b) => Number(a.flashcard_id) - Number(b.flashcard_id));
-    }
-    setSet(sortedSet); 
+    sortFlashcards();
   }, [furtherRefinements]);
 
   useEffect(() => {
@@ -566,7 +566,9 @@ const ViewSet = () => {
       });
     }
   }, [set]);
-
+  useEffect(() => {
+    sortFlashcards();
+  }, [set.length]);
   return (
     <>
       <AddToFolderModal
@@ -604,16 +606,26 @@ const ViewSet = () => {
           closeOnClick
         />
         <div id="mainBar">
-          <h1>{set?.[0] ? convertToText(set[0].name) : "Loading..."}</h1>
+          <h1>
+            {set?.[0]
+              ? convertToText(set[0].name)
+              : tempSets.length > set.length
+              ? convertToText(tempSets[0].name)
+              : "Loading..."}
+          </h1>
           <h2 style={{ color: "white" }}>
-            {set.length ? convertToText(set[0].description) : "Loading..."}
+            {set?.[0]
+              ? convertToText(set[0].description)
+              : tempSets.length > set.length
+              ? convertToText(tempSets[0].description)
+              : "Loading..."}
           </h2>
           <p className="category">
-            {set.length
+            {set?.[0] && set[0].category
               ? set[0].category
-                ? set[0].category
-                : "No category"
-              : ""}
+              : tempSets.length > set.length
+              ? convertToText(tempSets[0].category)
+              : "No category"}
           </p>
           {set.length && !set[0].flashcard_id ? (
             <div>
@@ -994,7 +1006,9 @@ const ViewSet = () => {
               ))
             : set.length
             ? "My pet 🐈 told me there are no flashcards in this set"
-            : "Loading..."}
+            : tempSets.length > set.length
+            ? "This cute 🐌 traversed out mythical database but couldn't find what you are looking for"
+            : ""}
         </div>
       </section>
     </>
