@@ -5,10 +5,10 @@ import {
   getConfidenceLevel,
   handleConfidence,
   shuffle
-} from "../utils/reviewMethods";
+} from "../../utils/reviewMethods";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
-import "../styles/review.css";
+import "../../styles/review.css";
 
 const Review = () => {
   const { id } = useParams();

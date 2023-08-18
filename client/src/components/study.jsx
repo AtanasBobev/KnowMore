@@ -25,6 +25,7 @@ const MultipleChoice = () => {
   const [randomIndex, setRandomIndex] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [rightAnswerExpected, setRightAnswerExpected] = useState(false);
   useEffect(() => {
     getSet(
       setTerm,
@@ -35,7 +36,6 @@ const MultipleChoice = () => {
       id
     );
   }, []);
-
 
   const Generate = () => {
     let random = 0,
@@ -79,9 +79,25 @@ const MultipleChoice = () => {
     setTerm("🫡You are done with this set!");
     setDefinition("🫡You are done with this set!");
   };
-  const newQuestion = () => {
+  const newQuestion = (forceTrue=false) => {
     if (gameOver) return;
     if (!flashcards[randomIndex]) {
+      Generate();
+      return;
+    }
+    if(forceTrue){
+      setRightAnswerExpected(false);
+      toast.success("Okay, okay, you are right!");
+      setFlashcards((prev) =>
+        prev.map((flashcard, index) => {
+          if (index === randomIndex) {
+            //compenstate for the -1 in the confidence level
+            flashcard.confidence = Number(flashcard.confidence) + 2;
+            flashcard.rounds = Number(flashcard.rounds) - 2;
+          }
+          return flashcard;
+        })
+      );
       Generate();
       return;
     }
@@ -91,10 +107,10 @@ const MultipleChoice = () => {
           .toLowerCase()
           .replace(/ /g, ""),
         inputRef.current.value.toLowerCase().replace(/ /g, "")
-      ) == 1
+      ) == 1 || forceTrue
     ) {
+      setRightAnswerExpected(false);
       toast.success("Correct!");
-
       setFlashcards((prev) =>
         prev.map((flashcard, index) => {
           if (index === randomIndex) {
@@ -106,6 +122,7 @@ const MultipleChoice = () => {
       );
       Generate();
     } else {
+      setRightAnswerExpected(true);
       toast.error(
         `Write the correct answer: ${sanitizeHTML(
           flashcards[randomIndex].term
@@ -115,7 +132,7 @@ const MultipleChoice = () => {
         prev.map((flashcard, index) => {
           if (index === randomIndex) {
             flashcard.confidence = Number(flashcard.confidence) + 1;
-            flashcard.rounds = Number(flashcard.rounds) - 1;
+            flashcard.rounds = Number(flashcard.rounds) + 1;
           }
           return flashcard;
         })
@@ -167,7 +184,16 @@ const MultipleChoice = () => {
               onKeyDown={handleKeyDown}
             />
             <section id="buttonGroup">
-              <button onClick={() => newQuestion(true)}>I don't know</button>
+              {!rightAnswerExpected ? (
+                <button onClick={() => newQuestion()}>I don't know</button>
+              ) : (
+                ""
+              )}
+              {rightAnswerExpected ? (
+                <button onClick={() => newQuestion(true)}>I was right</button>
+              ) : (
+                <button onClick={() => Generate()}>Skip</button>
+              )}
               <button onClick={newQuestion}>✅</button>
             </section>
           </>

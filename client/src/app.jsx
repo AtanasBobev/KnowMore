@@ -8,7 +8,7 @@ import Study from "./components/study";
 import NavBar from "./components/navBar";
 import ViewSet from "./components/set";
 import Sets from "./components/sets";
-import Review from "./components/review";
+import Review from "./components/sets/review";
 import Explore from "./components/mainPage";
 import Edit from "./components/edit";
 import Folder from "./components/folder";
