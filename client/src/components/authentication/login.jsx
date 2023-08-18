@@ -1,9 +1,9 @@
 import { useState } from "preact/hooks"
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import axiosInstance from "../utils/axiosConfig";
-import "../styles/allPages.css";
-import "../styles/forms.css";
+import axiosInstance from "../../utils/axiosConfig";
+import "../../styles/allPages.css";
+import "../../styles/forms.css";
 
 const Login = () => {
   const navigate = useNavigate();

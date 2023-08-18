@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosConfig";
-import "../styles/allPages.css";
-import "../styles/forms.css";
+import axiosInstance from "../../utils/axiosConfig";
+import "../../styles/allPages.css";
+import "../../styles/forms.css";
 
 const Register = () => {
   const navigate = useNavigate();

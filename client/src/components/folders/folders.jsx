@@ -1,14 +1,14 @@
 import { useEffect, useState } from "preact/hooks";
 import { convert as parse } from "html-to-text";
 import { Link } from "react-router-dom";
-import "../styles/allPages.css";
-import axiosInstance from "../utils/axiosConfig";
-import SelectOptions from "./helpers/selectOptions";
-import SelectLimit from "./helpers/selectLimit";
-import token from "../utils/jwtParser";
+import "../../styles/allPages.css";
+import axiosInstance from "../../utils/axiosConfig";
+import SelectOptions from "./../helpers/selectOptions";
+import SelectLimit from "./../helpers/selectLimit";
+import token from "../../utils/jwtParser";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import "../styles/sets.css";
+import "../../styles/sets.css";
 import axios from "axios";
 const Folders = () => {
   const [folders, setFolders] = useState([]);

@@ -2,17 +2,17 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { ToastContainer, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
-import measureDistance from "../utils/measureDifference";
-import axiosInstance from "../utils/axiosConfig";
+import measureDistance from "../../utils/measureDifference";
+import axiosInstance from "../../utils/axiosConfig";
 import "react-toastify/dist/ReactToastify.css";
-import "../styles/study.css";
+import "../../styles/study.css";
 import {
   getSet,
   getConfidenceLevel,
   updateSetReview,
   shuffle,
   updateCard,
-} from "../utils/reviewMethods";
+} from "../../utils/reviewMethods";
 
 const MultipleChoice = () => {
   const { id } = useParams();
@@ -91,7 +91,6 @@ const MultipleChoice = () => {
       setFlashcards((prev) =>
         prev.map((flashcard, index) => {
           if (index === randomIndex) {
-            //compenstate for the -1 in the confidence level
             flashcard.confidence = Number(flashcard.confidence) + 2;
             flashcard.rounds = Number(flashcard.rounds) - 2;
           }

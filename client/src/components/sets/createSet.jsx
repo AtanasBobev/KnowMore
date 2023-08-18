@@ -4,14 +4,14 @@ import ReactQuill from "react-quill";
 import { useNavigate } from "react-router-dom";
 import ImageResize from "quill-image-resize-module-react";
 import ImageCompress from "quill-image-compress";
-import SelectOptions from "./helpers/selectOptions";
+import SelectOptions from "../helpers/selectOptions";
 import { convert as convertToText } from "html-to-text";
 import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "../styles/create.css";
+import "../../styles/create.css";
 import "react-toastify/dist/ReactToastify.css";
-import ImportModalComponent from "./helpers/importModal";
-import axiosInstance from "../utils/axiosConfig";
+import ImportModalComponent from "../helpers/importModal";
+import axiosInstance from "../../utils/axiosConfig";
 import {
   handleFlashcardDelete,
   handleTermChange,
@@ -25,8 +25,8 @@ import {
   handlePushDown,
   handleCopyFlashcard,
   handleSearchTermOnline,
-} from "../utils/flashcardsOperations";
-import ImportModal from "./helpers/importModal";
+} from "../../utils/flashcardsOperations";
+import ImportModal from "../helpers/importModal";
 
 const Create = () => {
   const [flashcards, setFlashcards] = useState([]);

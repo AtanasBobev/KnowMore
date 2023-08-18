@@ -2,13 +2,13 @@ import { useEffect, useState } from "preact/hooks";
 import { convert as parse } from "html-to-text";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import "../styles/allPages.css";
-import axiosInstance from "../utils/axiosConfig";
-import SelectOptions from "./helpers/selectOptions";
-import SelectSort from "./helpers/selectSort";
-import SelectLimit from "./helpers/selectLimit";
-import token from "../utils/jwtParser";
-import "../styles/sets.css";
+import "../../styles/allPages.css";
+import axiosInstance from "../../utils/axiosConfig";
+import SelectOptions from "../helpers/selectOptions";
+import SelectSort from "../helpers/selectSort";
+import SelectLimit from "../helpers/selectLimit";
+import token from "../../utils/jwtParser";
+import "../../styles/sets.css";
 import { useNavigate } from "react-router-dom";
 import { set } from "date-fns";
 const SetsComponent = () => {
@@ -126,7 +126,7 @@ const SetsComponent = () => {
                         <button
                           style={{ backgroundColor: "transparent" }}
                           onClick={() => {
-                            navigate("/edit/" + el.set_id);
+                            navigate("/set/edit/" + el.set_id);
                           }}
                         >
                           Edit

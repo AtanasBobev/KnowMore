@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import axiosInstance from "../utils/axiosConfig";
+import axiosInstance from "../../utils/axiosConfig";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import parse from "html-react-parser";
-import { shareSet as Share } from "../utils/_setOpertaions";
-import "../styles/folder.css";
+import { shareSet as Share } from "../../utils/_setOpertaions";
+import "../../styles/folder.css";
 import { set } from "date-fns";
 const Folder = () => {
   const { id } = useParams();

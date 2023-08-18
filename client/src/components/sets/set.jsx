@@ -5,24 +5,24 @@ import { ToastContainer, toast } from "react-toastify";
 import parse from "html-react-parser";
 import { convert as convertToText } from "html-to-text";
 import { Link } from "react-router-dom";
-import axiosInstance from "../utils/axiosConfig";
+import axiosInstance from "../../utils/axiosConfig";
 import ReactQuill from "react-quill";
 import { Quill } from "react-quill";
-import "../styles/set.css";
-import token from "../utils/jwtParser";
+import "../../styles/set.css";
+import token from "../../utils/jwtParser";
 import ImageResize from "quill-image-resize-module-react";
 import ImageCompress from "quill-image-compress";
-import SelectLiked from "./helpers/selectLiked";
-import SelectRefineSet from "./helpers/selectRefineSet";
+import SelectLiked from "../helpers/selectLiked";
+import SelectRefineSet from "../helpers/selectRefineSet";
 //DEPRECATED
 //import sortByTerm from "../utils/arraySort";
-import ImportModal from "./helpers/importModal";
-import speak from "../utils/speechSynthesis";
+import ImportModal from "../helpers/importModal";
+import speak from "../../utils/speechSynthesis";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import { useNavigate } from "react-router-dom";
-import CombineModal from "./helpers/combineModal";
-import AddToFolderModal from "./helpers/addToFolderModal";
+import CombineModal from "../helpers/combineModal";
+import AddToFolderModal from "../helpers/addToFolderModal";
 window.katex = katex;
 
 const ViewSet = () => {
@@ -629,7 +629,7 @@ const ViewSet = () => {
           </p>
           {set.length && !set[0].flashcard_id ? (
             <div>
-              <button onClick={() => navigate(`/edit/${id}`)}>Edit</button>
+              <button onClick={() => navigate(`/set/edit/${id}`)}>Edit</button>
               <button
                 onClick={() => {
                   if (!confirm("Are you sure you want to delete this set?")) {
@@ -708,7 +708,7 @@ const ViewSet = () => {
                     ""
                   )}
                   {set.length && token.user_id == set[0].user_id ? (
-                    <button onClick={() => navigate(`/edit/${id}`)}>
+                    <button onClick={() => navigate(`/set/edit/${id}`)}>
                       Edit
                     </button>
                   ) : (

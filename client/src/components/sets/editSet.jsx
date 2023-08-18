@@ -4,13 +4,13 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { ToastContainer, toast } from "react-toastify";
 import ReactQuill from "react-quill";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosConfig";
+import axiosInstance from "../../utils/axiosConfig";
 import ImageResize from "quill-image-resize-module-react";
-import ImportModalComponent from "./helpers/importModal";
+import ImportModalComponent from "../helpers/importModal";
 import ImageCompress from "quill-image-compress";
 import { useParams } from "react-router-dom";
 import { convert as convertToText } from "html-to-text";
-import SelectOptions from "./helpers/selectOptions";
+import SelectOptions from "../helpers/selectOptions";
 import {
   handleFlashcardDelete,
   handleTermChange,
@@ -24,10 +24,10 @@ import {
   handlePushDown,
   handleCopyFlashcard,
   handleSearchTermOnline,
-} from "../utils/flashcardsOperations";
+} from "../../utils/flashcardsOperations";
 import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "../styles/create.css";
+import "../../styles/create.css";
 import "react-toastify/dist/ReactToastify.css";
 import { id } from "date-fns/locale"
 

@@ -158,7 +158,7 @@ const Explore = () => {
                             if (el.folder_id) {
                               navigate(`/folder/edit/${el.folder_id}`);
                             } else {
-                              navigate(`/edit/${el.set_id}`);
+                              navigate(`/set/edit/${el.set_id}`);
                             }
                           }}
                         >

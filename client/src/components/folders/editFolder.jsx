@@ -4,34 +4,58 @@ import ImageResize from "quill-image-resize-module-react";
 import { Link } from "react-router-dom";
 import ImageCompress from "quill-image-compress";
 import { convert as convertToText } from "html-to-text";
-import { formatDistance } from "date-fns";
+import { formatDistance, set } from "date-fns";
+import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import SelectLimit from "./helpers/selectLimit";
-import SelectOptions from "./helpers/selectOptions";
+import SelectLimit from "./../helpers/selectLimit";
+import SelectOptions from "./../helpers/selectOptions";
 import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "../styles/create.css";
+import "../../styles/create.css";
 import "react-toastify/dist/ReactToastify.css";
-import "../styles/allPages.css";
-import "../styles/folderCreate.css";
-import axiosInstance from "../utils/axiosConfig";
+import "../../styles/allPages.css";
+import "../../styles/folderCreate.css";
+import axiosInstance from "../../utils/axiosConfig";
 
-const CreateFolder = () => {
+const EditFolder = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [allSets, setAllSets] = useState([]);
   const [setsChosen, setSetsChosen] = useState([]);
+  const [originalData, setOriginalData] = useState({});
   const [query, setQuery] = useState("");
   const [onlyPersonalSets, setOnlyPersonalSets] = useState(false);
   const [limit, setLimit] = useState(10);
   const [category, setCategory] = useState("");
   const [folderCategory, setFolderCategory] = useState("");
+
   Quill.register("modules/imageResize", ImageResize);
   Quill.register("modules/imageCompress", ImageCompress);
-
+  const { id } = useParams();
   const navigate = useNavigate();
+
+  const getFolder = async () => {
+    axiosInstance.get(`/folder/${id}`).then((res) => {
+      setTitle(res.data[0].title);
+      setDescription(res.data[0].description);
+      //get set ids from the array of res.data and set it to setsChosen
+      let setIds = [];
+      console.log(res.data);
+      res.data.forEach((el) => {
+        setIds.push(el.set_id);
+      });
+      setFolderCategory(res.data[0].category);
+      setOriginalData({
+        title: res.data[0].title,
+        description: res.data[0].description,
+        sets: setIds,
+        category: res.data[0].category,
+      });
+      setSetsChosen(setIds);
+    });
+  };
 
   const getSets = async () => {
     axiosInstance
@@ -52,7 +76,7 @@ const CreateFolder = () => {
       setSetsChosen([...setsChosen, id]);
     }
   };
-  const createFolder = async () => {
+  const updateFolder = async () => {
     if (setsChosen.length > 2000) {
       toast.error("More than 2000 sets are not allowed in a folder");
       return;
@@ -75,21 +99,32 @@ const CreateFolder = () => {
     }
     if (setsChosen.length < 1) {
       if (
-        !confirm("Are you sure you want to create a folder without any sets?")
+        !confirm("Are you sure you want to update a folder without any sets?")
       ) {
         return;
       }
     }
+    if (
+      title === originalData.title &&
+      description === originalData.description &&
+      setsChosen.length === originalData.sets.length &&
+      setsChosen.every((val, index) => val === originalData.sets[index]) &&
+      folderCategory === originalData.folderCategory
+    ) {
+      toast.error("You didn't make any changes");
+      return;
+    }
     axiosInstance
-      .post("/folders/create/", {
-        title: title,
-        description: description,
-        sets: setsChosen,
-        category: folderCategory,
+      .post("/folder/update", {
+        title,
+        description,
+        setsChosen,
+        folder_id: id,
+        folderCategory,
       })
       .then((res) => {
-        toast.success("Folder created successfully");
-        navigate(`/folder/${res.data.folder_id}`);
+        toast.success("Folder edited successfully");
+        navigate(`/folder/${id}`);
       })
       .catch((err) => {
         toast.error("Something went wrong");
@@ -97,9 +132,10 @@ const CreateFolder = () => {
   };
 
   useEffect(() => {
+    getFolder();
     getSets();
   }, []);
-
+  useEffect(() => console.log(originalData.category), [originalData.category]);
   return (
     <section>
       <ToastContainer
@@ -186,13 +222,22 @@ const CreateFolder = () => {
               },
             }}
           />
-          <div style={{ margin: "1vmax" }}>
-            <SelectOptions setCategory={setFolderCategory} />
+          <div style={{margin:"1vmax"}}>
+          {originalData?.category ? (
+            <SelectOptions
+              setCategory={setFolderCategory}
+              initialState={originalData.category}
+            />
+          ) : (
+            ""
+          )}
           </div>
           <div id="setsChosenContainer">
             <center>
               {" "}
-              <p>You can also add some of your sets in the folder</p>
+              <p>
+                Your preselected sets are already here, you can always add new
+              </p>
             </center>
             <div id="searchContainer">
               <center>
@@ -219,7 +264,7 @@ const CreateFolder = () => {
                   <div
                     className={"individualSet"}
                     style={{
-                      maxWidth: "20vmax",
+                      maxWidth: "20vw",
                       boxShadow: setsChosen.includes(el.set_id)
                         ? "0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22)"
                         : "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
@@ -272,14 +317,14 @@ const CreateFolder = () => {
                   boxShadow:
                     "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
                 }}
-                onClick={createFolder}
+                onClick={updateFolder}
               >
-                Create folder{" "}
+                Update folder with
                 {setsChosen.length
-                  ? `with ${setsChosen.length} set${
+                  ? ` ${setsChosen.length} set${
                       setsChosen.length === 1 ? "" : "s"
                     }`
-                  : "no sets"}
+                  : " no sets"}
               </button>
             </center>
           </div>
@@ -289,4 +334,4 @@ const CreateFolder = () => {
   );
 };
 
-export default CreateFolder;
+export default EditFolder;

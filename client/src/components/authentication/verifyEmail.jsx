@@ -1,4 +1,4 @@
-import "../styles/forms.css";
+import "../../styles/forms.css";
 const Verify = () => {
   return (
     <div className="centerWrapper" id="verify">
