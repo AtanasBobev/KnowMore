@@ -1,0 +1,46 @@
+#settings {
+  margin: 3vmax;
+}
+#settings > * {
+  margin: 1vmax;
+}
+#settings h1,
+#settings h2,
+#settings h3,
+#settings ul {
+  color: gray;
+}
+#settings h1 {
+  font-size: 3vmax;
+}
+#settings h2 {
+  margin-left: 2vmax;
+  font-size: 2.2vmax;
+}
+#settings h3 {
+  margin-left: 4vmax;
+  font-size: 1.5vmax;
+}
+#settings ul {
+  margin-left: 6vmax;
+  font-size: 2vmax;
+}
+#settings li {
+  list-style: none;
+}
+#settings div {
+  width: 50%;
+  align-items: flex-start;
+  margin-left: 10vw;
+  display: flex;
+  flex-direction: column;
+}
+#settings div > * {
+  margin: 0.3vmax;
+}
+#settings p {
+  font-size: 1.2vmax;
+  color: black;
+}
+
+/*# sourceMappingURL=settings.css.map */

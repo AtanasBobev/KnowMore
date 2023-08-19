@@ -1,0 +1,44 @@
+#settings {
+  margin: 3vmax;
+  & > * {
+    margin: 1vmax;
+  }
+  h1,
+  h2,
+  h3,
+  ul {
+    color: gray;
+  }
+  h1 {
+    font-size: 3vmax;
+  }
+  h2 {
+    margin-left: 2vmax;
+    font-size: 2.2vmax;
+  }
+  h3 {
+    margin-left: 4vmax;
+    font-size: 1.5vmax;
+  }
+  ul {
+    margin-left: 6vmax;
+    font-size: 2vmax;
+  }
+  li {
+    list-style: none;
+  }
+  div {
+    width:50%;  
+    align-items: flex-start;
+    margin-left: 10vw;
+    display: flex;
+    flex-direction: column;
+    & > * {
+      margin: .3vmax;
+    }
+  }
+  p {
+    font-size: 1.2vmax;
+    color: black;
+  }
+}

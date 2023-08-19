@@ -1,5 +1,6 @@
 const express = require("express");
 const pool = require("./dbConfig");
+const fs = require('fs');
 const validatePassword = require("./passwordValidator");
 const { authorizeToken } = require("./authMiddleware");
 const bodyParser = require("body-parser");
@@ -1314,6 +1315,7 @@ app.post("/v1/folders/all", (req, res) => {
     }
   );
 });
+("");
 app.get("/v1/folder/:id", (req, res) => {
   let id = req.params.id;
 
@@ -1645,6 +1647,24 @@ app.post("/v1/folder/delete", authorizeToken, (req, res) => {
       }
     }
   );
+});
+
+app.get("/v1/languages/:lang", (req, res) => {
+  let lang = req.params.lang;
+  //check if the selected language is supported, supported languages are in the translations folder
+  let files = fs.readdirSync("./translations");
+  let supportedLanguages = [];
+  files.forEach((file) => {
+    supportedLanguages.push(file.split(".")[1]);
+  });
+  if (!supportedLanguages.includes(lang)) {
+    res.status(404).send("Not found");
+    return false;
+  }
+  //get the language file
+  let languageFile = fs.readFileSync(`./translations/translation.${lang}.json`);
+  let languageFileParsed = JSON.parse(languageFile);
+  res.status(200).send(languageFileParsed);
 });
 
 app.listen(port, () => {

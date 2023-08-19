@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { convert as convertToText } from "html-to-text";
 import axiosInstance from "../utils/axiosConfig";
-import t from "../translations/translation.bg-BG.json";
-
+import translate from "../utils/languagesHandler";
 import "../styles/navBar.css";
 
 const NavBar = () => {
@@ -45,7 +44,7 @@ const NavBar = () => {
   return (
     <nav className={`navbar ${isAuth ? "auth" : ""}`}>
       <Link style={{ textDecoration: "none" }} to="/" className="logo">
-        <h1 className="logo-text">{t.logoText}</h1>
+        <h1 className="logo-text">{translate("logoText")}</h1>
       </Link>
       <div className="nav-links">
         {isAuth ? (
@@ -55,7 +54,7 @@ const NavBar = () => {
                 to="/explore"
                 className={location.pathname === "/explore" ? "active" : ""}
               >
-                <span role="img" aria-label="Explore">
+                <span role="img" aria-label={translate("Explore")}>
                   🔍
                 </span>{" "}
                 Explore
@@ -67,7 +66,7 @@ const NavBar = () => {
                 to="/sets"
                 className={location.pathname === "/sets" ? "active" : ""}
               >
-                <span role="img" aria-label="Sets">
+                <span role="img" aria-label={translate("Sets")}>
                   🧮
                 </span>{" "}
                 Sets
@@ -96,7 +95,7 @@ const NavBar = () => {
                   to={window.location.pathname}
                   onClick={toggleCreateOptions}
                 >
-                  <span role="img" aria-label="Create">
+                  <span role="img" aria-label={translate("Create")}>
                     ✏️
                   </span>
                   Create
@@ -109,7 +108,7 @@ const NavBar = () => {
                       }
                       to="/create-set"
                     >
-                      Set
+                      {translate("Set")}
                     </Link>
                     <Link
                       className={
@@ -117,7 +116,7 @@ const NavBar = () => {
                       }
                       to="/create-folder"
                     >
-                      Folder
+                      {translate("Folder")}
                     </Link>
                   </div>
                 )}
@@ -128,7 +127,7 @@ const NavBar = () => {
                 to="/settings"
                 className={location.pathname === "/settings" ? "active" : ""}
               >
-                <span role="img" aria-label="Settings">
+                <span role="img" aria-label={translate("Settings")}>
                   ⚙️
                 </span>{" "}
                 Settings
@@ -162,7 +161,7 @@ const NavBar = () => {
                 to="/login"
                 className={location.pathname === "/login" ? "active" : ""}
               >
-                <span role="img" aria-label="Login">
+                <span role="img" aria-label={translate("Login")}>
                   🔥
                 </span>
                 Login
@@ -173,7 +172,7 @@ const NavBar = () => {
                 to="/register"
                 className={location.pathname === "/register" ? "active" : ""}
               >
-                <span role="img" aria-label="Register">
+                <span role="img" aria-label={translate("Register")}>
                   🛸
                 </span>
                 Register

@@ -88,7 +88,6 @@ const handleConfidence = (
   toast,
 ) => {
   if (!sentUpdate) {
-    console.log("SENT")
     updateSetReview(setSentUpdate, originalFlashcards);
   }
   switch (confidence) {

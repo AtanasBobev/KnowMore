@@ -9,11 +9,12 @@ import NavBar from "./components/navBar";
 import ViewSet from "./components/sets/set";
 import Sets from "./components/sets/sets";
 import Review from "./components/sets/review";
-import Explore from "./components/mainPage";
+import Explore from "./components/explore";
 import EditSet from "./components/sets/editSet";
 import Folder from "./components/folders/folder";
 import Folders from "./components/folders/folders";
 import FolderEdit from "./components/folders/editFolder";
+import Settings from "./components/settings";
 export function App() {
   return (
     <>
@@ -35,6 +36,7 @@ export function App() {
             <Route path="/review/:id" element={<Review />} />
             <Route path="/set/edit/:id" element={<EditSet />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </BrowserRouter>

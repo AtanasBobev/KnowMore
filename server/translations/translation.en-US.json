@@ -1,0 +1,21 @@
+{
+    "logoText": "Mesembria",
+    "Explore": "Explore",
+    "Sets": "Sets",
+    "Create": "Create",
+    "Set":"Set",
+    "Folder":"Folder",
+    "Settings":"Settings",
+    "Login":"Login",
+    "Register":"Register",
+    "registerLabel":"Don't have an account?",
+    "Username":"Username",
+    "Password":"Password",
+    "repeatPassword":"Repeat password",
+    "email":"Email",
+    "loginLabel":"Already have an account?",
+    "pleaseSelect":"Please select",
+    "male":"male",
+    "female":"female"
+    "Age":"Age",
+}
