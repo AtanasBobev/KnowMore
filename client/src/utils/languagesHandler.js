@@ -21,7 +21,6 @@ const initializeLanguageData = async () => {
 };
 
 const translate = (key) => {
-  console.log(languageData);
   return languageData[key] || key; // Return the translation or the key itself if not found
 };
 
