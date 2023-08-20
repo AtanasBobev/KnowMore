@@ -63,5 +63,8 @@
   "button.edit": "Edit",
   "button.save": "Save",
   "button.cancel": "Cancel",
-  "label.noFoldersFound":"My pet parrot 🦜 flew across many oceans but couldn't find the folder you are looking for. Why not create it?"
+  "label.noFoldersFound":"My pet parrot 🦜 flew across many oceans but couldn't find the folder you are looking for. Why not create it?",
+  "error.cannotAddToFolder":"There was a problem adding the set to the folder",
+  "label.addToFolder":"Add to folder",
+  "button.Close":"Close",
 }
