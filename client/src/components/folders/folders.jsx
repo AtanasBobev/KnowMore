@@ -9,6 +9,7 @@ import token from "../../utils/jwtParser";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "../../styles/sets.css";
+import translate from "../../utils/languagesHandler";
 import axios from "axios";
 const Folders = () => {
   const [folders, setFolders] = useState([]);
@@ -25,43 +26,40 @@ const Folders = () => {
         onlyPersonal: true,
       })
       .then((res) => {
-        console.log(res.data);
         setFolders(res.data);
       })
       .catch((err) => {
-        toast.error("Ooops, something went wrong");
+        toast.error(translate("error.generic"));
       });
   };
   const shareFolderOutside = (folder_id) => {
     try {
       let url = `${window.location.origin}/folder/${folder_id}`;
       window.navigator.clipboard.writeText(url);
-      toast.success("Share link has been copied to clipboard");
+      toast.success(translate("success.sharedLinkCopied"));
     } catch (err) {
-      toast.error(
-        "It seems like the share functionality doesn't work on your browser"
-      );
+      toast.error(translate("error.featureNotSupported"));
     }
   };
   const removeFolder = (folder_id, user_id) => {
     //check if the user is the owner of the folder
     if (token.user_id !== user_id) {
-      toast.error("You are not the owner of this folder");
+      toast.error(translate("error.notOwner"));
       return false;
     }
-    if (!confirm("Are you sure you want to delete this folder?")) {
+    if (!confirm(translate("prompt.deleteFolder"))) {
       return false;
     }
     axiosInstance
       .post(`/folder/delete`, { folder_id })
       .then((res) => {
         if (res.status === 200) {
-          toast.success("Folder deleted successfully");
+          toast.success(translate("success.folderDeleted"));
           search();
         }
       })
       .catch((err) => {
-        toast.error("Ooops, something went wrong");
+        toast.error(translate("error.generic"));
       });
   };
 
@@ -75,20 +73,20 @@ const Folders = () => {
         theme="colored"
         closeOnClick
       />{" "}
-      <h1>Your folders 🗂️</h1>
+      <h1>{translate("label.yourFolders")} 🗂️</h1>
       <center>
         <SelectLimit setLimit={setLimit} />
         <input
           style={{ width: "50ch", margin: ".5vmax" }}
           maxLength={100}
-          placeholder="Search your sets"
+          placeholder={translate("placeholder.searchOwnSets")}
           onChange={(e) =>
             setQuery(e.target.value.length ? e.target.value : "")
           }
         />
         <SelectOptions setCategory={setCategory} />
         <button className="searchBtn" onClick={search}>
-          Search
+          {translate("label.search")}
         </button>
       </center>
       {folders.length ? (
@@ -116,25 +114,30 @@ const Folders = () => {
                       </section>
                     </Link>
                     <section className="btnGroup">
-                      <button style={{backgroundColor:"transparent"}} onClick={() => shareFolderOutside(el.folder_id)}>
-                        Share
+                      <button
+                        style={{ backgroundColor: "transparent" }}
+                        onClick={() => shareFolderOutside(el.folder_id)}
+                      >
+                        {translate("button.share")}
                       </button>
                       {el.user_id === token.user_id ? (
-                        <button style={{backgroundColor:"transparent"}}
+                        <button
+                          style={{ backgroundColor: "transparent" }}
                           onClick={() => {
                             navigate("/folder/edit/" + el.folder_id);
                           }}
                         >
-                          Edit
+                          {translate("button.edit")}
                         </button>
                       ) : (
                         ""
                       )}
                       {el.user_id === token.user_id ? (
-                        <button style={{backgroundColor:"transparent"}}
+                        <button
+                          style={{ backgroundColor: "transparent" }}
                           onClick={() => removeFolder(el.folder_id, el.user_id)}
                         >
-                          Delete
+                          {translate("button.delete")}
                         </button>
                       ) : (
                         ""
@@ -146,10 +149,7 @@ const Folders = () => {
           </div>
         </>
       ) : (
-        <h2 id="infoText">
-          My pet parrot 🦜 flew across many oceans but couldn't find the folder
-          you are looking for. Why not create it?
-        </h2>
+        <h2 id="infoText">{translate("label.noFoldersFound")}</h2>
       )}
     </div>
   );

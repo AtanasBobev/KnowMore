@@ -21,7 +21,7 @@ const initializeLanguageData = async () => {
 };
 
 const translate = (key) => {
-  return languageData[key] || key; // Return the translation or the key itself if not found
+  return languageData[key] || "😎"; // Return the translation or the key itself if not found
 };
 
 window.addEventListener("load", initializeLanguageData);

@@ -204,7 +204,9 @@ const CreateFolder = () => {
                 />
                 <select onChange={(e) => setSetCombineModal(e.target.value)}>
                   <option value={true}>{translate("option.mySets")}</option>
-                  <option value={false}>{translate("option.communitySets")}</option>
+                  <option value={false}>
+                    {translate("option.communitySets")}
+                  </option>
                 </select>
                 <SelectLimit setLimit={setLimit} />
                 <SelectOptions setCategory={setCategory} />
@@ -242,7 +244,9 @@ const CreateFolder = () => {
                         ? parse(el.name).slice(0, 15) + "..."
                         : parse(el.name)}
                     </h2>
-                    <h3>{el.flashcard_count} {translate("label.flashcards")}</h3>
+                    <h3>
+                      {el.flashcard_count} {translate("label.flashcards")}
+                    </h3>
                     <h3>
                       Created{" "}
                       {formatDistance(new Date(el.date_created), new Date(), {
@@ -252,7 +256,9 @@ const CreateFolder = () => {
                     </h3>
                     <center>
                       <button onClick={() => selectItem(el.set_id)}>
-                        {setsChosen.includes(el.set_id) ? "Deselect" : "Select"}
+                        {setsChosen.includes(el.set_id)
+                          ? translate("button.Deselect")
+                          : translate("button.Select")}
                       </button>
                     </center>
                   </div>
@@ -273,12 +279,10 @@ const CreateFolder = () => {
                 }}
                 onClick={createFolder}
               >
-                Create folder{" "}
+                {translate("button.createFolder")}
                 {setsChosen.length
-                  ? `with ${setsChosen.length} set${
-                      setsChosen.length === 1 ? "" : "s"
-                    }`
-                  : "no sets"}
+                  ? `${translate("label.with")} ${setsChosen.length} ${translate("label.setS")}`
+                  : translate("label.noSets")}
               </button>
             </center>
           </div>

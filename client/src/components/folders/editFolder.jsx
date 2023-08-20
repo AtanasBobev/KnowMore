@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../styles/allPages.css";
 import "../../styles/folderCreate.css";
 import axiosInstance from "../../utils/axiosConfig";
+import translate from "../../utils/languagesHandler";
 
 const EditFolder = () => {
   const [title, setTitle] = useState("");
@@ -78,29 +79,27 @@ const EditFolder = () => {
   };
   const updateFolder = async () => {
     if (setsChosen.length > 2000) {
-      toast.error("More than 2000 sets are not allowed in a folder");
+      toast.error(translate("error.tooManySets"));
       return;
     }
     if (convertToText(title).length > 50) {
-      toast.error("Title is too long");
+      toast.error(translate("error.titleTooLong"));
       return;
     }
     if (convertToText(description).length > 500) {
-      toast.error("Description is too long");
+      toast.error(translate("error.descriptionTooLong"));
       return;
     }
     if (title.length < 5) {
-      toast.error("Title is too short");
+      toast.error(translate("error.titleTooLong"));
       return;
     }
     if (description.length < 5) {
-      toast.error("Description is too short");
+      toast.error(translate("error.descriptionTooShort"));
       return;
     }
     if (setsChosen.length < 1) {
-      if (
-        !confirm("Are you sure you want to update a folder without any sets?")
-      ) {
+      if (!confirm(translate("prompt.noSetsFolderUpdate"))) {
         return;
       }
     }
@@ -111,7 +110,7 @@ const EditFolder = () => {
       setsChosen.every((val, index) => val === originalData.sets[index]) &&
       folderCategory === originalData.folderCategory
     ) {
-      toast.error("You didn't make any changes");
+      toast.error(translate("error.nothingChanged"));
       return;
     }
     axiosInstance
@@ -123,11 +122,11 @@ const EditFolder = () => {
         folderCategory,
       })
       .then((res) => {
-        toast.success("Folder edited successfully");
+        toast.success(translate("success.folderUpdated"));
         navigate(`/folder/${id}`);
       })
       .catch((err) => {
-        toast.error("Something went wrong");
+        toast.error(translate("error.generic"));
       });
   };
 
@@ -135,7 +134,6 @@ const EditFolder = () => {
     getFolder();
     getSets();
   }, []);
-  useEffect(() => console.log(originalData.category), [originalData.category]);
   return (
     <section>
       <ToastContainer
@@ -147,11 +145,12 @@ const EditFolder = () => {
       />
       <div id="createFolder">
         <div className="flashcard main center">
-          <h2 style={{ userSelect: "none" }}>Folder title</h2>
+          <h2 style={{ userSelect: "none" }}>
+            {translate("placeholder.folderTitle")}
+          </h2>
           <ReactQuill
             className="bg-x"
             onChange={(value) => setTitle(value)}
-            placeholder="Economics 101"
             value={title}
             modules={{
               toolbar: [
@@ -191,7 +190,6 @@ const EditFolder = () => {
             className="sm"
             onChange={(value) => setDescription(value)}
             value={description}
-            placeholder="Chapter 1 and 2 including the text questions assigned by the professor"
             modules={{
               imageCompress: {},
               toolbar: [
@@ -222,39 +220,39 @@ const EditFolder = () => {
               },
             }}
           />
-          <div style={{margin:"1vmax"}}>
-          {originalData?.category ? (
-            <SelectOptions
-              setCategory={setFolderCategory}
-              initialState={originalData.category}
-            />
-          ) : (
-            ""
-          )}
+          <div style={{ margin: "1vmax" }}>
+            {originalData?.category ? (
+              <SelectOptions
+                setCategory={setFolderCategory}
+                initialState={originalData.category}
+              />
+            ) : (
+              ""
+            )}
           </div>
           <div id="setsChosenContainer">
             <center>
-              {" "}
               <p>
                 Your preselected sets are already here, you can always add new
               </p>
             </center>
             <div id="searchContainer">
               <center>
-                {" "}
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   width="50ch"
-                  placeholder="Search for sets"
+                  placeholder={translate("placeholder.searchSets")}
                 />
                 <select onChange={(e) => setSetCombineModal(e.target.value)}>
-                  <option value={true}>My sets</option>
-                  <option value={false}>Community sets</option>
+                  <option value={true}>{translate("option.mySets")}</option>
+                  <option value={false}>
+                    {translate("option.communitySets")}
+                  </option>
                 </select>
                 <SelectLimit setLimit={setLimit} />
                 <SelectOptions setCategory={setCategory} />
-                <button onClick={getSets}>Search</button>
+                <button onClick={getSets}>{translate("button.Search")}</button>
               </center>
             </div>
 
@@ -288,25 +286,27 @@ const EditFolder = () => {
                         ? parse(el.name).slice(0, 15) + "..."
                         : parse(el.name)}
                     </h2>
-                    <h3>{el.flashcard_count} flashcards</h3>
                     <h3>
-                      Created{" "}
+                      {el.flashcard_count} {translate("label.flaschards")}
+                    </h3>
+                    <h3>
+                      {translate("label.Created")}{" "}
                       {formatDistance(new Date(el.date_created), new Date(), {
                         addSufix: true,
                       })}{" "}
-                      ago
+                      {translate("label.ago")}
                     </h3>
                     <center>
                       <button onClick={() => selectItem(el.set_id)}>
-                        {setsChosen.includes(el.set_id) ? "Deselect" : "Select"}
+                        {setsChosen.includes(el.set_id)
+                          ? translate("label.Deselect")
+                          : translate("label.Select")}
                       </button>
                     </center>
                   </div>
                 ))
               ) : (
-                <p>
-                  We searched all galaxies but couldn't find a set like this 😢
-                </p>
+                <p>{translate("label.noSetsFound")} </p>
               )}
             </div>
             <center>
@@ -319,12 +319,12 @@ const EditFolder = () => {
                 }}
                 onClick={updateFolder}
               >
-                Update folder with
+                {translate("label.updateFolderWith")}
                 {setsChosen.length
-                  ? ` ${setsChosen.length} set${
-                      setsChosen.length === 1 ? "" : "s"
-                    }`
-                  : " no sets"}
+                  ? `${translate("label.with")} ${
+                      setsChosen.length
+                    } ${translate("label.setS")}`
+                  : translate("label.noSets")}
               </button>
             </center>
           </div>

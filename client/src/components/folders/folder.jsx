@@ -7,6 +7,7 @@ import parse from "html-react-parser";
 import { shareSet as Share } from "../../utils/_setOpertaions";
 import "../../styles/folder.css";
 import { set } from "date-fns";
+import translate from "../../utils/languagesHandler";
 const Folder = () => {
   const { id } = useParams();
   const [folder, setFolder] = useState({});
@@ -51,11 +52,11 @@ const Folder = () => {
     axiosInstance
       .post("/folder/set/remove", { folder_id: id, set_id })
       .then((res) => {
-        toast.success("Removed from folder");
+        toast.success(translate("setRemovedFromFolder"));
         setSets((prev) => prev.filter((el) => el.set_id !== set_id));
       })
       .catch((err) => {
-        toast.error("Ooops, something went wrong");
+        toast.error(translate("error.generic"));
       });
   };
   useEffect(() => {
@@ -65,7 +66,7 @@ const Folder = () => {
   return (
     <div id="page">
       {loading ? (
-        <h1>Loading...</h1>
+        <h1>{translate("label.loading")}</h1>
       ) : (
         <>
           <ToastContainer
@@ -77,7 +78,7 @@ const Folder = () => {
           />
           <h1>{parse(`${folder.title} 🗂️`)}</h1>
           <h2 style={{ color: "gray" }}>{parse(folder.description)}</h2>
-          <h3 style={{ color: "gray" }}>Created by {folder.owner}</h3>
+          <h3 style={{ color: "gray" }}>{translate("label.createdBy")} {folder.owner}</h3>
           <div className="setContainer">
             {sets.length
               ? sets[0].set_id
@@ -106,7 +107,7 @@ const Folder = () => {
                         </section>
                       </Link>
                       <button onClick={() => removeFromFolder(el.set_id)}>
-                        Remove
+                        {translate("button.Remove")}
                       </button>
                     </section>
                   ))
