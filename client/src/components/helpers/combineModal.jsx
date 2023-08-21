@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import parse from "html-react-parser";
 import { formatDistance } from "date-fns";
-
+import translate from "../../utils/languagesHandler";
 const combineModal = (props) => {
   const {
     combineModal,
@@ -18,13 +18,14 @@ const combineModal = (props) => {
         <section className="modal">
           <div className="modal-content">
             <p>
-              Combining sets allows you to merge multiple sets into one new set
-              with a maximum of 2000 cards. You have currently selected{" "}
+              {translate("label.combineSetsModal")}{" "}
               {combineModal.totalFlashcards} flashcards in{" "}
               {combineModal.setsChosen.length === 0
-                ? "no sets"
+                ? translate("label.noSetsLowercase")
                 : `${combineModal.setsChosen.length} ${
-                    combineModal.setsChosen.length === 1 ? "set" : "sets"
+                    combineModal.setsChosen.length === 1
+                      ? translate("label.set")
+                      : translate("label.sets")
                   }: `}
               {combineModal.setsChosen.length > 0 &&
                 combineModal.setsChosen.map((setId, index) => (
@@ -43,12 +44,13 @@ const combineModal = (props) => {
                     </Link>
                   </React.Fragment>
                 ))}
-              . Merge {parse(set[0].name)} with:
+              . {translate("label.Merge")} {parse(set[0].name)}{" "}
+              {translate("label.with")}:
             </p>
             <div>
               <input
                 style={{ width: "50ch", margin: ".5vmax" }}
-                placeholder="Search sets"
+                placeholder={translate("placeholder.searchSets")}
                 onChange={(e) =>
                   setCombineModal((prevModal) => ({
                     ...prevModal,
@@ -64,10 +66,14 @@ const combineModal = (props) => {
                   }))
                 }
               >
-                <option value={true}>My sets</option>
-                <option value={false}>Community sets</option>
+                <option value={true}>{translate("option.mySets")}</option>
+                <option value={false}>
+                  {translate("option.communitySets")}
+                </option>
               </select>
-              <button onClick={combinePopup}>Search</button>
+              <button onClick={combinePopup}>
+                {translate("button.Search")}
+              </button>
             </div>
 
             <div id="allSetsContainer">
@@ -76,8 +82,8 @@ const combineModal = (props) => {
                   <div
                     title={
                       Number(el.number_of_flashcards) + set.length > 2000
-                        ? "You can't combine this set because it has more than 2000 flashcards combined with your set"
-                        : "You can add this set to your combined set"
+                        ? translate("error.tooManyFlashcardsCombined")
+                        : translate("label.canCombine")
                     }
                     className={"individualSet "}
                     style={{
@@ -106,11 +112,11 @@ const combineModal = (props) => {
                     </h2>
                     <h3>{el.flashcard_count} flashcards</h3>
                     <h3>
-                      Created{" "}
+                      {translate("label.Created")}{" "}
                       {formatDistance(new Date(el.date_created), new Date(), {
                         addSufix: true,
                       })}{" "}
-                      ago
+                      {translate("label.ago")}
                     </h3>
                     <center>
                       {Number(el.number_of_flashcards) + set.length > 1 ? (
@@ -118,8 +124,8 @@ const combineModal = (props) => {
                       ) : (
                         <button onClick={() => selectItem(el.set_id)}>
                           {combineModal.setsChosen.includes(el.set_id)
-                            ? "Deselect"
-                            : "Select"}
+                            ? translate("button.Deselect")
+                            : translate("button.Select")}
                         </button>
                       )}
                     </center>
@@ -127,13 +133,13 @@ const combineModal = (props) => {
                 ))
               ) : (
                 <p>
-                  We searched all galaxies but couldn't find a set like this 😢
+                 {translate("label.noSetsFound")}
                 </p>
               )}
             </div>
           </div>
           <div className="modal-footer">
-            <button onClick={combineSets}>Combine sets</button>
+            <button onClick={combineSets}>{translate("button.combineSets")}</button>
             {combineModal.setsChosen.length ? (
               <button
                 onClick={() =>
@@ -143,7 +149,7 @@ const combineModal = (props) => {
                   }))
                 }
               >
-                Clear all selections
+                {translate("button.clearSelection")}
               </button>
             ) : (
               ""
@@ -156,7 +162,7 @@ const combineModal = (props) => {
                 }))
               }
             >
-              Close
+              {translate("button.Close")}
             </button>
           </div>
         </section>

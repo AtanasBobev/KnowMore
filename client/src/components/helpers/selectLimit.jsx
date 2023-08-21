@@ -1,3 +1,4 @@
+import translate from "../../utils/languagesHandler";
 const SelectLimit = (props) => {
   const handleChange = (e) => {
     const value = e.target.value;
@@ -5,7 +6,7 @@ const SelectLimit = (props) => {
   };
   return (
     <select onChange={handleChange} id="selectSort">
-      <option selected disabled>Show</option>
+      <option selected disabled>{translate("option.Show")}</option>
       <option value={100}>100 sets</option>
       <option value={300}>300 sets</option>
       <option value={500}>500 sets</option>

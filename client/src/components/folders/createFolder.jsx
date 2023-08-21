@@ -281,7 +281,7 @@ const CreateFolder = () => {
               >
                 {translate("button.createFolder")}
                 {setsChosen.length
-                  ? `${translate("label.with")} ${setsChosen.length} ${translate("label.setS")}`
+                  ? `${translate("label.With")} ${setsChosen.length} ${translate("label.setS")}`
                   : translate("label.noSets")}
               </button>
             </center>
