@@ -20,9 +20,11 @@ import ImportModal from "../helpers/importModal";
 import speak from "../../utils/speechSynthesis";
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import Translate from "../helpers/translate";
 import { useNavigate } from "react-router-dom";
 import CombineModal from "../helpers/combineModal";
 import AddToFolderModal from "../helpers/addToFolderModal";
+import translate from "../../utils/languagesHandler";
 window.katex = katex;
 
 const ViewSet = () => {
@@ -151,11 +153,9 @@ const ViewSet = () => {
     try {
       let url = window.location.href;
       window.navigator.clipboard.writeText(url);
-      toast.success("Share link has been copied to clipboard");
+      toast.success(translate("success.sharedLinkCopied"));
     } catch (err) {
-      toast.error(
-        "It seems like the share functionality doesn't work on your browser"
-      );
+      toast.error(translate("error.generic"));
     }
   };
 
@@ -189,17 +189,16 @@ const ViewSet = () => {
     const flashcardToEdit = set.find((el) => el.flashcard_id === flashcard_id);
 
     if (!flashcardToEdit) {
-      toast.error("Flashcard not found!");
+      toast.error(translate("error.flashcardNotFound"));
       return;
     }
-    console.log(convertToText(cardEdit.definition).length);
 
     if (convertToText(cardEdit.term).length < 2) {
-      toast("Term cannot be so empty!");
+      toast(translate("error.termTooShort"));
       return;
     }
     if (convertToText(cardEdit.definition).length < 2) {
-      toast("Definition cannot be so empty!");
+      toast(translate("error.definitionTooShort"));
       return;
     }
     if (
@@ -234,12 +233,10 @@ const ViewSet = () => {
             definition: cardEdit.definition,
           })
           .then((response) => {
-            toast.success("Flashcard edits saved!");
+            toast.success(translate("label.flashcardUpdated"));
           })
           .catch((err) => {
-            toast.error(
-              "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-            );
+            toast.error(translate("error.generic"));
           });
       }
     } else {
@@ -249,11 +246,7 @@ const ViewSet = () => {
   };
   const addFlashcard = () => {
     if (cardEdit.edit && cardEdit.cardBeingEdited) {
-      if (
-        !confirm(
-          "Are you sure you want to discard your changes and add a new flashcard? You are currently editing a flashcard."
-        )
-      ) {
+      if (!confirm(translate("prompt.discardChangesFlashcard"))) {
         return false;
       }
       if (set[set.length - 1].new) {
@@ -286,11 +279,7 @@ const ViewSet = () => {
     }
     //check if the last flashcard is saved
     if (cardEdit.edit && cardEdit.cardBeingEdited) {
-      if (
-        !confirm(
-          "Are you sure you want to discard your changes and like this set? You are currently editing a flashcard."
-        )
-      ) {
+      if (!confirm(translate("promp.discardLike"))) {
         return false;
       }
       if (set[set.length - 1].new) {
@@ -324,9 +313,7 @@ const ViewSet = () => {
           );
         })
         .catch((err) => {
-          toast.error(
-            "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-          );
+          toast.error(translate("error.generic"));
         });
     } else {
       axiosInstance
@@ -350,9 +337,7 @@ const ViewSet = () => {
           );
         })
         .catch((err) => {
-          toast.error(
-            "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-          );
+          toast.error(translate("error.generic"));
         });
     }
   };
@@ -361,19 +346,17 @@ const ViewSet = () => {
     axiosInstance
       .post("/set/copy", { set_id: set[0].set_id })
       .then((res) => {
-        toast.success("We copied your set. You are current browsing the copy");
+        toast.success(translate("label.setCopiedCopy"));
         navigate(`/set/${res.data.set_id}`);
       })
       .catch((err) => {
-        toast.error(
-          "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-        );
+        toast.error(translate("error.generic"));
       });
   };
 
   const likeSet = () => {
     if (!token.user_id) {
-      toast("You need to be logged in to like a set.");
+      toast(translate("error.notLoggedIn"));
       return;
     }
     axiosInstance.post("/set/like", { set_id: set[0].set_id }).then((res) => {

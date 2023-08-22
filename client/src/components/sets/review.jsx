@@ -4,10 +4,11 @@ import {
   getSet,
   getConfidenceLevel,
   handleConfidence,
-  shuffle
+  shuffle,
 } from "../../utils/reviewMethods";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
+import translate from "../../utils/translate";
 import "../../styles/review.css";
 
 const Review = () => {
@@ -90,10 +91,11 @@ const Review = () => {
       {flipOpen && !hideUI ? (
         <div id="conditionalButtons">
           <center>
-            <h4>How confident are you with this flashcard?</h4>
+            <h4>{translate("label.howConfidentAreYou")}</h4>
           </center>
           <center>
-            <button className="confidenceButton"
+            <button
+              className="confidenceButton"
               onClick={() =>
                 handleConfidence(
                   sentUpdate,
@@ -112,7 +114,8 @@ const Review = () => {
             >
               1
             </button>
-            <button className="confidenceButton"
+            <button
+              className="confidenceButton"
               onClick={() =>
                 handleConfidence(
                   sentUpdate,
@@ -131,7 +134,8 @@ const Review = () => {
             >
               2
             </button>
-            <button className="confidenceButton"
+            <button
+              className="confidenceButton"
               onClick={() =>
                 handleConfidence(
                   sentUpdate,
@@ -150,7 +154,8 @@ const Review = () => {
             >
               3
             </button>
-            <button className="confidenceButton"
+            <button
+              className="confidenceButton"
               onClick={() =>
                 handleConfidence(
                   sentUpdate,
@@ -169,7 +174,8 @@ const Review = () => {
             >
               4
             </button>
-            <button className="confidenceButton"
+            <button
+              className="confidenceButton"
               onClick={() =>
                 handleConfidence(
                   sentUpdate,
