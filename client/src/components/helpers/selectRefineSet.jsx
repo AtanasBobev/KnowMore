@@ -1,4 +1,5 @@
 import {useState} from "preact/hooks"
+import translate from "../../utils/languagesHandler";
 const SelectRefineSet = (props) => {
   const [defaultEl, setDefaultEl] = useState(props.initialState);
   const handleChange = (e) => {
@@ -14,13 +15,13 @@ const SelectRefineSet = (props) => {
     id="likeSelect"
   >
     <option value="-" disabled>
-      Sort
+      {translate("option.Sort")}
     </option>
-    <option value="id" selected>Default</option>
-    <option value="a-z">A-Z</option>
-    <option value="z-a">Z-A</option>
-    <option value="mostconfident">Well known</option>
-    <option value="leastconfident">Least known</option>
+    <option value="id" selected>{translate("options.Default")}</option>
+    <option value="a-z">{translate("options.AZ")}</option>
+    <option value="z-a">{translate("options.ZA")}</option>
+    <option value="mostconfident">{translate("options.WellKnown")}</option>
+    <option value="leastconfident">{translate("options.LeastKnown")}</option>
   </select>
   );
 };
