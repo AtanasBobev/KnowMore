@@ -46,7 +46,7 @@ const MultipleChoice = () => {
       temporaryFlashcards = flashcards.filter(
         (flashcard) => flashcard.rounds > 0
       );
-      toast("⭐You are done with this flashcard!");
+      toast(translate("success.doneWithFlashcard"));
       random = 0;
     }
 
@@ -75,9 +75,9 @@ const MultipleChoice = () => {
   const endStudy = () => {
     updateSetReview(setSentUpdate, originalFlashcards);
     setGameOver(true);
-    toast("🫡You are done with this set!");
-    setTerm("🫡You are done with this set!");
-    setDefinition("🫡You are done with this set!");
+    toast("success.doneWithSet")
+    setTerm("success.doneWithSet");
+    setDefinition("success.doneWithSet");
   };
   const newQuestion = (forceTrue=false) => {
     if (gameOver) return;
@@ -109,7 +109,7 @@ const MultipleChoice = () => {
       ) == 1 || forceTrue
     ) {
       setRightAnswerExpected(false);
-      toast.success("Correct!");
+      toast.success("success.Correct");
       setFlashcards((prev) =>
         prev.map((flashcard, index) => {
           if (index === randomIndex) {
@@ -123,7 +123,7 @@ const MultipleChoice = () => {
     } else {
       setRightAnswerExpected(true);
       toast.error(
-        `Write the correct answer: ${sanitizeHTML(
+        `${label.writeCorrectAnswer} ${sanitizeHTML(
           flashcards[randomIndex].term
         )}`
       );
@@ -169,13 +169,13 @@ const MultipleChoice = () => {
         ""
       )}
       <div className="quiz-container" id={gameOver && "restart"}>
-        {!gameOver ? <p>Definition:</p> : ""}
+        {!gameOver ? <p>{translate("label.Definition")}:</p> : ""}
         <p id="definition">{definition ? parse(definition) : ""}</p>
         <br />
         {!gameOver ? (
           <>
             {" "}
-            <p>Term:</p>
+            <p>{label.Term}:</p>
             <input
               id="answer"
               type="text"
@@ -184,21 +184,21 @@ const MultipleChoice = () => {
             />
             <section id="buttonGroup">
               {!rightAnswerExpected ? (
-                <button onClick={() => newQuestion()}>I don't know</button>
+                <button onClick={() => newQuestion()}>{translate("button.IdontKnow")}</button>
               ) : (
                 ""
               )}
               {rightAnswerExpected ? (
-                <button onClick={() => newQuestion(true)}>I was right</button>
+                <button onClick={() => newQuestion(true)}>{translate("button.IWasRight")}</button>
               ) : (
-                <button onClick={() => Generate()}>Skip</button>
+                <button onClick={() => Generate()}>{translate("button.Skip")}</button>
               )}
               <button onClick={newQuestion}>✅</button>
             </section>
           </>
         ) : (
           <button id="restartBtn" onClick={restartStudy}>
-            Restart
+            {translate("button.Restart")}
           </button>
         )}
       </div>

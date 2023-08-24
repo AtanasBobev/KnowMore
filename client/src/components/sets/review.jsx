@@ -41,7 +41,7 @@ const Review = () => {
       setTerm(flashcards[currentIndex].term);
       setDefinition(flashcards[currentIndex].definition);
     } else {
-      setTerm("You have done a great job! All flashcards are reviewed!");
+      setTerm(translate("label.allFlashcardsReviewed"));
       setFlipOpen(false);
       setHideUI(true);
     }
@@ -83,7 +83,7 @@ const Review = () => {
       </div>
       {!flipOpen && loaded ? (
         <button id="flipButton" onClick={() => setFlipOpen((prev) => !prev)}>
-          {hideUI ? "Restart" : "Flip"}
+          {hideUI ? translate("button.Restart") : translate("button.Flip") }
         </button>
       ) : (
         ""

@@ -57,7 +57,7 @@ const NavBar = () => {
                 <span role="img" aria-label={translate("Explore")}>
                   🔍
                 </span>{" "}
-                Explore
+                {translate("label.Explore")}
               </Link>
             </li>
 
@@ -69,7 +69,7 @@ const NavBar = () => {
                 <span role="img" aria-label={translate("Sets")}>
                   🧮
                 </span>{" "}
-                Sets
+                {translate("label.Sets")}
               </Link>
             </li>
             <li>
@@ -80,7 +80,7 @@ const NavBar = () => {
                 <span role="img" aria-label="Folders">
                   🗂️
                 </span>{" "}
-                Folders
+                {translate("label.Folders")}
               </Link>
             </li>
             <li>
@@ -98,7 +98,7 @@ const NavBar = () => {
                   <span role="img" aria-label={translate("Create")}>
                     ✏️
                   </span>
-                  Create
+                  {translate("label.Create")}
                 </Link>
                 {showCreateOptions && (
                   <div className="create-options">
@@ -108,7 +108,7 @@ const NavBar = () => {
                       }
                       to="/create-set"
                     >
-                      {translate("Set")}
+                      {translate("label.Set")}
                     </Link>
                     <Link
                       className={
@@ -116,7 +116,7 @@ const NavBar = () => {
                       }
                       to="/create-folder"
                     >
-                      {translate("Folder")}
+                      {translate("label.Folder")}
                     </Link>
                   </div>
                 )}
@@ -130,7 +130,7 @@ const NavBar = () => {
                 <span role="img" aria-label={translate("Settings")}>
                   ⚙️
                 </span>{" "}
-                Settings
+                {translate("label.Settings")}
               </Link>
             </li>
             <ul className="jsb">
@@ -164,7 +164,7 @@ const NavBar = () => {
                 <span role="img" aria-label={translate("Login")}>
                   🔥
                 </span>
-                Login
+                {translate("label.Login")}
               </Link>
             </li>
             <li>
@@ -175,7 +175,7 @@ const NavBar = () => {
                 <span role="img" aria-label={translate("Register")}>
                   🛸
                 </span>
-                Register
+                {translate("label.Register")}
               </Link>
             </li>
           </>

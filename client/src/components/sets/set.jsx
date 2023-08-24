@@ -361,12 +361,12 @@ const ViewSet = () => {
     }
     axiosInstance.post("/set/like", { set_id: set[0].set_id }).then((res) => {
       setLikedSet(true);
-      toast.success("Set liked! You can view it in your profile.");
+      toast.success(translate("label.setLiked"));
     });
   };
   const dislikeSet = () => {
     if (!token.user_id) {
-      toast("You need to be logged in to dislike a set.");
+      toast(translate("error.notLoggedIn"));
       return;
     }
     axiosInstance
@@ -377,9 +377,7 @@ const ViewSet = () => {
   };
   const combineSets = () => {
     if (combineModal.totalFlashcards + set.length > 2000) {
-      toast.error(
-        "You cannot combine these sets because the total number of flashcards exceeds 2000."
-      );
+      toast.error(translate("error.cannotCombineTooManyFlashcards"));
       return;
     }
     axiosInstance
@@ -388,7 +386,7 @@ const ViewSet = () => {
         set_id: set[0].set_id,
       })
       .then((res) => {
-        toast.success("Sets combined! Navigating to your new set!");
+        toast.success(translate("success.setsCombined"));
         setCombineModal((prevModal) => ({
           ...prevModal,
           open: false,
@@ -398,9 +396,7 @@ const ViewSet = () => {
         }, 1000);
       })
       .catch((err) => {
-        toast.error(
-          "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-        );
+        toast.error(translate("error.generic"));
       });
   };
   const combinePopup = () => {
@@ -430,7 +426,7 @@ const ViewSet = () => {
   };
   const exportSet = () => {
     if (!token.user_id) {
-      toast("You need to be logged in to export a set.");
+      toast(translate("error.notLoggedIn"));
       return;
     }
     axiosInstance
@@ -462,12 +458,10 @@ const ViewSet = () => {
         document.body.appendChild(element); // Required for this to work in FireFox
         element.click();
 
-        toast.success("Set exported as .csv! Check your downloads folder.");
+        toast.success(translate("success.exportedSet"));
       })
       .catch((err) => {
-        toast.error(
-          "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-        );
+        toast.error(translate("error.generic"));
       });
   };
 
@@ -570,9 +564,7 @@ const ViewSet = () => {
         set={set}
       />
       {!isSetValid ? (
-        <h1 id="infoText">
-          Our trusty🐕 tried to find this set but couldn't! Check your link! 🙂
-        </h1>
+        <h1 id="infoText">{translate("label.noSetFound")}</h1>
       ) : (
         ""
       )}
@@ -615,7 +607,7 @@ const ViewSet = () => {
               <button onClick={() => navigate(`/set/edit/${id}`)}>Edit</button>
               <button
                 onClick={() => {
-                  if (!confirm("Are you sure you want to delete this set?")) {
+                  if (!confirm(translate("prompt.deleteSet"))) {
                     return false;
                   }
                   axiosInstance
@@ -623,15 +615,13 @@ const ViewSet = () => {
                       set_id: set[0].set_id,
                     })
                     .then((response) => {
-                      toast.success("Set deleted! Navigating...");
+                      toast.success(translate("success.setDeleted"));
                       setTimeout(() => {
                         navigate(`/sets`);
                       }, 1000);
                     })
                     .catch((err) => {
-                      toast.error(
-                        "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-                      );
+                      toast.error(translate("error.generic"));
                     });
                 }}
               >
@@ -647,23 +637,26 @@ const ViewSet = () => {
                 style={{ textDecoration: "none" }}
                 to={`/study/${set[0].set_id}`}
               >
-                <button>Study</button>
+                <button>{translate("button.Study")}</button>
               </Link>
-              <button className="disabled">Play</button>
               <Link
                 style={{ textDecoration: "none" }}
                 to={`/review/${set[0].set_id}`}
               >
-                <button>Review</button>
+                <button>{translate("button.Review")}</button>
               </Link>
 
               {likedSet ? (
-                <button onClick={dislikeSet}>Dislike</button>
+                <button onClick={dislikeSet}>
+                  {translate("button.Dislike")}
+                </button>
               ) : (
-                <button onClick={likeSet}>Like</button>
+                <button onClick={likeSet}>{translate("button.Like")}</button>
               )}
               {set.length && token.user_id == set[0].user_id ? (
-                <button onClick={addFlashcard}>Add flashcards</button>
+                <button onClick={addFlashcard}>
+                  {translate("button.addFlashcard")}
+                </button>
               ) : (
                 ""
               )}
@@ -671,7 +664,7 @@ const ViewSet = () => {
                 style={{ border: moreOpen ? "5px solid white" : "" }}
                 onClick={() => setMoreOpen((prev) => !prev)}
               >
-                {moreOpen ? "Less" : "More"}
+                {moreOpen ? translate("button.Less") : translate("button.More")}
               </button>
 
               {moreOpen ? (
@@ -685,33 +678,38 @@ const ViewSet = () => {
                         }))
                       }
                     >
-                      Add to folder
+                      {translate("button.addToFolder")}
                     </button>
                   ) : (
                     ""
                   )}
                   {set.length && token.user_id == set[0].user_id ? (
                     <button onClick={() => navigate(`/set/edit/${id}`)}>
-                      Edit
+                      {translate("button.Edit")}
                     </button>
                   ) : (
                     ""
                   )}
-                  <button onClick={combinePopup}>Combine</button>
+                  <button onClick={combinePopup}>
+                    {translate("button.Combine")}
+                  </button>
                   {set.length && token.user_id == set[0].user_id ? (
-                    <button onClick={copySet}>Copy</button>
+                    <button onClick={copySet}>
+                      {translate("button.Copy")}
+                    </button>
                   ) : (
                     ""
                   )}
 
-                  <button onClick={Share}>Share</button>
+                  <button onClick={Share}>{translate("button.Share")}</button>
 
-                  <button onClick={exportSet}>Export</button>
+                  <button onClick={exportSet}>
+                    {" "}
+                    {translate("button.Export")}
+                  </button>
                   <button
                     onClick={() => {
-                      if (
-                        !confirm("Are you sure you want to delete this set?")
-                      ) {
+                      if (!confirm(translate("prompt.deleteSet"))) {
                         return false;
                       }
                       axiosInstance
@@ -719,19 +717,17 @@ const ViewSet = () => {
                           set_id: set[0].set_id,
                         })
                         .then((response) => {
-                          toast.success("Set deleted! Navigating...");
+                          toast.success(translate("success.setDeleted"));
                           setTimeout(() => {
                             navigate(`/sets`);
                           }, 1000);
                         })
                         .catch((err) => {
-                          toast.error(
-                            "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-                          );
+                          toast.error(translate("error.generic"));
                         });
                     }}
                   >
-                    Delete
+                    {translate("button.Delete")}
                   </button>
                 </>
               ) : (
@@ -742,21 +738,24 @@ const ViewSet = () => {
             ""
           )}
 
-          <p>Created by {set.length ? set[0].username : "Loading..."} </p>
+          <p>
+            {translate("label.createdBy")}{" "}
+            {set.length ? set[0].username : "Loading..."}{" "}
+          </p>
         </div>
         {setStats.length && flashcardStats.length ? (
           <div id="statisticsBox">
-            Great job! You've already gone through this set {setStats.length}{" "}
-            times. You have covered{" "}
+            {translate("label.goneThroughtThisSet")} {setStats.length}{" "}
+            {translate("label.timesYouHaveCovered")}
             {flashcardStats.length == set.length
-              ? "all flashcards."
+              ? translate("label.allFlashcardsLowercase")
               : flashcardStats.length +
-                " out of " +
+                translate("label.outOf") +
                 set.length +
-                " flashcards."}{" "}
-            The flashcard that you know the best is{" "}
+                translate("label.flashcards")}{" "}
+            {translate("label.knownBestFlashcard")}{" "}
             {convertToText(flashcardStats[flashcardStats.length - 1].term)}{" "}
-            while the one you're the least familiar with is{" "}
+            {translate("label.leastFamiliarWith")}{" "}
             {convertToText(flashcardStats[0].term)}.{" "}
           </div>
         ) : (
@@ -799,7 +798,6 @@ const ViewSet = () => {
                       value={cardEdit.term}
                       className="editQuill"
                       onChange={(content) => handleChange(content, "term")}
-                      placeholder={"Term"}
                       modules={{
                         formula: true,
                         imageCompress: {},
@@ -914,11 +912,7 @@ const ViewSet = () => {
                         </button>
                         <button
                           onClick={() => {
-                            if (
-                              !confirm(
-                                "Are you sure you want to discard your changes?"
-                              )
-                            ) {
+                            if (!confirm(translate("prompt.discardChanges"))) {
                               return false;
                             }
                             if (el.new) {
@@ -939,16 +933,16 @@ const ViewSet = () => {
                         </button>
                         <button
                           onClick={() =>
-                            confirm(
-                              "Are you sure you want to delete this flashcard?"
-                            ) &&
+                            confirm(translate("prompt.deleteFlashcard")) &&
                             axiosInstance
                               .post(`/flashcard/delete`, {
                                 flashcard_id: el.flashcard_id,
                                 set_id: set[0].set_id,
                               })
                               .then((response) => {
-                                toast.success("Flashcard deleted!");
+                                toast.success(
+                                  translate("success.flashcardDeleted")
+                                );
                                 setCardEdit({ edit: false });
                                 if (set.length > 1) {
                                   setSet((prev) =>
@@ -970,7 +964,7 @@ const ViewSet = () => {
                                 }
                                 if (!Number(set.length)) {
                                   toast(
-                                    "Hmm, it seems there are no flashcards in this set. Click Add!"
+                                    translate("label.noFlashcardsInThiSet")
                                   );
                                 }
                               })
@@ -988,9 +982,9 @@ const ViewSet = () => {
                 </div>
               ))
             : set.length
-            ? "My pet 🐈 told me there are no flashcards in this set"
+            ? translate("label.noFlashcardsInThiSet")
             : tempSets.length > set.length
-            ? "This cute 🐌 traversed out mythical database but couldn't find what you are looking for"
+            ? translate("label.noObjectFound")
             : ""}
         </div>
       </section>
