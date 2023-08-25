@@ -1,18 +1,17 @@
 import React from "react";
+import translate from "../utils/languagesHandler";
 import "../styles/settings.css";
 const Settings = () => {
   return (
     <div id="settings">
-      <h1>Settings⚙️</h1>
+      <h1>{translate("Settings")}⚙️</h1>
       <section>
-        <h2>Account</h2>
+        <h2>{translate("label.Account")}</h2>
         <ul>
-          <li>Change email</li>
+          <li>{translate("label.changeEmail")}</li>
           <div>
             <p>
-              Changing your email will change the email you use to login. You
-              will be logged out and will have to login again with the new
-              email.
+             {translate("label.changeEmailDescription")}
             </p>
             <p>Your current email is: someemail@gmail.com</p>
             <input type="text" placeholder="New email" />

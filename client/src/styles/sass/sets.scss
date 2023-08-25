@@ -15,7 +15,7 @@ h3 {
   color: gray;
 }
 #page h1 {
-  font-size: 3vmax;
+  font-size: 2.5vmax;
 }
 .card-text {
   font-size: 1vmax;
@@ -42,8 +42,8 @@ h3 {
   -o-animation: SetsBackground 54s ease infinite;
   animation: SetsBackground 54s ease infinite;
   border-radius: 0.4vmax;
-  margin: 1vmax;
-  padding: 1vmax;
+  margin: .5vmax;
+  padding: .3vmax;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -118,4 +118,7 @@ h3 {
   100% {
     background-position: 0% 88%;
   }
+}
+button{
+  cursor:pointer;
 }

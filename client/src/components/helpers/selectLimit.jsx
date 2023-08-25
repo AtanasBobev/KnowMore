@@ -7,10 +7,10 @@ const SelectLimit = (props) => {
   return (
     <select onChange={handleChange} id="selectSort">
       <option selected disabled>{translate("option.Show")}</option>
-      <option value={100}>{translate("options.100Sets")}</option>
-      <option value={300}>{translate("options.300Sets")}</option>
-      <option value={500}>{translate("options.500Sets")}</option>
-      <option value={1000}>{translate("options.1000Sets")}</option>
+      <option value={100}>{translate("option.100Sets")}</option>
+      <option value={300}>{translate("option.300Sets")}</option>
+      <option value={500}>{translate("option.500Sets")}</option>
+      <option value={1000}>{translate("option.1000Sets")}</option>
     </select>
   );
 };

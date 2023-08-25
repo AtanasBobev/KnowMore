@@ -321,7 +321,7 @@ const EditFolder = () => {
               >
                 {translate("label.updateFolderWith")}
                 {setsChosen.length
-                  ? `${translate("label.with")} ${
+                  ? ` ${
                       setsChosen.length
                     } ${translate("label.setS")}`
                   : translate("label.noSets")}

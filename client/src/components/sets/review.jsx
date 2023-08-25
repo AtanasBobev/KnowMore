@@ -8,7 +8,7 @@ import {
 } from "../../utils/reviewMethods";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
-import translate from "../../utils/translate";
+import translate from "../../utils/languagesHandler";
 import "../../styles/review.css";
 
 const Review = () => {

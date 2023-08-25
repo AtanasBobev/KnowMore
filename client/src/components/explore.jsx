@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { convert as parse } from "html-to-text";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import translate from "../utils/languagesHandler";
 import "../styles/allPages.css";
 import { toast, ToastContainer } from "react-toastify";
 import axiosInstance from "../utils/axiosConfig";

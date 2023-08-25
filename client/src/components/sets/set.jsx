@@ -20,7 +20,6 @@ import ImportModal from "../helpers/importModal";
 import speak from "../../utils/speechSynthesis";
 import katex from "katex";
 import "katex/dist/katex.min.css";
-import Translate from "../helpers/translate";
 import { useNavigate } from "react-router-dom";
 import CombineModal from "../helpers/combineModal";
 import AddToFolderModal from "../helpers/addToFolderModal";

@@ -80,7 +80,7 @@ const Folder = () => {
           <h2 style={{ color: "gray" }}>{parse(folder.description)}</h2>
           <h3 style={{ color: "gray" }}>{translate("label.createdBy")} {folder.owner}</h3>
           <div className="setContainer">
-            {sets.length
+            {sets.set_title
               ? sets[0].set_id
                 ? sets.map((el) => (
                     <section className="card">

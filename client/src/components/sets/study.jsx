@@ -6,6 +6,7 @@ import measureDistance from "../../utils/measureDifference";
 import axiosInstance from "../../utils/axiosConfig";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/study.css";
+import translate from "../../utils/languagesHandler";
 import {
   getSet,
   getConfidenceLevel,

@@ -1,3 +1,4 @@
+import { set } from "date-fns";
 import axiosInstance from "./axiosConfig";
 
 
@@ -11,6 +12,7 @@ const loadLanguageData = async (language) => {
     return response.data;
   } catch (error) {
     console.error("Error loading language data:", error);
+    setTimeout(() => loadLanguageData(language), 3000);
     return {};
   }
 };
@@ -21,7 +23,10 @@ const initializeLanguageData = async () => {
 };
 
 const translate = (key) => {
-  return languageData[key] || "😎"; // Return the translation or the key itself if not found
+  if (!languageData[key]) {
+    return key;
+  }
+  return languageData[key];
 };
 
 window.addEventListener("load", initializeLanguageData);

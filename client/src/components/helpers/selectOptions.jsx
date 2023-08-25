@@ -14,7 +14,7 @@ const SelectOptions = (props) => {
     onChange={handleChange}
     id="categorySelect"
   >
-    <option value="-" disabled>
+    <option value="-" selected="true" disabled="disabled">
       {translate("option.Category")}
     </option>
     <option value="">{translate("options.All")}</option>
