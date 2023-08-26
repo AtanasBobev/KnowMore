@@ -426,10 +426,6 @@ const ViewSet = () => {
     }));
   };
   const exportSet = () => {
-    if (!token.user_id) {
-      toast(translate("error.notLoggedIn"));
-      return;
-    }
     axiosInstance
       .get(`/set/export/${set[0].set_id}`)
       .then((res) => {
@@ -608,6 +604,7 @@ const ViewSet = () => {
           {set.length && !set[0].flashcard_id ? (
             <div>
               <button onClick={() => navigate(`/set/edit/${id}`)}>Edit</button>
+
               <button
                 onClick={() => {
                   if (!confirm(translate("prompt.deleteSet"))) {
@@ -693,13 +690,17 @@ const ViewSet = () => {
                   ) : (
                     ""
                   )}
-                  <button onClick={combinePopup}>
-                    {translate("button.Combine")}
-                  </button>
+
                   {set.length && token.user_id == set[0].user_id ? (
-                    <button onClick={copySet}>
-                      {translate("button.Copy")}
-                    </button>
+                    <>
+                      {" "}
+                      <button onClick={copySet}>
+                        {translate("button.Copy")}
+                      </button>
+                      <button onClick={combinePopup}>
+                        {translate("button.Combine")}
+                      </button>
+                    </>
                   ) : (
                     ""
                   )}
@@ -710,28 +711,32 @@ const ViewSet = () => {
                     {" "}
                     {translate("button.Export")}
                   </button>
-                  <button
-                    onClick={() => {
-                      if (!confirm(translate("prompt.deleteSet"))) {
-                        return false;
-                      }
-                      axiosInstance
-                        .post(`/set/delete`, {
-                          set_id: set[0].set_id,
-                        })
-                        .then((response) => {
-                          toast.success(translate("success.setDeleted"));
-                          setTimeout(() => {
-                            navigate(`/sets`);
-                          }, 1000);
-                        })
-                        .catch((err) => {
-                          toast.error(translate("error.generic"));
-                        });
-                    }}
-                  >
-                    {translate("button.Delete")}
-                  </button>
+                  {set.length && token.user_id == set[0].user_id ? (
+                    <button
+                      onClick={() => {
+                        if (!confirm(translate("prompt.deleteSet"))) {
+                          return false;
+                        }
+                        axiosInstance
+                          .post(`/set/delete`, {
+                            set_id: set[0].set_id,
+                          })
+                          .then((response) => {
+                            toast.success(translate("success.setDeleted"));
+                            setTimeout(() => {
+                              navigate(`/sets`);
+                            }, 1000);
+                          })
+                          .catch((err) => {
+                            toast.error(translate("error.generic"));
+                          });
+                      }}
+                    >
+                      {translate("button.Delete")}
+                    </button>
+                  ) : (
+                    ""
+                  )}
                 </>
               ) : (
                 ""

@@ -382,7 +382,7 @@ router.post("/sets/all/", (req, res) => {
   }
 });
 
-router.get("/set/export/:id", authorizeToken, (req, res) => {
+router.get("/set/export/:id", (req, res) => {
   const set_id = req.params.id;
   if (
     set_id < 0 ||
