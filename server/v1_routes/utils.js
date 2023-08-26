@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../utils/dbConfig");
-const { authorizeToken } = require("../utils/authMiddleware");
-const { convert } = require("html-to-text");
+const fs = require("fs");
 
 router.get("/languages/:lang", (req, res) => {
   let lang = req.params.lang;

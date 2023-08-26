@@ -4,7 +4,7 @@ import "../styles/settings.css";
 const Settings = () => {
   return (
     <div id="settings">
-      <h1>{translate("Settings")}⚙️</h1>
+      <h1>{translate("label.Settings")}⚙️</h1>
       <section>
         <h2>{translate("label.Account")}</h2>
         <ul>

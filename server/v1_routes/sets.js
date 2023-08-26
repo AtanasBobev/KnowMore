@@ -4,7 +4,7 @@ const pool = require("../utils/dbConfig");
 const { authorizeToken } = require("../utils/authMiddleware");
 const { convert } = require("html-to-text");
 
-router.get("/set/:id", authorizeToken, (req, res) => {
+router.get("/set/:id", (req, res) => {
   const set_id = req.params.id;
   if (
     set_id < 0 ||

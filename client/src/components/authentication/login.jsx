@@ -32,12 +32,12 @@ const Login = () => {
       <section id="login" className="centerWrapper">
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
-          <input type="text" placeholder={translate("Username")} name="username" />
-          <input type="password" placeholder={translate("Password")} name="password" />
-          <button type="submit">{translate("Login")}🔥</button>
+          <input type="text" placeholder={translate("placeholder.Username")} name="username" />
+          <input type="password" placeholder={translate("placeholder.Password")} name="password" />
+          <button type="submit">{translate("label.Login")}🔥</button>
         </form>
         <p className="error">{error}</p>
-        <a href="/register">{translate("registerLabel")}</a>
+        <a href="/register">{translate("label.registerLabel")}</a>
       </section>
     </>
   );

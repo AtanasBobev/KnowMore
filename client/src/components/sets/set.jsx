@@ -95,30 +95,31 @@ const ViewSet = () => {
         setIsSetValid(false);
         return false;
       });
-
-    axiosInstance.get(`/statstics/personal/sets/${id}`).then((response) => {
-      setSetStats(response.data);
-    });
-
-    axiosInstance
-      .get(`/statstics/personal/flashcards/${id}`)
-      .then((response) => {
-        let tempArray = response.data;
-        if (tempArray) {
-          tempArray.sort((a, b) => {
-            const confidenceA = Number(a.confidence);
-            const confidenceB = Number(b.confidence);
-            return confidenceA - confidenceB;
-          });
-          setFlashcardStats(response.data);
-        }
+    if (token.user_id) {
+      axiosInstance.get(`/statstics/personal/sets/${id}`).then((response) => {
+        setSetStats(response.data);
       });
 
-    axiosInstance.get(`/set/liked/${id}`).then((response) => {
-      if (response.data) {
-        setLikedSet(true);
-      }
-    });
+      axiosInstance
+        .get(`/statstics/personal/flashcards/${id}`)
+        .then((response) => {
+          let tempArray = response.data;
+          if (tempArray) {
+            tempArray.sort((a, b) => {
+              const confidenceA = Number(a.confidence);
+              const confidenceB = Number(b.confidence);
+              return confidenceA - confidenceB;
+            });
+            setFlashcardStats(response.data);
+          }
+        });
+
+      axiosInstance.get(`/set/liked/${id}`).then((response) => {
+        if (response.data) {
+          setLikedSet(true);
+        }
+      });
+    }
   };
   const sortFlashcards = () => {
     let sortedSet = [...set];
@@ -405,6 +406,7 @@ const ViewSet = () => {
         onlyPersonalSets: combineModal.onlyPersonalSets,
       })
       .then((res) => {
+        res.data = res.data.filter((el) => el.set_id !== set[0].set_id);
         setCombineModal((prevModal) => ({
           ...prevModal,
           open: true,
@@ -530,7 +532,9 @@ const ViewSet = () => {
   }, [furtherRefinements]);
 
   useEffect(() => {
-    getFolders();
+    if (token.user_id) {
+      getFolders();
+    }
   }, []);
 
   useEffect(() => {
