@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import parse from "html-react-parser";
 import axiosInstance from "../../utils/axiosConfig.js";
 import axios from "axios";
+import translate from "../../utils/languagesHandler.js";
 const AddToFolderModal = (props) => {
   const addToFolder = () => {
     axiosInstance
@@ -16,10 +17,10 @@ const AddToFolderModal = (props) => {
           open: false,
           foldersChosen: [],
         });
-        props.toast("Added to folder");
+        props.toast(translate("success.addedToFolder"));
       })
       .catch((err) => {
-        props.toast("Error adding to folder");
+        props.toast(translate("error.cannotAddToFolder"));
         props.setAddToFolderPopup({
           ...props.addToFolderPopup,
           open: false,
@@ -94,7 +95,9 @@ const AddToFolderModal = (props) => {
           </div>
           <div className="modal-footer">
             {props.addToFolderPopup.foldersChosen.length ? (
-              <button onClick={addToFolder}>Add to folder</button>
+              <button onClick={addToFolder}>
+                {translate("label.addToFolder")}
+              </button>
             ) : (
               ""
             )}
@@ -108,7 +111,7 @@ const AddToFolderModal = (props) => {
                 })
               }
             >
-              Close
+              {translate("button.Close")}{" "}
             </button>
           </div>
         </div>

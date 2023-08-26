@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { convert as parse } from "html-to-text";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import translate from "../utils/languagesHandler";
 import "../styles/allPages.css";
 import { toast, ToastContainer } from "react-toastify";
 import axiosInstance from "../utils/axiosConfig";
@@ -34,7 +34,7 @@ const Explore = () => {
           setSets(res.data);
         })
         .catch((err) => {
-          console.log(err);
+          toast.error(translate("error.generic"));
         });
     } else {
       axiosInstance
@@ -49,7 +49,7 @@ const Explore = () => {
           setSets(res.data);
         })
         .catch((err) => {
-          console.log(err);
+          toast.error(translate("error.generic"));
         });
     }
   };
@@ -58,21 +58,17 @@ const Explore = () => {
       try {
         let url = `${window.location.origin}/folder/${folder_id}`;
         window.navigator.clipboard.writeText(url);
-        toast.success("Share link has been copied to clipboard");
+        toast.success(translate("success.sharedLinkCopied"));
       } catch (err) {
-        toast.error(
-          "It seems like the share functionality doesn't work on your browser"
-        );
+        toast.error(translate("error.featureNotSupported"));
       }
     } else {
       try {
         let url = `${window.location.origin}/set/${set.set_id}`;
         window.navigator.clipboard.writeText(url);
-        toast.success("Share link has been copied to clipboard");
+        toast.success(translate("success.sharedLinkCopied"));
       } catch (err) {
-        toast.error(
-          "It seems like the share functionality doesn't work on your browser"
-        );
+        toast.error(translate("error.featureNotSupported"));
       }
     }
   };
@@ -87,19 +83,21 @@ const Explore = () => {
         theme="colored"
         closeOnClick
       />{" "}
-      <h1>Explore community creations 🔍</h1>
+      <h1 style={{ margin: "2vmax" }}>
+        {translate("label.communityCreations")}
+      </h1>
       <center>
         <select onChange={(e) => setTypeSearch(e.target.value)}>
           <option selected value="Sets">
-            Sets
+            {translate("Sets")}
           </option>
-          <option value="Folders">Folders</option>
+          <option value="Folders"> {translate("label.Folders")}</option>
         </select>
         <SelectLimit setLimit={setLimit} />
         <input
           style={{ width: "50ch" }}
           maxLength={100}
-          placeholder="Search all sets"
+          placeholder={translate("label.searchAllSets")}
           onChange={(e) =>
             setQuery(e.target.value.length ? e.target.value : "")
           }
@@ -107,12 +105,11 @@ const Explore = () => {
         <SelectOptions setCategory={setCategory} />
         <SelectSort setSortBy={setSortBy} />
         <button className="searchBtn" onClick={search}>
-          Search
+          {translate("button.Search")}
         </button>
       </center>
       {sets.length ? (
         <>
-          {/*  */}
           <div className="setContainer">
             {sets.length
               ? sets.map((el) => (
@@ -149,7 +146,7 @@ const Explore = () => {
                         style={{ backgroundColor: "transparent" }}
                         onClick={() => multiShare(el.folder_id, el)}
                       >
-                        Share
+                        {translate("button.share")}
                       </button>
                       {el.user_id === token.user_id ? (
                         <button
@@ -158,11 +155,11 @@ const Explore = () => {
                             if (el.folder_id) {
                               navigate(`/folder/edit/${el.folder_id}`);
                             } else {
-                              navigate(`/edit/${el.set_id}`);
+                              navigate(`/set/edit/${el.set_id}`);
                             }
                           }}
                         >
-                          Edit
+                          {translate("button.share")}
                         </button>
                       ) : (
                         ""
@@ -178,7 +175,7 @@ const Explore = () => {
                               window.location.href = `/set/delete/${el.set_id}`;
                           }}
                         >
-                          Delete
+                          {translate("button.delete")}
                         </button>
                       ) : (
                         ""
@@ -190,10 +187,7 @@ const Explore = () => {
           </div>
         </>
       ) : (
-        <h2 id="infoText">
-          My pet parrot 🦜 flew across many oceans but couldn't find the set you
-          are looking for. Why not create it?
-        </h2>
+        <h2 id="infoText">{translate("label.noObjectFound")}</h2>
       )}
     </div>
   );

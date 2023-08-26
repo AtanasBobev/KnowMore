@@ -134,6 +134,8 @@ select {
   padding: 0.5vmax;
   font-size: 1.1vmax;
   min-width: 10ch;
+  max-width: 30ch;
+  width: auto;
   background-color: white;
 }
 

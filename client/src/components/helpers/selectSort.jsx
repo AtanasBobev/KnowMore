@@ -1,3 +1,4 @@
+import translate from "../../utils/languagesHandler";
 const SelectOptions = (props) => {
   const handleChange = (e) => {
     const value = e.target.value;
@@ -5,11 +6,11 @@ const SelectOptions = (props) => {
   };
   return (
     <select onChange={handleChange} id="selectSort">
-      <option selected disabled>Sort by</option>
-      <option value="name">Best match</option>
-      <option value="date_created">Most recent</option>
-      <option value="likes">Likes</option>
-      <option value="date_modified">Revisions</option>
+      <option selected disabled>{translate("options.SortBy")}</option>
+      <option value="name">{translate("options.Name")}</option>
+      <option value="date_created">{translate("options.DateCreated")}</option>
+      <option value="likes">{translate("options.Likes")}</option>
+      <option value="date_modified">{translate("options.DateModified")}</option>
     </select>
   );
 };

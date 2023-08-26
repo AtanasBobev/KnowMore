@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../utils/axiosConfig";
-import "../styles/allPages.css";
-import "../styles/forms.css";
+import axiosInstance from "../../utils/axiosConfig";
+import "../../styles/allPages.css";
+import "../../styles/forms.css";
+import translate from "../../utils/languagesHandler";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -68,12 +69,12 @@ const Register = () => {
         closeOnClick
       />{" "}
       <section className="centerWrapper" id="register">
-        <h2>Register</h2>
+        <h2>{translate("Register")}</h2>
         <form onSubmit={handleSubmit}>
           <input
             required
             type="text"
-            placeholder="Username"
+            placeholder={translate("Username")}
             name="username"
             value={formData.username}
             onChange={handleChange}
@@ -81,7 +82,7 @@ const Register = () => {
           <input
             required
             type="password"
-            placeholder="Password"
+            placeholder={translate("Password")}
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -89,7 +90,7 @@ const Register = () => {
           <input
             required
             type="password"
-            placeholder="Confirm Password"
+            placeholder={translate("repeatPassword")}
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
@@ -97,31 +98,31 @@ const Register = () => {
           <input
             required
             type="email"
-            placeholder="Email"
+            placeholder={translate("Email")}
             name="email"
             value={formData.email}
             onChange={handleChange}
           />
           <select name="gender" id="gender" onChange={handleChange}>
             <option disabled="disabled" selected="selected">
-              Please select
+              {translate("pleaseSelect")}
             </option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="male">{translate("male")}</option>
+            <option value="female">{translate("female")}</option>
           </select>
           <input
             required
             type="number"
             min="1"
             max="99"
-            placeholder="Age"
+            placeholder={translate("Age")}
             name="age"
             value={formData.age}
             onChange={handleChange}
           />
-          <button type="submit">Register🪄</button>
+          <button type="submit">{translate("Register")}🪄</button>
         </form>
-        <a href="/login">You have an account?</a>
+        <a href="/login">{translate("loginLabel")}</a>
       </section>
     </>
   );

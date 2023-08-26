@@ -4,14 +4,15 @@ import ReactQuill from "react-quill";
 import { useNavigate } from "react-router-dom";
 import ImageResize from "quill-image-resize-module-react";
 import ImageCompress from "quill-image-compress";
-import SelectOptions from "./helpers/selectOptions";
+import SelectOptions from "../helpers/selectOptions";
 import { convert as convertToText } from "html-to-text";
 import { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "../styles/create.css";
+import "../../styles/create.css";
 import "react-toastify/dist/ReactToastify.css";
-import ImportModalComponent from "./helpers/importModal";
-import axiosInstance from "../utils/axiosConfig";
+import ImportModalComponent from "../helpers/importModal";
+import axiosInstance from "../../utils/axiosConfig";
+import translate from "../../utils/languagesHandler";
 import {
   handleFlashcardDelete,
   handleTermChange,
@@ -25,8 +26,8 @@ import {
   handlePushDown,
   handleCopyFlashcard,
   handleSearchTermOnline,
-} from "../utils/flashcardsOperations";
-import ImportModal from "./helpers/importModal";
+} from "../../utils/flashcardsOperations";
+import ImportModal from "../helpers/importModal";
 
 const Create = () => {
   const [flashcards, setFlashcards] = useState([]);
@@ -70,23 +71,23 @@ const Create = () => {
       };
     });
     if (tempTitle.body.innerText.length > 1e4) {
-      toast("Title size is too big! We are not going to save it.");
+      toast(translate("error.titleTooLong"));
       return;
     }
     if (tempDescription.body.innerText.length > 1e4) {
-      toast("Description size is too big! We are not going to save it.");
+      toast(translate("error.descriptionTooLong"));
       return;
     }
     if (tempTitle.body.innerText.length < 1) {
-      toast("Title is empty! We are not going to save it.");
+      toast(translate("error.titleTooShort"));
       return;
     }
     if (flashcardsArray.length > 20000) {
-      toast("You can't have more than 20000 flashcards!");
+      toast(translate("error.tooManyFlashcards"));
       return;
     }
     if (flashcardsArray.length == 0) {
-      toast("You need at least 1 flashcards!");
+      toast(translate("error.atLeastOneFlashcards"));
       return;
     }
     //check if all flashcards are valid but don't spam with multiple messaes
@@ -110,9 +111,7 @@ const Create = () => {
       }
     });
     if (!validFlashcards) {
-      toast(
-        "Hmm, some flashcards are not valid! Recheck for empty flashcards or excessive size."
-      );
+      toast(translate("error.invaildFlashcards"));
       return;
     }
     let cumulativeSize = 0;
@@ -121,9 +120,7 @@ const Create = () => {
       cumulativeSize += flashcard.definition.length;
     });
     if (cumulativeSize > 1e7) {
-      toast(
-        "Whoah! Some flashcards are too big! Recheck for excessive size. Check for images too!"
-      );
+      toast(translate("error.flashcardExcessiveSize"));
       //check for the largest flashcards and display them
       let largestFlashcards = [];
       flashcardsArray.forEach((flashcard) => {
@@ -140,7 +137,7 @@ const Create = () => {
           largestFlashcard = flashcard;
         }
       });
-      toast("The largest flashcard is " + largestFlashcard.term);
+      toast(translate("label.largestFlashcard") + largestFlashcard.term);
       return;
     }
 
@@ -159,13 +156,13 @@ const Create = () => {
         localStorage.removeItem("flashcards");
         localStorage.removeItem("title");
         localStorage.removeItem("description");
-        toast("Flashcard set created successfully! Navigating you to it...");
+        toast(translate("label.successfulSetCreation"));
         setTimeout(() => {
           navigate(`/set/${res.data.set_id}`);
         }, 2000);
       })
       .catch((err) => {
-        toast("Error creating flashcard set! " + err.message);
+        toast(translate("error.generic"));
       });
   };
 
@@ -190,12 +187,11 @@ const Create = () => {
         setFlashcards={setFlashcards}
       />
       <div className="flashcard main">
-        <h2 style={{ userSelect: "none" }}>Set title</h2>
+        <h2 style={{ userSelect: "none" }}>{translate("label.setTitle")}</h2>
 
         <ReactQuill
           className="bg-x"
           onChange={(value) => setTitle(value)}
-          placeholder="Economics 101"
           value={title}
           modules={{
             toolbar: [
@@ -228,14 +224,13 @@ const Create = () => {
           }}
         />
         <h2 style={{ marginTop: "1vmax", userSelect: "none" }}>
-          Set description
+          {translate("label.setDescription")}{" "}
         </h2>
 
         <ReactQuill
           className="sm"
           onChange={(value) => setDescription(value)}
           value={description}
-          placeholder="Chapter 1 and 2 including the text questions assigned by the professor"
           modules={{
             imageCompress: {},
             toolbar: [
@@ -267,7 +262,7 @@ const Create = () => {
           }}
         />
         <section id="btnGroup">
-          <button onClick={() => setImportModal({ open: true })}>Import</button>
+          <button onClick={() => setImportModal({ open: true })}>{translate("button.Import")}</button>
           {flashcards.length ? (
             <button
               onClick={() =>
@@ -387,11 +382,11 @@ const Create = () => {
               </button>
             </div>
             <h2>
-              Flashcard {index + 1}/{flashcards.length}
+              {translate("label.Flashcard")} {index + 1}/{flashcards.length}
             </h2>
           </div>
           <div className="flashcard">
-            <h3>Term</h3>
+            <h3>{translate("label.Term")}</h3>
             <ReactQuill
               value={flashcard.term}
               className="bg"
@@ -404,7 +399,6 @@ const Create = () => {
                   toast
                 )
               }
-              placeholder="Comparative advantage"
               modules={{
                 imageCompress: {},
                 toolbar: [
@@ -439,7 +433,7 @@ const Create = () => {
                 },
               }}
             />
-            <h3>Definition</h3>
+            <h3>{translate("label.Definition")}</h3>
             <ReactQuill
               className="sm-s"
               value={flashcard.definition}
@@ -452,7 +446,6 @@ const Create = () => {
                   toast
                 )
               }
-              placeholder="Countries or individuals should specialize in producing/exporting goods/services for which they have a lower OC..."
               modules={{
                 imageCompress: {},
                 toolbar: [

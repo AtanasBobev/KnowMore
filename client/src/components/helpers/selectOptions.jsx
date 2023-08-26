@@ -1,4 +1,5 @@
 import {useState} from "preact/hooks"
+import translate from "../../utils/languagesHandler";
 const SelectOptions = (props) => {
   const [defaultEl, setDefaultEl] = useState(props.initialState);
   const handleChange = (e) => {
@@ -13,19 +14,21 @@ const SelectOptions = (props) => {
     onChange={handleChange}
     id="categorySelect"
   >
-    <option value="-" disabled>
-      Category
+    <option value="-" selected="true" disabled="disabled">
+      {translate("option.Category")}
     </option>
-    <option value="">All</option>
-    <option value="biology/chemistry">Biology/Chemistry</option>
-    <option value="math">Math</option>
-    <option value="history">History</option>
-    <option value="english">English</option>
-    <option value="otherLang">Other languages</option>
-    <option value="programming">Programming</option>
-    <option value="art">Art</option>
-    <option value="sports">Sports</option>
-    <option value="sciencefiction">Science Fiction</option>
+    <option value="">{translate("options.All")}</option>
+    <option value="biology">{translate("options.Biology")}</option>
+    <option value="chemistry">{translate("options.Chemistry")}</option>
+    <option value="physics">{translate("options.Physics")}</option>
+    <option value="math">{translate("options.Math")}</option>
+    <option value="economics">{translate("options.Economics")}</option>
+    <option value="history">{translate("options.History")}</option>
+    <option value="english">{translate("options.English")}</option>
+    <option value="otherLang">{translate("options.otherLanguages")}</option>
+    <option value="literature">{translate("options.Literature")}</option>
+    <option value="generalKnowledge">{translate("options.generalKnowledge")}</option>
+    <option value="other">{translate("Other")}</option>
   </select>
   );
 };

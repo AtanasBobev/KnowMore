@@ -1,19 +1,20 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Register from "./components/register";
-import Login from "./components/login";
-import CreateSet from "./components/createSet";
-import CreateFolder from "./components/createFolder";
-import VerifyEmail from "./components/verify-email";
-import Study from "./components/study";
+import Register from "./components/authentication/register";
+import Login from "./components/authentication/login";
+import CreateSet from "./components/sets/createSet";
+import CreateFolder from "./components/folders/createFolder";
+import VerifyEmail from "./components/authentication/verifyEmail";
+import Study from "./components/sets/study";
 import NavBar from "./components/navBar";
-import ViewSet from "./components/set";
-import Sets from "./components/sets";
-import Review from "./components/review";
-import Explore from "./components/mainPage";
-import Edit from "./components/edit";
-import Folder from "./components/folder";
-import Folders from "./components/folders";
-import FolderEdit from "./components/editFolder";
+import ViewSet from "./components/sets/set";
+import Sets from "./components/sets/sets";
+import Review from "./components/sets/review";
+import Explore from "./components/explore";
+import EditSet from "./components/sets/editSet";
+import Folder from "./components/folders/folder";
+import Folders from "./components/folders/folders";
+import FolderEdit from "./components/folders/editFolder";
+import Settings from "./components/settings";
 export function App() {
   return (
     <>
@@ -33,8 +34,9 @@ export function App() {
             <Route path="/set/:id" element={<ViewSet />} />
             <Route path="/sets" element={<Sets />} />
             <Route path="/review/:id" element={<Review />} />
-            <Route path="/edit/:id" element={<Edit />} />
+            <Route path="/set/edit/:id" element={<EditSet />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
         </div>
       </BrowserRouter>

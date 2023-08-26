@@ -1,4 +1,5 @@
-import "../styles/forms.css";
+//TODO: Make the component connect to the backend and send the email to the user
+import "../../styles/forms.css";
 const Verify = () => {
   return (
     <div className="centerWrapper" id="verify">

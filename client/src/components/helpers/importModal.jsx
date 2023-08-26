@@ -1,5 +1,5 @@
 import React from "react";
-
+import translate from "../../utils/languagesHandler";
 const ImportModal = props => {
   return (
     <>
@@ -13,10 +13,10 @@ const ImportModal = props => {
                   importText: e.target.value,
                 }))
               }
-              placeholder="Copy paste your set here. For example: Term 1 - Definition 1, Term 2 - Definition 2, Term 3 - Definition 3 or any other syntax"
+              placeholder={translate("placeholder.importText")}
               id="importText"
             ></textarea>
-            <p>Character between term and definition</p>
+            <p>{translate("label.characterBetween")}</p>
             <input
               onChange={(e) =>
                 props.setImportModal((prevModal) => ({
@@ -28,7 +28,7 @@ const ImportModal = props => {
               placeholder=" - "
               id="importChar"
             />
-            <p>Character between cards. Use /n for a new line</p>
+            <p>{translate("label.characterBetweenCards")}</p>
             <input
               onChange={(e) =>
                 props.setImportModal((prevModal) => ({
@@ -53,10 +53,10 @@ const ImportModal = props => {
                 )
               }
             >
-              Import set
+              {translate("button.importSet")}
             </button>
             <button onClick={() => props.setImportModal({ open: false })}>
-              Close
+              {translate("button.Close")}
             </button>
           </div>
         </section>

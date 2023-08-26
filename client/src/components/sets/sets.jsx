@@ -1,15 +1,17 @@
 import { useEffect, useState } from "preact/hooks";
+import translate from "../../utils/languagesHandler";
 import { convert as parse } from "html-to-text";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import "../styles/allPages.css";
-import axiosInstance from "../utils/axiosConfig";
-import SelectOptions from "./helpers/selectOptions";
-import SelectSort from "./helpers/selectSort";
-import SelectLimit from "./helpers/selectLimit";
-import token from "../utils/jwtParser";
-import "../styles/sets.css";
+import "../../styles/allPages.css";
+import axiosInstance from "../../utils/axiosConfig";
+import SelectOptions from "../helpers/selectOptions";
+import SelectSort from "../helpers/selectSort";
+import SelectLimit from "../helpers/selectLimit";
+import token from "../../utils/jwtParser";
+import "../../styles/sets.css";
 import { useNavigate } from "react-router-dom";
+import { set } from "date-fns";
 const SetsComponent = () => {
   const [sets, setSets] = useState([]);
   const [category, setCategory] = useState();
@@ -24,39 +26,36 @@ const SetsComponent = () => {
         setSets(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(translate("error.generic"));
       });
   };
   const Share = (set_id) => {
     try {
       let url = `${window.location.origin}/set/${set_id}`;
       window.navigator.clipboard.writeText(url);
-      toast.success("Share link has been copied to clipboard");
+      toast.success(translate("success.sharedLinkCopied"));
     } catch (err) {
-      toast.error(
-        "It seems like the share functionality doesn't work on your browser"
-      );
+      toast.error(translate("error.featureNotSupported"));
     }
   };
   const removeSet = (set_id, user_id) => {
-    //check if the user is the owner of the folder
     if (token.user_id !== user_id) {
-      toast.error("You are not the owner of this set");
+      toast.error(translate("error.notOwner"));
       return false;
     }
-    if (!confirm("Are you sure you want to delete this set?")) {
+    if (!confirm(translate("prompt.deleteSet"))) {
       return false;
     }
     axiosInstance
       .post(`/set/delete`, { set_id })
       .then((res) => {
         if (res.status === 200) {
-          toast.success("Set deleted successfully");
-          search();
+          toast.success(translate("success.setDeleted"));
+          setSets(sets.filter((el) => el.set_id !== set_id));
         }
       })
       .catch((err) => {
-        toast.error("Ooops, something went wrong");
+        toast.error(translate("error.generic"));
       });
   };
 
@@ -71,7 +70,7 @@ const SetsComponent = () => {
         theme="colored"
         closeOnClick
       />
-      <h1>Your sets 🗂️</h1>
+      <h1 style={{ margin: "2vmax" }}>{translate("label.yourSets")} 🧮</h1>
 
       {sets.length ? (
         <>
@@ -80,7 +79,7 @@ const SetsComponent = () => {
             <input
               style={{ width: "50ch", margin: ".5vmax" }}
               maxLength={100}
-              placeholder="Search your sets"
+              placeholder={translate("placeholder.searchOwnSets")}
               onChange={(e) =>
                 setQuery(e.target.value.length ? e.target.value : "")
               }
@@ -88,7 +87,7 @@ const SetsComponent = () => {
             <SelectOptions setCategory={setCategory} />
             <SelectSort setSortBy={setSortBy} />
             <button className="searchBtn" onClick={search}>
-              Search
+              {translate("button.search")}
             </button>
           </center>
           {/*  */}
@@ -125,10 +124,10 @@ const SetsComponent = () => {
                         <button
                           style={{ backgroundColor: "transparent" }}
                           onClick={() => {
-                            navigate("/edit/" + el.set_id);
+                            navigate("/set/edit/" + el.set_id);
                           }}
                         >
-                          Edit
+                          {translate("button.Edit")}
                         </button>
                       ) : (
                         ""
@@ -138,7 +137,7 @@ const SetsComponent = () => {
                           style={{ backgroundColor: "transparent" }}
                           onClick={() => removeSet(el.set_id, el.user_id)}
                         >
-                          Delete
+                          {translate("button.Delete")}
                         </button>
                       ) : (
                         ""
@@ -151,8 +150,7 @@ const SetsComponent = () => {
         </>
       ) : (
         <h2 id="infoText">
-          My pet parrot 🦜 flew across many oceans but couldn't find the set you
-          are looking for. Why not create it?
+         {translate("label.noSetsFound")}
         </h2>
       )}
     </div>

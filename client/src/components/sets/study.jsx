@@ -2,17 +2,18 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { ToastContainer, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
-import measureDistance from "../utils/measureDifference";
-import axiosInstance from "../utils/axiosConfig";
+import measureDistance from "../../utils/measureDifference";
+import axiosInstance from "../../utils/axiosConfig";
 import "react-toastify/dist/ReactToastify.css";
-import "../styles/study.css";
+import "../../styles/study.css";
+import translate from "../../utils/languagesHandler";
 import {
   getSet,
   getConfidenceLevel,
   updateSetReview,
   shuffle,
   updateCard,
-} from "../utils/reviewMethods";
+} from "../../utils/reviewMethods";
 
 const MultipleChoice = () => {
   const { id } = useParams();
@@ -25,6 +26,7 @@ const MultipleChoice = () => {
   const [randomIndex, setRandomIndex] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [rightAnswerExpected, setRightAnswerExpected] = useState(false);
   useEffect(() => {
     getSet(
       setTerm,
@@ -36,7 +38,6 @@ const MultipleChoice = () => {
     );
   }, []);
 
-
   const Generate = () => {
     let random = 0,
       temporaryFlashcards = flashcards;
@@ -46,7 +47,7 @@ const MultipleChoice = () => {
       temporaryFlashcards = flashcards.filter(
         (flashcard) => flashcard.rounds > 0
       );
-      toast("⭐You are done with this flashcard!");
+      toast(translate("success.doneWithFlashcard"));
       random = 0;
     }
 
@@ -75,13 +76,28 @@ const MultipleChoice = () => {
   const endStudy = () => {
     updateSetReview(setSentUpdate, originalFlashcards);
     setGameOver(true);
-    toast("🫡You are done with this set!");
-    setTerm("🫡You are done with this set!");
-    setDefinition("🫡You are done with this set!");
+    toast("success.doneWithSet")
+    setTerm("success.doneWithSet");
+    setDefinition("success.doneWithSet");
   };
-  const newQuestion = () => {
+  const newQuestion = (forceTrue=false) => {
     if (gameOver) return;
     if (!flashcards[randomIndex]) {
+      Generate();
+      return;
+    }
+    if(forceTrue){
+      setRightAnswerExpected(false);
+      toast.success("Okay, okay, you are right!");
+      setFlashcards((prev) =>
+        prev.map((flashcard, index) => {
+          if (index === randomIndex) {
+            flashcard.confidence = Number(flashcard.confidence) + 2;
+            flashcard.rounds = Number(flashcard.rounds) - 2;
+          }
+          return flashcard;
+        })
+      );
       Generate();
       return;
     }
@@ -91,10 +107,10 @@ const MultipleChoice = () => {
           .toLowerCase()
           .replace(/ /g, ""),
         inputRef.current.value.toLowerCase().replace(/ /g, "")
-      ) == 1
+      ) == 1 || forceTrue
     ) {
-      toast.success("Correct!");
-
+      setRightAnswerExpected(false);
+      toast.success("success.Correct");
       setFlashcards((prev) =>
         prev.map((flashcard, index) => {
           if (index === randomIndex) {
@@ -106,8 +122,9 @@ const MultipleChoice = () => {
       );
       Generate();
     } else {
+      setRightAnswerExpected(true);
       toast.error(
-        `Write the correct answer: ${sanitizeHTML(
+        `${label.writeCorrectAnswer} ${sanitizeHTML(
           flashcards[randomIndex].term
         )}`
       );
@@ -115,7 +132,7 @@ const MultipleChoice = () => {
         prev.map((flashcard, index) => {
           if (index === randomIndex) {
             flashcard.confidence = Number(flashcard.confidence) + 1;
-            flashcard.rounds = Number(flashcard.rounds) - 1;
+            flashcard.rounds = Number(flashcard.rounds) + 1;
           }
           return flashcard;
         })
@@ -153,13 +170,13 @@ const MultipleChoice = () => {
         ""
       )}
       <div className="quiz-container" id={gameOver && "restart"}>
-        {!gameOver ? <p>Definition:</p> : ""}
+        {!gameOver ? <p>{translate("label.Definition")}:</p> : ""}
         <p id="definition">{definition ? parse(definition) : ""}</p>
         <br />
         {!gameOver ? (
           <>
             {" "}
-            <p>Term:</p>
+            <p>{label.Term}:</p>
             <input
               id="answer"
               type="text"
@@ -167,13 +184,22 @@ const MultipleChoice = () => {
               onKeyDown={handleKeyDown}
             />
             <section id="buttonGroup">
-              <button onClick={() => newQuestion(true)}>I don't know</button>
+              {!rightAnswerExpected ? (
+                <button onClick={() => newQuestion()}>{translate("button.IdontKnow")}</button>
+              ) : (
+                ""
+              )}
+              {rightAnswerExpected ? (
+                <button onClick={() => newQuestion(true)}>{translate("button.IWasRight")}</button>
+              ) : (
+                <button onClick={() => Generate()}>{translate("button.Skip")}</button>
+              )}
               <button onClick={newQuestion}>✅</button>
             </section>
           </>
         ) : (
           <button id="restartBtn" onClick={restartStudy}>
-            Restart
+            {translate("button.Restart")}
           </button>
         )}
       </div>

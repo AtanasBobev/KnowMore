@@ -1,4 +1,5 @@
 import {useState} from "preact/hooks"
+import translate from "../../utils/languagesHandler";
 const SelectLiked = (props) => {
   const [defaultEl, setDefaultEl] = useState(props.initialState);
   const handleChange = (e) => {
@@ -14,10 +15,10 @@ const SelectLiked = (props) => {
     id="likeSelect"
   >
     <option value="-" disabled>
-      Type
+      {translate("option.Type")}
     </option>
-    <option value="all">All</option>
-    <option value="liked">Liked</option>
+    <option value="all">{translate("option.All")}</option>
+    <option value="liked">{translate("option.Liked")}</option>
 
   </select>
   );

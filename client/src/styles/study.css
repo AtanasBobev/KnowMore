@@ -31,6 +31,8 @@
   outline: none;
   padding: 0.2vmax;
   font-weight: 100;
+  border-radius: 0;
+  margin: 1vmax;
 }
 .quiz-container p#definition * {
   color: black;
@@ -41,24 +43,25 @@
   display: flex;
   justify-content: space-between;
 }
-.quiz-container button {
+.quiz-container #buttonGroup button {
   padding: 1vmax;
   background: none;
   border: none;
   color: gray;
   font-size: 1vmax;
-}
-.quiz-container button:nth-child(odd):hover {
   text-decoration: underline;
 }
-.quiz-container button:nth-child(even) {
+.quiz-container #buttonGroup button:nth-child(even) {
+  text-decoration: none;
+}
+.quiz-container #buttonGroup button:last-child {
   text-decoration: none;
   color: black;
   padding: 0.5vmax;
-  font-size: 2vmax;
   border-radius: 0.5vmax;
+  font-size: 2vmax;
 }
-.quiz-container button:nth-child(even):hover {
+.quiz-container #buttonGroup button:last-child:hover {
   transform: scale(1.2);
 }
 .quiz-container #restartBtn {

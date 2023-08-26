@@ -5,24 +5,25 @@ import { ToastContainer, toast } from "react-toastify";
 import parse from "html-react-parser";
 import { convert as convertToText } from "html-to-text";
 import { Link } from "react-router-dom";
-import axiosInstance from "../utils/axiosConfig";
+import axiosInstance from "../../utils/axiosConfig";
 import ReactQuill from "react-quill";
 import { Quill } from "react-quill";
-import "../styles/set.css";
-import token from "../utils/jwtParser";
+import "../../styles/set.css";
+import token from "../../utils/jwtParser";
 import ImageResize from "quill-image-resize-module-react";
 import ImageCompress from "quill-image-compress";
-import SelectLiked from "./helpers/selectLiked";
-import SelectRefineSet from "./helpers/selectRefineSet";
+import SelectLiked from "../helpers/selectLiked";
+import SelectRefineSet from "../helpers/selectRefineSet";
 //DEPRECATED
 //import sortByTerm from "../utils/arraySort";
-import ImportModal from "./helpers/importModal";
-import speak from "../utils/speechSynthesis";
+import ImportModal from "../helpers/importModal";
+import speak from "../../utils/speechSynthesis";
 import katex from "katex";
 import "katex/dist/katex.min.css";
 import { useNavigate } from "react-router-dom";
-import CombineModal from "./helpers/combineModal";
-import AddToFolderModal from "./helpers/addToFolderModal";
+import CombineModal from "../helpers/combineModal";
+import AddToFolderModal from "../helpers/addToFolderModal";
+import translate from "../../utils/languagesHandler";
 window.katex = katex;
 
 const ViewSet = () => {
@@ -88,7 +89,6 @@ const ViewSet = () => {
       .then((response) => {
         setSet(response.data);
         setBugTrack(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         setSet([]);
@@ -120,7 +120,30 @@ const ViewSet = () => {
       }
     });
   };
-
+  const sortFlashcards = () => {
+    let sortedSet = [...set];
+    console.log(furtherRefinements);
+    if (furtherRefinements === "a-z") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termA.localeCompare(termB);
+      });
+    } else if (furtherRefinements === "z-a") {
+      sortedSet.sort((a, b) => {
+        const termA = convertToText(a.term).toLowerCase();
+        const termB = convertToText(b.term).toLowerCase();
+        return termB.localeCompare(termA);
+      });
+    } else if (furtherRefinements === "mostconfident") {
+      sortedSet.sort((a, b) => Number(b.confidence) - Number(a.confidence));
+    } else if (furtherRefinements === "leastconfident") {
+      sortedSet.sort((a, b) => Number(a.confidence) - Number(b.confidence));
+    } else if (furtherRefinements === "id") {
+      sortedSet.sort((a, b) => Number(a.flashcard_id) - Number(b.flashcard_id));
+    }
+    setSet(sortedSet);
+  };
   useEffect(() => {
     getSet();
   }, []);
@@ -129,11 +152,9 @@ const ViewSet = () => {
     try {
       let url = window.location.href;
       window.navigator.clipboard.writeText(url);
-      toast.success("Share link has been copied to clipboard");
+      toast.success(translate("success.sharedLinkCopied"));
     } catch (err) {
-      toast.error(
-        "It seems like the share functionality doesn't work on your browser"
-      );
+      toast.error(translate("error.generic"));
     }
   };
 
@@ -167,17 +188,16 @@ const ViewSet = () => {
     const flashcardToEdit = set.find((el) => el.flashcard_id === flashcard_id);
 
     if (!flashcardToEdit) {
-      toast.error("Flashcard not found!");
+      toast.error(translate("error.flashcardNotFound"));
       return;
     }
-    console.log(convertToText(cardEdit.definition).length);
 
     if (convertToText(cardEdit.term).length < 2) {
-      toast("Term cannot be so empty!");
+      toast(translate("error.termTooShort"));
       return;
     }
     if (convertToText(cardEdit.definition).length < 2) {
-      toast("Definition cannot be so empty!");
+      toast(translate("error.definitionTooShort"));
       return;
     }
     if (
@@ -212,12 +232,10 @@ const ViewSet = () => {
             definition: cardEdit.definition,
           })
           .then((response) => {
-            toast.success("Flashcard edits saved!");
+            toast.success(translate("label.flashcardUpdated"));
           })
           .catch((err) => {
-            toast.error(
-              "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-            );
+            toast.error(translate("error.generic"));
           });
       }
     } else {
@@ -227,11 +245,7 @@ const ViewSet = () => {
   };
   const addFlashcard = () => {
     if (cardEdit.edit && cardEdit.cardBeingEdited) {
-      if (
-        !confirm(
-          "Are you sure you want to discard your changes and add a new flashcard? You are currently editing a flashcard."
-        )
-      ) {
+      if (!confirm(translate("prompt.discardChangesFlashcard"))) {
         return false;
       }
       if (set[set.length - 1].new) {
@@ -241,17 +255,17 @@ const ViewSet = () => {
       }
       setCardEdit({ edit: false });
     }
-
+    let newId = Number(set[set.length - 1].flashcard_id) + 2;
     const newFlashcard = {
       term: "",
       definition: "",
-      flashcard_id: set.length,
+      flashcard_id: newId,
       new: true,
     };
     setSet((prev) => [...prev, newFlashcard]);
     setCardEdit({
       edit: true,
-      cardBeingEdited: set.length,
+      cardBeingEdited: newId,
       term: "",
       definition: "",
     });
@@ -264,11 +278,7 @@ const ViewSet = () => {
     }
     //check if the last flashcard is saved
     if (cardEdit.edit && cardEdit.cardBeingEdited) {
-      if (
-        !confirm(
-          "Are you sure you want to discard your changes and like this set? You are currently editing a flashcard."
-        )
-      ) {
+      if (!confirm(translate("promp.discardLike"))) {
         return false;
       }
       if (set[set.length - 1].new) {
@@ -278,8 +288,6 @@ const ViewSet = () => {
       }
       setCardEdit({ edit: false });
     }
-
-    //define liked based on the flashcard_id you are recieving. You need to check which flashcard_id is being liked
 
     const liked = set.filter((el) => el.flashcard_id === flashcard_id)[0].liked;
     if (liked) {
@@ -304,9 +312,7 @@ const ViewSet = () => {
           );
         })
         .catch((err) => {
-          toast.error(
-            "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-          );
+          toast.error(translate("error.generic"));
         });
     } else {
       axiosInstance
@@ -330,9 +336,7 @@ const ViewSet = () => {
           );
         })
         .catch((err) => {
-          toast.error(
-            "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-          );
+          toast.error(translate("error.generic"));
         });
     }
   };
@@ -341,29 +345,27 @@ const ViewSet = () => {
     axiosInstance
       .post("/set/copy", { set_id: set[0].set_id })
       .then((res) => {
-        toast.success("We copied your set. You are current browsing the copy");
+        toast.success(translate("label.setCopiedCopy"));
         navigate(`/set/${res.data.set_id}`);
       })
       .catch((err) => {
-        toast.error(
-          "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-        );
+        toast.error(translate("error.generic"));
       });
   };
 
   const likeSet = () => {
     if (!token.user_id) {
-      toast("You need to be logged in to like a set.");
+      toast(translate("error.notLoggedIn"));
       return;
     }
     axiosInstance.post("/set/like", { set_id: set[0].set_id }).then((res) => {
       setLikedSet(true);
-      toast.success("Set liked! You can view it in your profile.");
+      toast.success(translate("label.setLiked"));
     });
   };
   const dislikeSet = () => {
     if (!token.user_id) {
-      toast("You need to be logged in to dislike a set.");
+      toast(translate("error.notLoggedIn"));
       return;
     }
     axiosInstance
@@ -374,9 +376,7 @@ const ViewSet = () => {
   };
   const combineSets = () => {
     if (combineModal.totalFlashcards + set.length > 2000) {
-      toast.error(
-        "You cannot combine these sets because the total number of flashcards exceeds 2000."
-      );
+      toast.error(translate("error.cannotCombineTooManyFlashcards"));
       return;
     }
     axiosInstance
@@ -385,7 +385,7 @@ const ViewSet = () => {
         set_id: set[0].set_id,
       })
       .then((res) => {
-        toast.success("Sets combined! Navigating to your new set!");
+        toast.success(translate("success.setsCombined"));
         setCombineModal((prevModal) => ({
           ...prevModal,
           open: false,
@@ -395,9 +395,7 @@ const ViewSet = () => {
         }, 1000);
       })
       .catch((err) => {
-        toast.error(
-          "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-        );
+        toast.error(translate("error.generic"));
       });
   };
   const combinePopup = () => {
@@ -427,7 +425,7 @@ const ViewSet = () => {
   };
   const exportSet = () => {
     if (!token.user_id) {
-      toast("You need to be logged in to export a set.");
+      toast(translate("error.notLoggedIn"));
       return;
     }
     axiosInstance
@@ -459,12 +457,10 @@ const ViewSet = () => {
         document.body.appendChild(element); // Required for this to work in FireFox
         element.click();
 
-        toast.success("Set exported as .csv! Check your downloads folder.");
+        toast.success(translate("success.exportedSet"));
       })
       .catch((err) => {
-        toast.error(
-          "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-        );
+        toast.error(translate("error.generic"));
       });
   };
 
@@ -530,27 +526,7 @@ const ViewSet = () => {
   }, [likedState]);
 
   useEffect(() => {
-    let sortedSet = [...set]; 
-    if (furtherRefinements === "a-z") {
-      sortedSet.sort((a, b) => {
-        const termA = convertToText(a.term).toLowerCase();
-        const termB = convertToText(b.term).toLowerCase();
-        return termA.localeCompare(termB);
-      });
-    } else if (furtherRefinements === "z-a") {
-      sortedSet.sort((a, b) => {
-        const termA = convertToText(a.term).toLowerCase();
-        const termB = convertToText(b.term).toLowerCase();
-        return termB.localeCompare(termA);
-      });
-    } else if (furtherRefinements === "mostconfident") {
-      sortedSet.sort((a, b) => Number(b.confidence) - Number(a.confidence));
-    } else if (furtherRefinements === "leastconfident") {
-      sortedSet.sort((a, b) => Number(a.confidence) - Number(b.confidence));
-    } else if (furtherRefinements === "id") {
-      sortedSet.sort((a, b) => Number(a.flashcard_id) - Number(b.flashcard_id));
-    }
-    setSet(sortedSet); 
+    sortFlashcards();
   }, [furtherRefinements]);
 
   useEffect(() => {
@@ -566,7 +542,9 @@ const ViewSet = () => {
       });
     }
   }, [set]);
-
+  useEffect(() => {
+    sortFlashcards();
+  }, [set.length]);
   return (
     <>
       <AddToFolderModal
@@ -585,9 +563,7 @@ const ViewSet = () => {
         set={set}
       />
       {!isSetValid ? (
-        <h1 id="infoText">
-          Our trusty🐕 tried to find this set but couldn't! Check your link! 🙂
-        </h1>
+        <h1 id="infoText">{translate("label.noSetFound")}</h1>
       ) : (
         ""
       )}
@@ -604,23 +580,33 @@ const ViewSet = () => {
           closeOnClick
         />
         <div id="mainBar">
-          <h1>{set?.[0] ? convertToText(set[0].name) : "Loading..."}</h1>
+          <h1>
+            {set?.[0]
+              ? convertToText(set[0].name)
+              : tempSets.length > set.length
+              ? convertToText(tempSets[0].name)
+              : "Loading..."}
+          </h1>
           <h2 style={{ color: "white" }}>
-            {set.length ? convertToText(set[0].description) : "Loading..."}
+            {set?.[0]
+              ? convertToText(set[0].description)
+              : tempSets.length > set.length
+              ? convertToText(tempSets[0].description)
+              : "Loading..."}
           </h2>
           <p className="category">
-            {set.length
+            {set?.[0] && set[0].category
               ? set[0].category
-                ? set[0].category
-                : "No category"
-              : ""}
+              : tempSets.length > set.length
+              ? convertToText(tempSets[0].category)
+              : "No category"}
           </p>
           {set.length && !set[0].flashcard_id ? (
             <div>
-              <button onClick={() => navigate(`/edit/${id}`)}>Edit</button>
+              <button onClick={() => navigate(`/set/edit/${id}`)}>Edit</button>
               <button
                 onClick={() => {
-                  if (!confirm("Are you sure you want to delete this set?")) {
+                  if (!confirm(translate("prompt.deleteSet"))) {
                     return false;
                   }
                   axiosInstance
@@ -628,15 +614,13 @@ const ViewSet = () => {
                       set_id: set[0].set_id,
                     })
                     .then((response) => {
-                      toast.success("Set deleted! Navigating...");
+                      toast.success(translate("success.setDeleted"));
                       setTimeout(() => {
                         navigate(`/sets`);
                       }, 1000);
                     })
                     .catch((err) => {
-                      toast.error(
-                        "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-                      );
+                      toast.error(translate("error.generic"));
                     });
                 }}
               >
@@ -652,23 +636,26 @@ const ViewSet = () => {
                 style={{ textDecoration: "none" }}
                 to={`/study/${set[0].set_id}`}
               >
-                <button>Study</button>
+                <button>{translate("button.Study")}</button>
               </Link>
-              <button className="disabled">Play</button>
               <Link
                 style={{ textDecoration: "none" }}
                 to={`/review/${set[0].set_id}`}
               >
-                <button>Review</button>
+                <button>{translate("button.Review")}</button>
               </Link>
 
               {likedSet ? (
-                <button onClick={dislikeSet}>Dislike</button>
+                <button onClick={dislikeSet}>
+                  {translate("button.Dislike")}
+                </button>
               ) : (
-                <button onClick={likeSet}>Like</button>
+                <button onClick={likeSet}>{translate("button.Like")}</button>
               )}
               {set.length && token.user_id == set[0].user_id ? (
-                <button onClick={addFlashcard}>Add flashcards</button>
+                <button onClick={addFlashcard}>
+                  {translate("button.addFlashcard")}
+                </button>
               ) : (
                 ""
               )}
@@ -676,7 +663,7 @@ const ViewSet = () => {
                 style={{ border: moreOpen ? "5px solid white" : "" }}
                 onClick={() => setMoreOpen((prev) => !prev)}
               >
-                {moreOpen ? "Less" : "More"}
+                {moreOpen ? translate("button.Less") : translate("button.More")}
               </button>
 
               {moreOpen ? (
@@ -690,33 +677,38 @@ const ViewSet = () => {
                         }))
                       }
                     >
-                      Add to folder
+                      {translate("button.addToFolder")}
                     </button>
                   ) : (
                     ""
                   )}
                   {set.length && token.user_id == set[0].user_id ? (
-                    <button onClick={() => navigate(`/edit/${id}`)}>
-                      Edit
+                    <button onClick={() => navigate(`/set/edit/${id}`)}>
+                      {translate("button.Edit")}
                     </button>
                   ) : (
                     ""
                   )}
-                  <button onClick={combinePopup}>Combine</button>
+                  <button onClick={combinePopup}>
+                    {translate("button.Combine")}
+                  </button>
                   {set.length && token.user_id == set[0].user_id ? (
-                    <button onClick={copySet}>Copy</button>
+                    <button onClick={copySet}>
+                      {translate("button.Copy")}
+                    </button>
                   ) : (
                     ""
                   )}
 
-                  <button onClick={Share}>Share</button>
+                  <button onClick={Share}>{translate("button.Share")}</button>
 
-                  <button onClick={exportSet}>Export</button>
+                  <button onClick={exportSet}>
+                    {" "}
+                    {translate("button.Export")}
+                  </button>
                   <button
                     onClick={() => {
-                      if (
-                        !confirm("Are you sure you want to delete this set?")
-                      ) {
+                      if (!confirm(translate("prompt.deleteSet"))) {
                         return false;
                       }
                       axiosInstance
@@ -724,19 +716,17 @@ const ViewSet = () => {
                           set_id: set[0].set_id,
                         })
                         .then((response) => {
-                          toast.success("Set deleted! Navigating...");
+                          toast.success(translate("success.setDeleted"));
                           setTimeout(() => {
                             navigate(`/sets`);
                           }, 1000);
                         })
                         .catch((err) => {
-                          toast.error(
-                            "Oopsie, something went wrong. We think it is a sign for you to go outside and get some fresh air while we fix this."
-                          );
+                          toast.error(translate("error.generic"));
                         });
                     }}
                   >
-                    Delete
+                    {translate("button.Delete")}
                   </button>
                 </>
               ) : (
@@ -747,21 +737,24 @@ const ViewSet = () => {
             ""
           )}
 
-          <p>Created by {set.length ? set[0].username : "Loading..."} </p>
+          <p>
+            {translate("label.createdBy")}{" "}
+            {set.length ? set[0].username : "Loading..."}{" "}
+          </p>
         </div>
         {setStats.length && flashcardStats.length ? (
           <div id="statisticsBox">
-            Great job! You've already gone through this set {setStats.length}{" "}
-            times. You have covered{" "}
+            {translate("label.goneThroughtThisSet")} {setStats.length}{" "}
+            {translate("label.timesYouHaveCovered")}
             {flashcardStats.length == set.length
-              ? "all flashcards."
+              ? translate("label.allFlashcardsLowercase")
               : flashcardStats.length +
-                " out of " +
+                translate("label.outOf") +
                 set.length +
-                " flashcards."}{" "}
-            The flashcard that you know the best is{" "}
+                translate("label.flashcards")}{" "}
+            {translate("label.knownBestFlashcard")}{" "}
             {convertToText(flashcardStats[flashcardStats.length - 1].term)}{" "}
-            while the one you're the least familiar with is{" "}
+            {translate("label.leastFamiliarWith")}{" "}
             {convertToText(flashcardStats[0].term)}.{" "}
           </div>
         ) : (
@@ -804,7 +797,6 @@ const ViewSet = () => {
                       value={cardEdit.term}
                       className="editQuill"
                       onChange={(content) => handleChange(content, "term")}
-                      placeholder={"Term"}
                       modules={{
                         formula: true,
                         imageCompress: {},
@@ -919,11 +911,7 @@ const ViewSet = () => {
                         </button>
                         <button
                           onClick={() => {
-                            if (
-                              !confirm(
-                                "Are you sure you want to discard your changes?"
-                              )
-                            ) {
+                            if (!confirm(translate("prompt.discardChanges"))) {
                               return false;
                             }
                             if (el.new) {
@@ -944,16 +932,16 @@ const ViewSet = () => {
                         </button>
                         <button
                           onClick={() =>
-                            confirm(
-                              "Are you sure you want to delete this flashcard?"
-                            ) &&
+                            confirm(translate("prompt.deleteFlashcard")) &&
                             axiosInstance
                               .post(`/flashcard/delete`, {
                                 flashcard_id: el.flashcard_id,
                                 set_id: set[0].set_id,
                               })
                               .then((response) => {
-                                toast.success("Flashcard deleted!");
+                                toast.success(
+                                  translate("success.flashcardDeleted")
+                                );
                                 setCardEdit({ edit: false });
                                 if (set.length > 1) {
                                   setSet((prev) =>
@@ -975,7 +963,7 @@ const ViewSet = () => {
                                 }
                                 if (!Number(set.length)) {
                                   toast(
-                                    "Hmm, it seems there are no flashcards in this set. Click Add!"
+                                    translate("label.noFlashcardsInThiSet")
                                   );
                                 }
                               })
@@ -993,8 +981,10 @@ const ViewSet = () => {
                 </div>
               ))
             : set.length
-            ? "My pet 🐈 told me there are no flashcards in this set"
-            : "Loading..."}
+            ? translate("label.noFlashcardsInThiSet")
+            : tempSets.length > set.length
+            ? translate("label.noObjectFound")
+            : ""}
         </div>
       </section>
     </>
