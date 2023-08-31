@@ -18,7 +18,7 @@ import FolderEdit from "./components/folders/editFolder";
 import Settings from "./components/settings";
 import jwtDecode from "jwt-decode";
 
-export function App() {
+export const App = () => {
   const [verified, setVerified] = useState(false);
   useEffect(() => {
     let jwt = localStorage.getItem("jwt");
@@ -36,6 +36,8 @@ export function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/study/:id" element={<Study />} />
+            <Route path="/review/:id" element={<Review />} />
 
             {verified && (
               <>
@@ -45,9 +47,7 @@ export function App() {
                 <Route path="/create-set" element={<CreateSet />} />
                 <Route path="/create-folder" element={<CreateFolder />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
-                <Route path="/study/:id" element={<Study />} />
                 <Route path="/sets" element={<Sets />} />
-                <Route path="/review/:id" element={<Review />} />
                 <Route path="/set/edit/:id" element={<EditSet />} />
                 <Route path="/settings" element={<Settings />} />
               </>
