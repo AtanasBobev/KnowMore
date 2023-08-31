@@ -23,7 +23,7 @@ export const App = () => {
   useEffect(() => {
     let jwt = localStorage.getItem("jwt");
     if (jwt) {
-      console.log(jwtDecode(jwt));
+      setVerified(jwtDecode(jwt).verified);
     }
   }, []);
 
