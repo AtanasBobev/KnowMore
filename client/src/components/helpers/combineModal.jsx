@@ -19,7 +19,7 @@ const combineModal = (props) => {
           <div className="modal-content">
             <p>
               {translate("label.combineSetsModal")}{" "}
-              {combineModal.totalFlashcards} flashcards in{" "}
+              {combineModal.totalFlashcards} {translate("label.flashcardsIn")}{" "}
               {combineModal.setsChosen.length === 0
                 ? translate("label.noSetsLowercase")
                 : `${combineModal.setsChosen.length} ${
@@ -44,8 +44,14 @@ const combineModal = (props) => {
                     </Link>
                   </React.Fragment>
                 ))}
-              . {translate("label.Merge")} {parse(set[0].name)}{" "}
-              {translate("label.with")}:
+              .{" "}
+              <p>
+                {"  "+translate("label.Merge") + "  "}
+                {"  "}
+                {parse(set[0].name)}
+                {"  "}
+                {" " + translate("label.with")}:
+              </p>
             </p>
             <div>
               <input
@@ -132,14 +138,14 @@ const combineModal = (props) => {
                   </div>
                 ))
               ) : (
-                <p>
-                 {translate("label.noSetsFound")}
-                </p>
+                <p>{translate("label.noSetsFound")}</p>
               )}
             </div>
           </div>
           <div className="modal-footer">
-            <button onClick={combineSets}>{translate("button.combineSets")}</button>
+            <button onClick={combineSets}>
+              {translate("button.combineSets")}
+            </button>
             {combineModal.setsChosen.length ? (
               <button
                 onClick={() =>

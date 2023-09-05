@@ -1,3 +1,4 @@
+//Add offline password validator
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,7 @@ const Register = () => {
     email: "",
     gender: "",
     age: "",
+    language: localStorage.getItem("language") || "en-US",
   });
 
   const handleChange = (e) => {
@@ -51,11 +53,12 @@ const Register = () => {
       .then((response) => {
         console.log(response.data);
         localStorage.setItem("jwt", response.data.token);
+        localStorage.setItem("language", response.data.language);
         toast.success("Registration successful! Please verify your email.");
         navigate("/dashboard");
       })
       .catch((error) => {
-        toast.error("Registration failed! " + error.message);
+        toast.error(error.response.data.message);
       });
   };
 
@@ -69,12 +72,13 @@ const Register = () => {
         closeOnClick
       />{" "}
       <section className="centerWrapper" id="register">
-        <h2>{translate("Register")}</h2>
+        <h2>{translate("label.Register")}</h2>
+        <center><p>Your first steps towards higher grades</p></center>
         <form onSubmit={handleSubmit}>
           <input
             required
             type="text"
-            placeholder={translate("Username")}
+            placeholder={translate("placeholder.Username")}
             name="username"
             value={formData.username}
             onChange={handleChange}
@@ -82,7 +86,7 @@ const Register = () => {
           <input
             required
             type="password"
-            placeholder={translate("Password")}
+            placeholder={translate("placeholder.Password")}
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -90,7 +94,7 @@ const Register = () => {
           <input
             required
             type="password"
-            placeholder={translate("repeatPassword")}
+            placeholder={translate("placeholder.repeatPassword")}
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
@@ -98,31 +102,31 @@ const Register = () => {
           <input
             required
             type="email"
-            placeholder={translate("Email")}
+            placeholder={translate("placeholder.Email")}
             name="email"
             value={formData.email}
             onChange={handleChange}
           />
-          <select name="gender" id="gender" onChange={handleChange}>
+          <select name="gender" id="gender" onChange={handleChange} required>
             <option disabled="disabled" selected="selected">
-              {translate("pleaseSelect")}
+              {translate("options.pleaseSelect")}
             </option>
-            <option value="male">{translate("male")}</option>
-            <option value="female">{translate("female")}</option>
+            <option value="male">{translate("options.male")}</option>
+            <option value="female">{translate("options.female")}</option>
           </select>
           <input
             required
             type="number"
             min="1"
             max="99"
-            placeholder={translate("Age")}
+            placeholder={translate("placeholder.Age")}
             name="age"
             value={formData.age}
             onChange={handleChange}
           />
-          <button type="submit">{translate("Register")}🪄</button>
+          <button type="submit">{translate("label.Register")}🪄</button>
         </form>
-        <a href="/login">{translate("loginLabel")}</a>
+        <a href="/login">{translate("button.loginLabel")}</a>
       </section>
     </>
   );

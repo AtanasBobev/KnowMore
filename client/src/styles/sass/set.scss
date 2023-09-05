@@ -144,10 +144,6 @@ img {
   button {
     margin: 0.2vmax;
     padding: 0.2vmax;
-    filter: grayscale(100%);
-  }
-  button:hover {
-    filter: grayscale(0%) !important;
   }
 }
 #btnSetFilters {

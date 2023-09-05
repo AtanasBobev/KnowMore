@@ -12,6 +12,7 @@ const NavBar = () => {
   const location = useLocation(); // Get the current location
   const createButtonRef = useRef(null); // Create a ref for the "Create" button
   const getMostCommonSets = async () => {
+    if (!localStorage.getItem("jwt")) return false;
     axiosInstance.get("/sets/most/common").then((res) => {
       setMostCommonSets(res.data);
     });
@@ -44,7 +45,7 @@ const NavBar = () => {
   return (
     <nav className={`navbar ${isAuth ? "auth" : ""}`}>
       <Link style={{ textDecoration: "none" }} to="/" className="logo">
-        <h1 className="logo-text">{translate("logoText")}</h1>
+        <h1 className="logo-text">{translate("label.logoText")}</h1>
       </Link>
       <div className="nav-links">
         {isAuth ? (
@@ -54,7 +55,7 @@ const NavBar = () => {
                 to="/explore"
                 className={location.pathname === "/explore" ? "active" : ""}
               >
-                <span role="img" aria-label={translate("Explore")}>
+                <span role="img" aria-label={translate("label.Explore")}>
                   🔍
                 </span>{" "}
                 {translate("label.Explore")}
@@ -66,7 +67,7 @@ const NavBar = () => {
                 to="/sets"
                 className={location.pathname === "/sets" ? "active" : ""}
               >
-                <span role="img" aria-label={translate("Sets")}>
+                <span role="img" aria-label={translate("label.Sets")}>
                   🧮
                 </span>{" "}
                 {translate("label.Sets")}
@@ -95,7 +96,7 @@ const NavBar = () => {
                   to={window.location.pathname}
                   onClick={toggleCreateOptions}
                 >
-                  <span role="img" aria-label={translate("Create")}>
+                  <span role="img" aria-label={translate("button.Create")}>
                     ✏️
                   </span>
                   {translate("label.Create")}
@@ -127,7 +128,7 @@ const NavBar = () => {
                 to="/settings"
                 className={location.pathname === "/settings" ? "active" : ""}
               >
-                <span role="img" aria-label={translate("Settings")}>
+                <span role="img" aria-label={translate("label.Settings")}>
                   ⚙️
                 </span>{" "}
                 {translate("label.Settings")}
@@ -161,7 +162,7 @@ const NavBar = () => {
                 to="/login"
                 className={location.pathname === "/login" ? "active" : ""}
               >
-                <span role="img" aria-label={translate("Login")}>
+                <span role="img" aria-label={translate("label.Login")}>
                   🔥
                 </span>
                 {translate("label.Login")}
@@ -172,7 +173,7 @@ const NavBar = () => {
                 to="/register"
                 className={location.pathname === "/register" ? "active" : ""}
               >
-                <span role="img" aria-label={translate("Register")}>
+                <span role="img" aria-label={translate("label.Register")}>
                   🛸
                 </span>
                 {translate("label.Register")}

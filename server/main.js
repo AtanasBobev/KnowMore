@@ -6,6 +6,7 @@ const cors = require("cors");
 const app = express();
 const authRoutes = require("./v1_routes/auth");
 const setsRoutes = require("./v1_routes/sets");
+const foldersRoutes = require("./v1_routes/folders");
 const flashcardsRoutes = require("./v1_routes/flashcards");
 const statisticsRoutes = require("./v1_routes/statistics");
 const utilsRoutes = require("./v1_routes/utils");
@@ -31,6 +32,7 @@ app.options("*", cors());
 
 app.use("/v1", authRoutes);
 app.use("/v1", setsRoutes);
+app.use("/v1", foldersRoutes);
 app.use("/v1", flashcardsRoutes);
 app.use("/v1", statisticsRoutes);
 app.use("/v1", utilsRoutes);

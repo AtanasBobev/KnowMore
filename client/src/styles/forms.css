@@ -14,12 +14,12 @@
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 .centerWrapper > *, #verify > *, #register > *, #login > * {
-  margin: 0.5vmax;
+  margin: 0.3vmax;
 }
 .centerWrapper > h2, #verify > h2, #register > h2, #login > h2 {
-  font-size: 3.5vmax;
+  font-size: 3vmax;
   font-weight: 900;
-  color: #ff9a9e;
+  color: orange;
 }
 .centerWrapper input, #verify input, #register input, #login input,
 .centerWrapper select,
@@ -27,12 +27,12 @@
 #register select,
 #login select {
   width: 20vmax;
-  height: 3vmax;
+  height: 2.5vmax;
   border-radius: 5px;
-  border: 1px solid #ff9a9e;
+  border: 1px solid orange;
   background-color: #fff;
   padding: 0.5vmax;
-  font-size: 1.5vmax;
+  font-size: 1.2vmax;
   color: #555;
 }
 .centerWrapper input:focus, #verify input:focus, #register input:focus, #login input:focus,
@@ -41,22 +41,22 @@
 #register select:focus,
 #login select:focus {
   outline: none;
-  border-color: #ff9a9e;
+  border-color: orange;
 }
 .centerWrapper button, #verify button, #register button, #login button {
   transform: 0.3s;
   width: 20vmax;
-  height: 3vmax;
+  height: 2.5vmax;
   border-radius: 5px;
   border: none;
-  background: linear-gradient(230deg, #ff9a9e, #fad0c4);
+  background-image: linear-gradient(315deg, #ff4e00 0%, #ec9f05 74%);
   background-size: 400% 400%;
   -webkit-animation: ButtonBackground 8s ease infinite;
   -moz-animation: ButtonBackground 8s ease infinite;
   -o-animation: ButtonBackground 8s ease infinite;
   animation: ButtonBackground 8s ease infinite;
   padding: 0.5vmax;
-  font-size: 1.5vmax;
+  font-size: 1.1vmax;
   color: #fff;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
@@ -64,17 +64,22 @@
 .centerWrapper button:focus, #verify button:focus, #register button:focus, #login button:focus {
   outline: none;
 }
+.centerWrapper p, #verify p, #register p, #login p {
+  color: gray;
+  font-size: 1vmax;
+  width: 70%;
+}
 .centerWrapper a, #verify a, #register a, #login a {
   padding: 0.2vmax;
-  font-size: 1.5vmax;
+  font-size: 1vmax;
   text-decoration: none;
-  color: #ff9a9e;
-  border-bottom: 1px solid #ff9a9e;
+  color: orange;
+  border-bottom: 1px solid orange;
   transition: color 0.3s, background-color 0.3s;
 }
 .centerWrapper a:hover, #verify a:hover, #register a:hover, #login a:hover {
   color: #fff;
-  background-color: #ff9a9e;
+  background-color: orange;
 }
 
 form {

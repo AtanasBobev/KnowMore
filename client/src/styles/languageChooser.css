@@ -1,0 +1,33 @@
+container#lang-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: transparent;
+  padding: 2vmax;
+  width: 70vw;
+  height: 70vh;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  z-index: 100;
+}
+container#lang-container .langButton {
+  border-radius: 20px;
+  padding: 1vmax;
+  font-size: 20vw;
+  cursor: pointer;
+}
+container#lang-container .langButton:hover {
+  transform: scale(1.2);
+}
+container#lang-container .langButton:nth-child(odd) {
+  margin-top: 1vmax;
+}
+container#lang-container .langButton:nth-child(even) {
+  margin-bottom: 1vmax;
+}
+
+/*# sourceMappingURL=languageChooser.css.map */

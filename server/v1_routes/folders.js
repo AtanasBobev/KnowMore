@@ -4,7 +4,7 @@ const pool = require("../utils/dbConfig");
 const { authorizeToken } = require("../utils/authMiddleware");
 const { convert } = require("html-to-text");
 
-router.post("/v1/folders/create", authorizeToken, (req, res) => {
+router.post("/folders/create", authorizeToken, (req, res) => {
   if (convert(req.body.title).length > 100000) {
     res.status(409).send("Excessive size");
     return;
@@ -63,7 +63,7 @@ router.post("/v1/folders/create", authorizeToken, (req, res) => {
     }
   );
 });
-router.post("/v1/folders/all", (req, res) => {
+router.post("/folders/all", (req, res) => {
   //this is the same router as sets/all expects you are searching for folders.
 
   let limit = 10;
@@ -143,7 +143,7 @@ router.post("/v1/folders/all", (req, res) => {
   );
 });
 ("");
-router.get("/v1/folder/:id", (req, res) => {
+router.get("/folder/:id", (req, res) => {
   let id = req.params.id;
 
   pool.query(
@@ -196,7 +196,7 @@ router.get("/v1/folder/:id", (req, res) => {
     }
   );
 });
-router.post("/v1/folder/update", authorizeToken, (req, res) => {
+router.post("/folder/update", authorizeToken, (req, res) => {
   if (!req.body.folder_id || !req.body.title || !req.body.description) {
     res.status(409).send("Missing parameters");
     return false;
@@ -316,7 +316,7 @@ router.post("/v1/folder/update", authorizeToken, (req, res) => {
     }
   );
 });
-router.post("/v1/folders/sets/add", authorizeToken, (req, res) => {
+router.post("/folders/sets/add", authorizeToken, (req, res) => {
   if (!req.body.set_id || !req.body.folder_ids) {
     res.status(409).send("Missing parameters");
     return false;
@@ -353,7 +353,7 @@ router.post("/v1/folders/sets/add", authorizeToken, (req, res) => {
     }
   );
 });
-router.post("/v1/folders/user", authorizeToken, (req, res) => {
+router.post("/folders/user", authorizeToken, (req, res) => {
   let limit = 100;
   if (req.body.limit) {
     limit = req.query.limit;
@@ -392,7 +392,7 @@ router.post("/v1/folders/user", authorizeToken, (req, res) => {
     }
   );
 });
-router.post("/v1/folder/set/remove", authorizeToken, (req, res) => {
+router.post("/folder/set/remove", authorizeToken, (req, res) => {
   let id = req.body.folder_id;
   let set_id = req.body.set_id;
   if (!id || !set_id) {
@@ -428,7 +428,7 @@ router.post("/v1/folder/set/remove", authorizeToken, (req, res) => {
     }
   );
 });
-router.post("/v1/folder/delete", authorizeToken, (req, res) => {
+router.post("/folder/delete", authorizeToken, (req, res) => {
   let id = req.body.folder_id;
   if (!id) {
     res.status(409).send("Missing parameters");
@@ -475,3 +475,5 @@ router.post("/v1/folder/delete", authorizeToken, (req, res) => {
     }
   );
 });
+
+module.exports = router;

@@ -1,8 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../utils/dbConfig");
-const { validatePassword } = require("../utils/passwordValidator");
+const validatePassword = require("../utils/passwordValidator");
 const { generateAccessToken } = require("../utils/jwt");
+const fs = require("fs");
+const path = require("path");
+const bcyrpt = require("bcrypt");
+const { env } = require("process");
 
 router.post("/register", async (req, res) => {
   if (
@@ -25,6 +29,16 @@ router.post("/register", async (req, res) => {
     res.json({ message: "Age must be 1-99 years" }).status(400);
     return;
   }
+  if (req.body.language == null) {
+    req.body.language = "en-US";
+  }
+  //check if the language exists in the folder
+
+  const languages = fs.readdirSync(path.join(__dirname, "../translations"));
+  if (!languages.includes("translation." + req.body.language + ".json")) {
+    res.status(400).json({ message: "Language not supported" });
+    return;
+  }
 
   const errors = validatePassword(req.body.password);
 
@@ -36,9 +50,20 @@ router.post("/register", async (req, res) => {
   }
 
   const { username, email, password, age, gender } = req.body;
+
+  password = await bcyrpt.hash(password, env.SALT_ROUNDS);
+
   pool.query(
-    "INSERT INTO users (username, email, password, age, gender,date) VALUES ($1, $2, $3, $4, $5,$6)",
-    [username, email, password, age, gender, new Date().toISOString()],
+    "INSERT INTO users (username, email, password, age, gender,date, language) VALUES ($1, $2, $3, $4, $5,$6, $7)",
+    [
+      username,
+      email,
+      password,
+      age,
+      gender,
+      new Date().toISOString(),
+      req.body.language,
+    ],
     (err, result) => {
       if (err) {
         console.error("DBError: " + err.message);
@@ -63,13 +88,10 @@ router.post("/register", async (req, res) => {
                 .status(500);
             } else {
               const user_id = result.rows[0].user_id;
-              const token = generateAccessToken(
-                username,
-                email,
-                false,
-                user_id
-              );
-              res.status(200).json({ token: token });
+              const token = generateAccessToken(username, email, true, user_id);
+              res
+                .status(200)
+                .json({ token: token, language: req.body.language });
               res.end();
             }
           }
@@ -85,6 +107,7 @@ router.post("/login", (req, res) => {
     return;
   }
   const { username, password } = req.body;
+  password = bcyrpt.hash(password, env.SALT_ROUNDS);
   pool.query(
     "SELECT * FROM users WHERE username = $1 AND password = $2",
     [username, password],
@@ -99,7 +122,6 @@ router.post("/login", (req, res) => {
           .status(500);
       } else {
         if (result.rows.length) {
-          //get user_id
           pool.query(
             "SELECT user_id FROM users WHERE username = $1",
             [username],
@@ -128,6 +150,33 @@ router.post("/login", (req, res) => {
           );
         } else {
           res.status(400).json({ message: "Wrong username or password!" });
+        }
+      }
+    }
+  );
+});
+
+router.post("/delete", (req, res) => {
+  if (req.body.password == null) {
+    res.status(400).json({ message: "Please fill all the fields" });
+    return;
+  }
+  const { password } = req.body;
+  password = bcyrpt.hash(password, env.SALT_ROUNDS);
+  pool.query(
+    "SELECT * FROM users WHERE username = $1 AND password = $2",
+    [req.user, password],
+    (err, result) => {
+      if (err) {
+        console.error("DBError: " + err.message);
+        res
+          .status(500)
+          .send(
+            "Database error! Hold on tight and try again in a few minutes."
+          );
+      } else {
+        if (result.rows.length) {
+          //check if the password is correct
         }
       }
     }

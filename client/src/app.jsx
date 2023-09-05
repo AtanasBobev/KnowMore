@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState, useEffect } from "preact/hooks";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./components/authentication/register";
 import Login from "./components/authentication/login";
 import CreateSet from "./components/sets/createSet";
@@ -15,28 +16,49 @@ import Folder from "./components/folders/folder";
 import Folders from "./components/folders/folders";
 import FolderEdit from "./components/folders/editFolder";
 import Settings from "./components/settings";
-export function App() {
+import jwtDecode from "jwt-decode";
+
+export const App = () => {
+  const [verified, setVerified] = useState(false);
+  useEffect(() => {
+    let jwt = localStorage.getItem("jwt");
+    if (jwt) {
+      setVerified(true);
+    }
+  }, []);
+
   return (
     <>
       <BrowserRouter>
         <NavBar />
         <div style={{ marginTop: "15vh" }}>
           <Routes>
-            <Route path="/folder/edit/:id" element={<FolderEdit />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/folder/:id" element={<Folder />} />
-            <Route path="/folders" element={<Folders />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/create-set" element={<CreateSet />} />
-            <Route path="/create-folder" element={<CreateFolder />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/study/:id" element={<Study />} />
-            <Route path="/set/:id" element={<ViewSet />} />
-            <Route path="/sets" element={<Sets />} />
-            <Route path="/review/:id" element={<Review />} />
-            <Route path="/set/edit/:id" element={<EditSet />} />
             <Route path="/explore" element={<Explore />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/study/:id" element={<Study />} />
+            <Route path="/review/:id" element={<Review />} />
+
+            {verified && (
+              <>
+                {/* Protected routes */}
+                <Route path="/folder/edit/:id" element={<FolderEdit />} />
+                <Route path="/folders" element={<Folders />} />
+                <Route path="/create-set" element={<CreateSet />} />
+                <Route path="/create-folder" element={<CreateFolder />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/sets" element={<Sets />} />
+                <Route path="/set/edit/:id" element={<EditSet />} />
+                <Route path="/settings" element={<Settings />} />
+              </>
+            )}
+
+            {/* 404 handling */}
+            <Route path="*" element={<Navigate to="/explore" />} />
+
+            {/* These routes are outside the verified check */}
+            <Route path="/set/:id" element={<ViewSet />} />
+            <Route path="/folder/:id" element={<Folder />} />
           </Routes>
         </div>
       </BrowserRouter>

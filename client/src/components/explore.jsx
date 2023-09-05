@@ -89,7 +89,7 @@ const Explore = () => {
       <center>
         <select onChange={(e) => setTypeSearch(e.target.value)}>
           <option selected value="Sets">
-            {translate("Sets")}
+            {translate("label.Sets")}
           </option>
           <option value="Folders"> {translate("label.Folders")}</option>
         </select>
