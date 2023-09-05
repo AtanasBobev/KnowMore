@@ -1,8 +1,7 @@
 import { set } from "date-fns";
 import axiosInstance from "./axiosConfig";
 
-
-const currentLanguage = "en-US";
+const currentLanguage = localStorage.getItem("language") || "en-US";
 
 let languageData = {};
 
@@ -17,12 +16,19 @@ const loadLanguageData = async (language) => {
   }
 };
 
-
 const initializeLanguageData = async () => {
   languageData = await loadLanguageData(currentLanguage);
 };
 
-const translate = (key) => {
+const translate = (key, lang) => {
+  if (lang) {
+    if (lang !== currentLanguage) {
+      loadLanguageData(lang).then((data) => {
+        localStorage.setItem("language", lang);
+        languageData = data;
+      });
+    }
+  }
   if (!languageData[key]) {
     return key;
   }

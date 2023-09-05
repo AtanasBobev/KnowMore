@@ -902,8 +902,8 @@ const ViewSet = () => {
                       <button
                         style={{
                           filter: el.liked
-                            ? "grayscale(0%)"
-                            : "grayscale(100%)",
+                            ? "opacity(100%)"
+                            : "opacity(50%)",
                         }}
                         onClick={() => like(el.flashcard_id)}
                       >

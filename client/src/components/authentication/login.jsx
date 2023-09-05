@@ -16,9 +16,12 @@ const Login = () => {
     const password = formData.get("password");
 
     axiosInstance
-      .post("/login", { username, password })
+      .post("/login", {
+        username,
+        password,
+        language: localStorage.getItem("language") || "en-US",
+      })
       .then((response) => {
-        console.log(response);
         localStorage.setItem("jwt", response.data.token);
         navigate("/explore");
       })
@@ -32,8 +35,16 @@ const Login = () => {
       <section id="login" className="centerWrapper">
         <h2>Login</h2>
         <form onSubmit={handleSubmit}>
-          <input type="text" placeholder={translate("placeholder.Username")} name="username" />
-          <input type="password" placeholder={translate("placeholder.Password")} name="password" />
+          <input
+            type="text"
+            placeholder={translate("placeholder.Username")}
+            name="username"
+          />
+          <input
+            type="password"
+            placeholder={translate("placeholder.Password")}
+            name="password"
+          />
           <button type="submit">{translate("label.Login")}🔥</button>
         </form>
         <p className="error">{error}</p>

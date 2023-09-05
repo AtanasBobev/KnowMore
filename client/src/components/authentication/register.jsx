@@ -1,3 +1,4 @@
+//Add offline password validator
 import React, { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,7 @@ const Register = () => {
     email: "",
     gender: "",
     age: "",
+    language: localStorage.getItem("language") || "en-US",
   });
 
   const handleChange = (e) => {
@@ -51,11 +53,12 @@ const Register = () => {
       .then((response) => {
         console.log(response.data);
         localStorage.setItem("jwt", response.data.token);
+        localStorage.setItem("language", response.data.language);
         toast.success("Registration successful! Please verify your email.");
         navigate("/dashboard");
       })
       .catch((error) => {
-        toast.error("Registration failed! " + error.message);
+        toast.error(error.response.data.message);
       });
   };
 
@@ -104,7 +107,7 @@ const Register = () => {
             value={formData.email}
             onChange={handleChange}
           />
-          <select name="gender" id="gender" onChange={handleChange}>
+          <select name="gender" id="gender" onChange={handleChange} required>
             <option disabled="disabled" selected="selected">
               {translate("options.pleaseSelect")}
             </option>
