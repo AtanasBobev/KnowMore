@@ -4,6 +4,25 @@ const pool = require("../utils/dbConfig");
 const fs = require("fs");
 const { authorizeToken } = require("../utils/authMiddleware");
 
+router.get("/preferences/user", authorizeToken, (req, res) => {
+  pool.query(
+    `SELECT minimum_flashcard_appears, maximum_flashcard_appears, prompt_with FROM preferences WHERE user_id = $1`,
+    [req.user_id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Internal server error");
+        return false;
+      }
+      if (!results.rows.length) {
+        res.status(404).send("Not found");
+        return false;
+      }
+      res.status(200).send(results.rows[0]);
+    }
+  );
+});
+
 router.get("/languages/:lang", (req, res) => {
   let lang = req.params.lang;
   //check if the selected language is supported, supported languages are in the translations folder
@@ -22,9 +41,9 @@ router.get("/languages/:lang", (req, res) => {
   res.status(200).send(languageFileParsed);
 });
 router.post("/export/all", authorizeToken, (req, res) => {
- //create a zip file with all the user's data
- pool.query(
-    `SELECT * FROM users WHERE user_id = $1`,[req.user_id],
+  pool.query(
+    `SELECT * FROM users WHERE user_id = $1`,
+    [req.user_id],
     (err, results) => {
       if (err) {
         console.log(err);
@@ -51,7 +70,8 @@ router.post("/export/all", authorizeToken, (req, res) => {
         sets: [],
       };
       pool.query(
-        `SELECT * FROM sets WHERE user_id = $1`,[req.user_id],
+        `SELECT * FROM sets WHERE user_id = $1`,
+        [req.user_id],
         (err, results) => {
           if (err) {
             console.log(err);
@@ -68,7 +88,8 @@ router.post("/export/all", authorizeToken, (req, res) => {
                 flashcards: [],
               };
               pool.query(
-                `SELECT * FROM flashcards WHERE set_id = $1`,[set.set_id],
+                `SELECT * FROM flashcards WHERE set_id = $1`,
+                [set.set_id],
                 (err, results) => {
                   if (err) {
                     console.log(err);
@@ -85,17 +106,21 @@ router.post("/export/all", authorizeToken, (req, res) => {
                       });
                     });
                   }
-                 pool.query("SELECT * FROM preference WHERE user_id = $1", [req.user_id], (err, results) => {
-                    if (err) {
-                      console.log(err);
-                      res.status(500).send("Internal server error");
-                      return false;
+                  pool.query(
+                    "SELECT * FROM preferences WHERE user_id = $1",
+                    [req.user_id],
+                    (err, results) => {
+                      if (err) {
+                        console.log(err);
+                        res.status(500).send("Internal server error");
+                        return false;
+                      }
+                      if (results.rows.length) {
+                        data.preferences = results.rows[0];
+                        data.sets.push(setObj);
+                      }
                     }
-                    if (results.rows.length) {
-                      data.preferences = results.rows[0];
-                      data.sets.push(setObj);
-                    }
-                  });
+                  );
                 }
               );
             });
@@ -123,7 +148,8 @@ router.post("/languages/user/change", authorizeToken, (req, res) => {
     return false;
   }
   pool.query(
-    `UPDATE users SET language = $1 WHERE user_id = $2`,[req.body.language, req.user_id],
+    `UPDATE users SET language = $1 WHERE user_id = $2`,
+    [req.body.language, req.user_id],
     (err, results) => {
       if (err) {
         console.log(err);
@@ -134,16 +160,27 @@ router.post("/languages/user/change", authorizeToken, (req, res) => {
     }
   );
 });
-router.post("/preferences/change", authorizeToken, (req, res) => {
-  if (!req.body.minimumFlashcardAppears || !req.body.maximumFlashcardAppears || !req.body.promptWith) {
+
+router.post("/preferences/user/change", authorizeToken, (req, res) => {
+  if (
+    !req.body.minimumFlashcardAppears ||
+    !req.body.maximumFlashcardAppears ||
+    !req.body.promptWith
+  ) {
     res.status(409).send("Missing parameters");
     return false;
   }
-  if (req.body.minimumFlashcardAppears < 1 || req.body.minimumFlashcardAppears > 9999) {
+  if (
+    req.body.minimumFlashcardAppears < 1 ||
+    req.body.minimumFlashcardAppears > 9999
+  ) {
     res.status(409).send("Invalid parameters");
     return false;
   }
-  if (req.body.maximumFlashcardAppears < 1 || req.body.maximumFlashcardAppears > 9999) {
+  if (
+    req.body.maximumFlashcardAppears < 1 ||
+    req.body.maximumFlashcardAppears > 9999
+  ) {
     res.status(409).send("Invalid parameters");
     return false;
   }
@@ -151,25 +188,18 @@ router.post("/preferences/change", authorizeToken, (req, res) => {
     res.status(409).send("Invalid parameters");
     return false;
   }
-  if (req.body.promptWith !== "auto" && req.body.promptWith !== "term" && req.body.promptWith !== "definition" && req.body.promptWith !== "both") {
+  if (
+    req.body.promptWith !== "auto" &&
+    req.body.promptWith !== "term" &&
+    req.body.promptWith !== "definition" &&
+    req.body.promptWith !== "both"
+  ) {
     res.status(409).send("Invalid parameters");
     return false;
   }
-  pool.query(
-    `UPDATE preferences SET minimum_flashcard_appears = $1, maximum_flashcard_appears = $2, prompt_with = $3 WHERE user_id = $4`,[req.body.minimumFlashcardAppears, req.body.maximumFlashcardAppears, req.body.promptWith, req.user_id],
-    (err, results) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Internal server error");
-        return false;
-      }
-      res.status(200).end();
-    }
-  );
-});
-router.get("/preferences", authorizeToken, (req, res) => {
-  pool.query(
-    `SELECT minimum_flashcard_appears, maximum_flashcard_appears, prompt_with FROM preferences WHERE user_id = $1`,[req.user_id],
+  const preferences = pool.query(
+    `SELECT * FROM preferences WHERE user_id = $1`,
+    [req.user_id],
     (err, results) => {
       if (err) {
         console.log(err);
@@ -177,14 +207,44 @@ router.get("/preferences", authorizeToken, (req, res) => {
         return false;
       }
       if (!results.rows.length) {
-        res.status(404).send("Not found");
-        return false;
+        pool.query(
+          `INSERT INTO preferences (user_id, minimum_flashcard_appears, maximum_flashcard_appears, prompt_with) VALUES ($1, $2, $3, $4)`,
+          [
+            req.user_id,
+            req.body.minimumFlashcardAppears,
+            req.body.maximumFlashcardAppears,
+            req.body.promptWith,
+          ],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              res.status(500).send("Internal server error");
+              return false;
+            }
+            res.status(200).end();
+          }
+        );
+      } else {
+        pool.query(
+          `UPDATE preferences SET minimum_flashcard_appears = $1, maximum_flashcard_appears = $2, prompt_with = $3 WHERE user_id = $4`,
+          [
+            req.body.minimumFlashcardAppears,
+            req.body.maximumFlashcardAppears,
+            req.body.promptWith,
+            req.user_id,
+          ],
+          (err, results) => {
+            if (err) {
+              console.log(err);
+              res.status(500).send("Internal server error");
+              return false;
+            }
+            res.status(200).end();
+          }
+        );
       }
-      res.status(200).send(results.rows[0]);
     }
   );
 });
-
-
 
 module.exports = router;

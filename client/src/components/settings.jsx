@@ -1,18 +1,27 @@
+import { useState, useEffect, useLayoutEffect, useRef } from "preact/hooks";
 import translate from "../utils/languagesHandler";
 import "../styles/settings.css";
 import axiosInstance from "../utils/axiosConfig";
 import jwt_decode from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-import { useState, useEffect } from "preact/hooks";
+import { set } from "date-fns";
+
 const Settings = () => {
-  const [minimumFlashcardAppears, setMinimumFlashcardAppears] = useState(1);
-  const [maximumFlashcardAppears, setMaximumFlashcardAppears] = useState(9999);
-  const [promptWith, setPromptWith] = useState("auto");
+  const [userPreferences, setUserPreferences] = useState({
+    minimumFlashcardAppears: 1,
+    maximumFlashcardAppears: 9999,
+    promptWith: "auto",
+  });
+  const [pendingChanges, setPendingChanges] = useState(false);
+  const [serverUpdate, setServerUpdate] = useState(false);
+  const isMounted = useRef(true);
+
   const logOut = () => {
     localStorage.removeItem("jwt");
     window.location.reload();
   };
+
   const deleteEverything = () => {
     let pass = prompt("Enter your password to confirm");
     if (!pass) {
@@ -30,6 +39,7 @@ const Settings = () => {
         toast.error(err.response.data.message);
       });
   };
+
   const deleteData = () => {
     let pass = prompt("Enter your password to confirm");
     if (!pass) {
@@ -44,16 +54,15 @@ const Settings = () => {
         }
       })
       .catch((err) => {
-        //  toast.error(translate("error.generic"));
+        // toast.error(translate("error.generic"));
       });
   };
+
   const exportAll = () => {
     axiosInstance
       .post("/export/all")
       .then((res) => {
         if (res.status === 200) {
-          //     let jwt = localStorage.getItem("jwt");
-          //    let username = jwt_decode(jwt).username;
           let data = res.data;
           let dataStr = JSON.stringify(data);
           let dataUri =
@@ -70,6 +79,7 @@ const Settings = () => {
         toast.error(translate("error.generic"));
       });
   };
+
   const changeLanguage = (choice) => {
     let value = choice.target.value;
     axiosInstance
@@ -85,43 +95,78 @@ const Settings = () => {
       });
   };
 
-useEffect(() => {
-  if (maximumFlashcardAppears < minimumFlashcardAppears) {
-    toast.error(translate("error.invalidParameters"));
-    return;
-  }
-  axiosInstance
-    .get("/preferences")
-    .then((res) => {
-      if (res.status === 200) {
-        setMinimumFlashcardAppears(res.data.minimumFlashcardAppears);
-        setMaximumFlashcardAppears(res.data.maximumFlashcardAppears);
-        setPromptWith(res.data.promptWith);
+  useEffect(() => {
+    axiosInstance
+      .get("/preferences/user")
+      .then((res) => {
+        if (isMounted.current) {
+          setUserPreferences({
+            minimumFlashcardAppears: res.data.minimum_flashcard_appears,
+            maximumFlashcardAppears: res.data.maximum_flashcard_appears,
+            promptWith: res.data.prompt_with,
+          });
+          setServerUpdate(true);
+        }
+      })
+      .catch((err) => {
+        if (isMounted.current) {
+          toast.error(translate("error.generic"));
+        }
+      });
+  }, []);
+
+  const handlePreferenceChange = (preference, value) => {
+    if (preference === "minimumFlashcardAppears") {
+      if (value > userPreferences.maximumFlashcardAppears) {
+        toast.error(translate("error.minimumFlashcardAppears"));
+        return;
       }
-    })
-    .catch((err) => {
-      toast.error(translate("error.generic"));
-    });
-}, []);
-useEffect(() => {
-  axiosInstance
-    .post("/preferences/change", {
-      minimumFlashcardAppears,
-      maximumFlashcardAppears,
-      promptWith,
-    })
-    .then((res) => {
-      if (res.status === 200) {
-        toast.success(translate("success.preferencesChanged"));
+    }
+    if (preference === "maximumFlashcardAppears") {
+      if (value < userPreferences.minimumFlashcardAppears) {
+        toast.error(translate("error.maximumFlashcardAppears"));
+        return;
       }
-    })
-    .catch((err) => {
-      toast.error(translate("error.generic"));
-    });
-}, [minimumFlashcardAppears, maximumFlashcardAppears, promptWith]);
+    }
+    if (preference === "promptWith") {
+      if (
+        value !== "auto" &&
+        value !== "term" &&
+        value !== "definition" &&
+        value !== "both"
+      ) {
+        toast.error(translate("error.promptWith"));
+        return;
+      }
+    }
+    setUserPreferences({ ...userPreferences, [preference]: value });
+    setPendingChanges(true);
+  };
+
+  useEffect(() => {
+    if (pendingChanges) {
+      axiosInstance
+
+        .post("/preferences/user/change", {
+          minimumFlashcardAppears: userPreferences.minimumFlashcardAppears,
+          maximumFlashcardAppears: userPreferences.maximumFlashcardAppears,
+          promptWith: userPreferences.promptWith,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setPendingChanges(false);
+            toast.success(translate("success.Done"));
+          }
+        })
+        .catch((err) => {
+          toast.error(translate("error.generic"));
+        });
+    }
+  }, [pendingChanges]);
 
   return (
     <div id="settings">
+      <ToastContainer />
       <h1>{translate("label.Settings")}⚙️</h1>
       <section>
         <h2>{translate("label.Account")}</h2>
@@ -159,7 +204,7 @@ useEffect(() => {
           <li>Change language</li>
           <div>
             <p>
-              Changing the langauges changes the UI language, but doesn't change
+              Changing the languages changes the UI language, but doesn't change
               the speaking language.
             </p>
             <select
@@ -205,14 +250,17 @@ useEffect(() => {
           <li>Minimum number of times a flashcard is shown</li>
           <div>
             <p>
-              The minimum number of times a flashcards is going to be seen in a
+              The minimum number of times a flashcard is going to be seen in a
               study session
             </p>
             <select
               onChange={(e) =>
-                setMinimumFlashcardAppears(Number(e.target.value))
+                handlePreferenceChange(
+                  "minimumFlashcardAppears",
+                  Number(e.target.value)
+                )
               }
-              value={minimumFlashcardAppears}
+              value={userPreferences.minimumFlashcardAppears}
             >
               <option value="1">1</option>
               <option value="2">2</option>
@@ -223,20 +271,33 @@ useEffect(() => {
           <li>Maximum number a flashcard is shown</li>
           <div>
             <p>
-              The maximum number of times a flashcards is going to be seen in a
+              The maximum number of times a flashcard is going to be seen in a
               study session
             </p>
-            <select onChange={e=>setMaximumFlashcardAppears(e.target.value)} value={maximumFlashcardAppears}>
+            <select
+              onChange={(e) =>
+                handlePreferenceChange(
+                  "maximumFlashcardAppears",
+                  Number(e.target.value)
+                )
+              }
+              value={userPreferences.maximumFlashcardAppears}
+            >
               <option value="9999">No maximum</option>
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
             </select>
           </div>
-          <li>Prompt with </li>
+          <li>Prompt with</li>
           <div>
             <p>Choose what to be prompted with in study mode</p>
-            <select onChange={e=>setPromptWith(e.target.value)} value={promptWith}>
+            <select
+              onChange={(e) =>
+                handlePreferenceChange("promptWith", e.target.value)
+              }
+              value={userPreferences.promptWith}
+            >
               <option value="term">Term</option>
               <option value="definition">Definition</option>
               <option value="both">Both</option>
