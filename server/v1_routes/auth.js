@@ -7,6 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const bcyrpt = require("bcrypt");
 const { env } = require("process");
+const { authorizeToken } = require("../utils/authMiddleware");
 
 router.post("/register", async (req, res) => {
   if (
@@ -156,7 +157,7 @@ router.post("/login", (req, res) => {
   );
 });
 
-router.post("/delete", (req, res) => {
+router.post("/delete/all", authorizeToken, (req, res) => {
   if (req.body.password == null) {
     res.status(400).json({ message: "Please fill all the fields" });
     return;
@@ -176,7 +177,154 @@ router.post("/delete", (req, res) => {
           );
       } else {
         if (result.rows.length) {
-          //check if the password is correct
+          pool.query("DELETE FROM likedSets WHERE user_id = $1", [req.user_id]);
+          pool.query("DELETE FROM likedFlashcards WHERE user_id = $1", [
+            req.user_id,
+          ]);
+
+          pool.query(
+            "SELECT set_id FROM sets WHERE user_id = $1",
+            [req.user_id],
+            (err, result) => {
+              if (err) {
+                console.error("DBError: " + err.message);
+                res
+                  .status(500)
+                  .send(
+                    "Database error! Hold on tight and try again in a few minutes."
+                  );
+              } else {
+                for (let i = 0; i < result.rows.length; i++) {
+                  pool.query(
+                    "DELETE FROM flashcards WHERE set_id = $1",
+                    [result.rows[i].set_id],
+                    (err, result) => {
+                      if (err) {
+                        console.error("DBError: " + err.message);
+                        res
+                          .status(500)
+                          .send(
+                            "Database error! Hold on tight and try again in a few minutes."
+                          );
+                      }
+                    }
+                  );
+                }
+                pool.query(
+                  "DELETE FROM sets WHERE user_id = $1",
+                  [req.user_id],
+                  (err, result) => {
+                    if (err) {
+                      console.error("DBError: " + err.message);
+                      res
+                        .status(500)
+                        .send(
+                          "Database error! Hold on tight and try again in a few minutes."
+                        );
+                    } else {
+                      pool.query(
+                        "DELETE FROM users WHERE user_id = $1",
+                        [req.user_id],
+                        (err, result) => {
+                          if (err) {
+                            console.error("DBError: " + err.message);
+                            res
+                              .status(500)
+                              .send(
+                                "Database error! Hold on tight and try again in a few minutes."
+                              );
+                          } else {
+                            res.status(200).send("User deleted successfully");
+                          }
+                        }
+                      );
+                    }
+                  }
+                );
+              }
+            }
+          );
+        } else {
+          res.status(400).json({ message: "Wrong password!" });
+        }
+      }
+    }
+  );
+});
+router.post("/delete/data", authorizeToken, (req, res) => {
+  if (req.body.password == null) {
+    res.status(400).json({ message: "Please fill all the fields" });
+    return;
+  }
+  const { password } = req.body;
+  password = bcyrpt.hash(password, env.SALT_ROUNDS);
+  pool.query(
+    "SELECT * FROM users WHERE username = $1 AND password = $2",
+    [req.user, password],
+    (err, result) => {
+      if (err) {
+        console.error("DBError: " + err.message);
+        res
+          .status(500)
+          .send(
+            "Database error! Hold on tight and try again in a few minutes."
+          );
+      } else {
+        if (result.rows.length) {
+          pool.query("DELETE FROM likedSets WHERE user_id = $1", [req.user_id]);
+          pool.query("DELETE FROM likedFlashcards WHERE user_id = $1", [
+            req.user_id,
+          ]);
+
+          pool.query(
+            "SELECT set_id FROM sets WHERE user_id = $1",
+            [req.user_id],
+            (err, result) => {
+              if (err) {
+                console.error("DBError: " + err.message);
+                res
+                  .status(500)
+                  .send(
+                    "Database error! Hold on tight and try again in a few minutes."
+                  );
+              } else {
+                for (let i = 0; i < result.rows.length; i++) {
+                  pool.query(
+                    "DELETE FROM flashcards WHERE set_id = $1",
+                    [result.rows[i].set_id],
+                    (err, result) => {
+                      if (err) {
+                        console.error("DBError: " + err.message);
+                        res
+                          .status(500)
+                          .send(
+                            "Database error! Hold on tight and try again in a few minutes."
+                          );
+                      }
+                    }
+                  );
+                }
+                pool.query(
+                  "DELETE FROM sets WHERE user_id = $1",
+                  [req.user_id],
+                  (err, result) => {
+                    if (err) {
+                      console.error("DBError: " + err.message);
+                      res
+                        .status(500)
+                        .send(
+                          "Database error! Hold on tight and try again in a few minutes."
+                        );
+                    } else {
+                      res.status(200).send("User deleted successfully");
+                    }
+                  }
+                );
+              }
+            }
+          );
+        } else {
+          res.status(400).json({ message: "Wrong password!" });
         }
       }
     }

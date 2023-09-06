@@ -1,9 +1,14 @@
-import React from "react";
 import translate from "../utils/languagesHandler";
 import "../styles/settings.css";
 import axiosInstance from "../utils/axiosConfig";
+import jwt_decode from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import { useState, useEffect } from "preact/hooks";
 const Settings = () => {
+  const [minimumFlashcardAppears, setMinimumFlashcardAppears] = useState(1);
+  const [maximumFlashcardAppears, setMaximumFlashcardAppears] = useState(9999);
+  const [promptWith, setPromptWith] = useState("auto");
   const logOut = () => {
     localStorage.removeItem("jwt");
     window.location.reload();
@@ -25,6 +30,95 @@ const Settings = () => {
         toast.error(err.response.data.message);
       });
   };
+  const deleteData = () => {
+    let pass = prompt("Enter your password to confirm");
+    if (!pass) {
+      return;
+    }
+    axiosInstance
+      .post("/auth/delete/data", { password: pass })
+      .then((res) => {
+        if (res.status === 200) {
+          localStorage.removeItem("jwt");
+          window.location.reload();
+        }
+      })
+      .catch((err) => {
+        //  toast.error(translate("error.generic"));
+      });
+  };
+  const exportAll = () => {
+    axiosInstance
+      .post("/export/all")
+      .then((res) => {
+        if (res.status === 200) {
+          //     let jwt = localStorage.getItem("jwt");
+          //    let username = jwt_decode(jwt).username;
+          let data = res.data;
+          let dataStr = JSON.stringify(data);
+          let dataUri =
+            "data:application/json;charset=utf-8," +
+            encodeURIComponent(dataStr);
+          let exportFileDefaultName = "MyData.json";
+          let linkElement = document.createElement("a");
+          linkElement.setAttribute("href", dataUri);
+          linkElement.setAttribute("download", exportFileDefaultName);
+          linkElement.click();
+        }
+      })
+      .catch((err) => {
+        toast.error(translate("error.generic"));
+      });
+  };
+  const changeLanguage = (choice) => {
+    let value = choice.target.value;
+    axiosInstance
+      .post("/languages/user/change", { language: value })
+      .then((res) => {
+        if (res.status === 200) {
+          localStorage.setItem("language", value);
+          window.location.reload();
+        }
+      })
+      .catch((err) => {
+        toast.error(translate("error.generic"));
+      });
+  };
+
+useEffect(() => {
+  if (maximumFlashcardAppears < minimumFlashcardAppears) {
+    toast.error(translate("error.invalidParameters"));
+    return;
+  }
+  axiosInstance
+    .get("/preferences")
+    .then((res) => {
+      if (res.status === 200) {
+        setMinimumFlashcardAppears(res.data.minimumFlashcardAppears);
+        setMaximumFlashcardAppears(res.data.maximumFlashcardAppears);
+        setPromptWith(res.data.promptWith);
+      }
+    })
+    .catch((err) => {
+      toast.error(translate("error.generic"));
+    });
+}, []);
+useEffect(() => {
+  axiosInstance
+    .post("/preferences/change", {
+      minimumFlashcardAppears,
+      maximumFlashcardAppears,
+      promptWith,
+    })
+    .then((res) => {
+      if (res.status === 200) {
+        toast.success(translate("success.preferencesChanged"));
+      }
+    })
+    .catch((err) => {
+      toast.error(translate("error.generic"));
+    });
+}, [minimumFlashcardAppears, maximumFlashcardAppears, promptWith]);
 
   return (
     <div id="settings">
@@ -68,9 +162,12 @@ const Settings = () => {
               Changing the langauges changes the UI language, but doesn't change
               the speaking language.
             </p>
-            <select>
-              <option value="english">English</option>
-              <option value="bulgarian">Bulgarian</option>
+            <select
+              onChange={changeLanguage}
+              value={localStorage.getItem("language")}
+            >
+              <option value="en-US">English</option>
+              <option value="bg-BG">Bulgarian</option>
             </select>
           </div>
           <li>Export data</li>
@@ -80,16 +177,16 @@ const Settings = () => {
               and preferences. You can use this file to import your data in
               another account.
             </p>
-            <button>Export all data</button>
+            <button onClick={exportAll}>Export all data</button>
           </div>
           <li>Delete data</li>
           <div>
             <p>
               Deleting your data all sets and preferences are going to be
-              deleted, but your account is going to e preserved. Use this option
-              is you want to start fresh.
+              deleted, but your account is going to be preserved. Use this
+              option if you want to start fresh.
             </p>
-            <button>Delete all data</button>
+            <button onClick={deleteData}>Delete all data</button>
           </div>
           <li>Delete account</li>
           <div>
@@ -111,7 +208,12 @@ const Settings = () => {
               The minimum number of times a flashcards is going to be seen in a
               study session
             </p>
-            <select>
+            <select
+              onChange={(e) =>
+                setMinimumFlashcardAppears(Number(e.target.value))
+              }
+              value={minimumFlashcardAppears}
+            >
               <option value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -124,7 +226,7 @@ const Settings = () => {
               The maximum number of times a flashcards is going to be seen in a
               study session
             </p>
-            <select>
+            <select onChange={e=>setMaximumFlashcardAppears(e.target.value)} value={maximumFlashcardAppears}>
               <option value="9999">No maximum</option>
               <option value="5">5</option>
               <option value="10">10</option>
@@ -134,7 +236,7 @@ const Settings = () => {
           <li>Prompt with </li>
           <div>
             <p>Choose what to be prompted with in study mode</p>
-            <select>
+            <select onChange={e=>setPromptWith(e.target.value)} value={promptWith}>
               <option value="term">Term</option>
               <option value="definition">Definition</option>
               <option value="both">Both</option>

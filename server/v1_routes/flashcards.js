@@ -201,6 +201,17 @@ router.post("/flashcard/delete", authorizeToken, (req, res) => {
     }
   );
   pool.query(
+    'DELETE FROM "likedFlashcards" WHERE set_id=$1 AND flashcard_id=$2',
+    [req.body.set_id, req.body.flashcard_id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.status(500).end();
+        return false;
+      }
+    }
+  );
+  pool.query(
     "DELETE FROM flashcards WHERE set_id=$1 AND flashcard_id=$2",
     [req.body.set_id, req.body.flashcard_id],
     (err, results) => {
