@@ -146,7 +146,6 @@ const Settings = () => {
   useEffect(() => {
     if (pendingChanges) {
       axiosInstance
-
         .post("/preferences/user/change", {
           minimumFlashcardAppears: userPreferences.minimumFlashcardAppears,
           maximumFlashcardAppears: userPreferences.maximumFlashcardAppears,

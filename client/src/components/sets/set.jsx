@@ -754,13 +754,13 @@ const ViewSet = () => {
         {setStats.length && flashcardStats.length ? (
           <div id="statisticsBox">
             {translate("label.goneThroughtThisSet")} {setStats.length}{" "}
-            {translate("label.timesYouHaveCovered")}
+            {translate("label.timesYouHaveCovered")}{" "}
             {flashcardStats.length == set.length
               ? translate("label.allFlashcardsLowercase")
               : flashcardStats.length +
-                translate("label.outOf") +
-                set.length +
-                translate("label.flashcards")}{" "}
+                translate("label.outOf") + " "+
+                set.length + " " +
+                translate("label.flashcards")}{". "}
             {translate("label.knownBestFlashcard")}{" "}
             {convertToText(flashcardStats[flashcardStats.length - 1].term)}{" "}
             {translate("label.leastFamiliarWith")}{" "}

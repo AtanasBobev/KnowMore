@@ -19,11 +19,13 @@ import Settings from "./components/settings";
 import jwtDecode from "jwt-decode";
 
 export const App = () => {
-  const [verified, setVerified] = useState(false);
+  const [verified, setVerified] = useState(true);
   useEffect(() => {
     let jwt = localStorage.getItem("jwt");
     if (jwt) {
       setVerified(true);
+    }else{
+      setVerified(false);
     }
   }, []);
 

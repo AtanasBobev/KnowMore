@@ -29,6 +29,7 @@ const getSet = async (
       const flashcardsTemp = response.data;
       flashcardsTemp.forEach((flashcard) => {
         flashcard.rounds = getConfidenceLevel(flashcard.confidence);
+        flashcard.seen = 0
       });
       setLoaded(true);
       setOriginalFlashcards(response.data);

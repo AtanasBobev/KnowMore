@@ -190,7 +190,7 @@
   "button.More": "More",
   "button.Copy": "Copy",
   "label.goneThroughThisSet": "Great job! You've already gone through this set",
-  "label.timesYouHaveCovered": "times. You have covered",
+  "label.timesYouHaveCovered": "time/s. You have covered ",
   "label.allFlashcardsLowercase": "all flashcards",
   "label.outOf": " out of ",
   "label.flashcards": "flashcards",
@@ -223,5 +223,6 @@
   "label.changeUsername": "Change username",
   "label.changeUsernameDescription": "Changing your username will change the username you use to login. You will be logged out and will have to login again with the new username",
   "label.newUsername": "New username",
-  "button.newUsername": "Change to a new username"
+  "button.newUsername": "Change to a new username",
+  "label.goneThroughtThisSet": "You have go through this set "
 }

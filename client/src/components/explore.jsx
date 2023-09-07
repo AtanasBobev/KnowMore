@@ -159,7 +159,7 @@ const Explore = () => {
                             }
                           }}
                         >
-                          {translate("button.share")}
+                          {translate("button.edit")}
                         </button>
                       ) : (
                         ""

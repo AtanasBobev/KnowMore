@@ -14,6 +14,7 @@ import {
   shuffle,
   updateCard,
 } from "../../utils/reviewMethods";
+import axios from "axios";
 
 const MultipleChoice = () => {
   const { id } = useParams();
@@ -27,7 +28,15 @@ const MultipleChoice = () => {
   const [gameOver, setGameOver] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [rightAnswerExpected, setRightAnswerExpected] = useState(false);
+  const [userPreferences, setUserPreferences] = useState({
+    minimumFlashcardAppears: 1,
+    maximumFlashcardAppears: 9999,
+    promptWith: "auto",
+  });
   useEffect(() => {
+    axiosInstance.get("/preferences/user").then((res) => {
+      setUserPreferences(res.data);
+    });
     getSet(
       setTerm,
       setFlashcards,
@@ -39,17 +48,22 @@ const MultipleChoice = () => {
   }, []);
 
   const Generate = () => {
+  
+
     let random = 0,
       temporaryFlashcards = flashcards;
     random = Math.floor(Math.random() * flashcards.length);
 
-    if (flashcards[randomIndex] && flashcards[randomIndex].rounds <= 0) {
+
+
+    if (flashcards[randomIndex] && flashcards[randomIndex].rounds <= 0 && flashcards[randomIndex].seen >= userPreferences.minimumFlashcardAppears && flashcards[randomIndex].seen <= userPreferences.maximumFlashcardAppears) {
       temporaryFlashcards = flashcards.filter(
         (flashcard) => flashcard.rounds > 0
       );
       toast(translate("success.doneWithFlashcard"));
       random = 0;
     }
+
 
     if (!temporaryFlashcards.length) {
       endStudy();
@@ -76,17 +90,17 @@ const MultipleChoice = () => {
   const endStudy = () => {
     updateSetReview(setSentUpdate, originalFlashcards);
     setGameOver(true);
-    toast("success.doneWithSet")
+    toast("success.doneWithSet");
     setTerm("success.doneWithSet");
     setDefinition("success.doneWithSet");
   };
-  const newQuestion = (forceTrue=false) => {
+  const newQuestion = (forceTrue = false) => {
     if (gameOver) return;
     if (!flashcards[randomIndex]) {
       Generate();
       return;
     }
-    if(forceTrue){
+    if (forceTrue) {
       setRightAnswerExpected(false);
       toast.success("Okay, okay, you are right!");
       setFlashcards((prev) =>
@@ -107,7 +121,8 @@ const MultipleChoice = () => {
           .toLowerCase()
           .replace(/ /g, ""),
         inputRef.current.value.toLowerCase().replace(/ /g, "")
-      ) == 1 || forceTrue
+      ) == 1 ||
+      forceTrue
     ) {
       setRightAnswerExpected(false);
       toast.success("success.Correct");
@@ -124,7 +139,7 @@ const MultipleChoice = () => {
     } else {
       setRightAnswerExpected(true);
       toast.error(
-        `${label.writeCorrectAnswer} ${sanitizeHTML(
+        `${translate("label.writeCorrectAnswer")} ${sanitizeHTML(
           flashcards[randomIndex].term
         )}`
       );
@@ -176,7 +191,7 @@ const MultipleChoice = () => {
         {!gameOver ? (
           <>
             {" "}
-            <p>{label.Term}:</p>
+            <p>{translate("label.Term")}:</p>
             <input
               id="answer"
               type="text"
@@ -185,14 +200,20 @@ const MultipleChoice = () => {
             />
             <section id="buttonGroup">
               {!rightAnswerExpected ? (
-                <button onClick={() => newQuestion()}>{translate("button.IdontKnow")}</button>
+                <button onClick={() => newQuestion()}>
+                  {translate("button.IdontKnow")}
+                </button>
               ) : (
                 ""
               )}
               {rightAnswerExpected ? (
-                <button onClick={() => newQuestion(true)}>{translate("button.IWasRight")}</button>
+                <button onClick={() => newQuestion(true)}>
+                  {translate("button.IWasRight")}
+                </button>
               ) : (
-                <button onClick={() => Generate()}>{translate("button.Skip")}</button>
+                <button onClick={() => Generate()}>
+                  {translate("button.Skip")}
+                </button>
               )}
               <button onClick={newQuestion}>✅</button>
             </section>
