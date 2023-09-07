@@ -29,7 +29,7 @@ const getSet = async (
       const flashcardsTemp = response.data;
       flashcardsTemp.forEach((flashcard) => {
         flashcard.rounds = getConfidenceLevel(flashcard.confidence);
-        flashcard.seen = 0
+        flashcard.seen = 0;
       });
       setLoaded(true);
       setOriginalFlashcards(response.data);
@@ -67,6 +67,7 @@ const updateSetReview = (setSentUpdate, originalFlashcards) => {
     })
     .catch(() => console.log("Generic error"));
 };
+//FROM STACKOVERFLOW
 const shuffle = (a) => {
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

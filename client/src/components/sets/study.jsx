@@ -48,14 +48,9 @@ const MultipleChoice = () => {
   }, []);
 
   const Generate = () => {
-  
-
     let random = 0,
       temporaryFlashcards = flashcards;
     random = Math.floor(Math.random() * flashcards.length);
-
-
-
     if (flashcards[randomIndex] && flashcards[randomIndex].rounds <= 0 && flashcards[randomIndex].seen >= userPreferences.minimumFlashcardAppears && flashcards[randomIndex].seen <= userPreferences.maximumFlashcardAppears) {
       temporaryFlashcards = flashcards.filter(
         (flashcard) => flashcard.rounds > 0
@@ -63,8 +58,6 @@ const MultipleChoice = () => {
       toast(translate("success.doneWithFlashcard"));
       random = 0;
     }
-
-
     if (!temporaryFlashcards.length) {
       endStudy();
       return;
@@ -72,8 +65,29 @@ const MultipleChoice = () => {
     updateCard(flashcards[randomIndex].confidence, flashcards, randomIndex);
 
     setRandomIndex(random);
+    if (userPreferences.promptWith === "term") {
     setTerm(temporaryFlashcards[random].term);
     setDefinition(temporaryFlashcards[random].definition);
+    } else if(userPreferences.promptWith === "definition") {
+      setTerm(temporaryFlashcards[random].definition);
+      setDefinition(temporaryFlashcards[random].term);
+    } else if(userPreferences.promptWith === "auto") {
+      if(temporaryFlashcards[random].term.length > temporaryFlashcards[random].definition.length) {
+        setTerm(temporaryFlashcards[random].term);
+        setDefinition(temporaryFlashcards[random].definition);
+      } else {
+        setTerm(temporaryFlashcards[random].definition);
+        setDefinition(temporaryFlashcards[random].term);
+      }
+    }else {
+      if(Math.random() > 0.5) {
+        setTerm(temporaryFlashcards[random].term);
+        setDefinition(temporaryFlashcards[random].definition);
+      } else {
+        setTerm(temporaryFlashcards[random].definition);
+        setDefinition(temporaryFlashcards[random].term);
+      }
+    }
     setFlashcards(temporaryFlashcards);
     inputRef.current.value = "";
   };
@@ -141,7 +155,7 @@ const MultipleChoice = () => {
       toast.error(
         `${translate("label.writeCorrectAnswer")} ${sanitizeHTML(
           flashcards[randomIndex].term
-        )}`
+        )}`, {autoClose: 5000}
       );
       setFlashcards((prev) =>
         prev.map((flashcard, index) => {

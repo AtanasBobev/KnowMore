@@ -171,21 +171,21 @@ router.post("/preferences/user/change", authorizeToken, (req, res) => {
     return false;
   }
   if (
-    req.body.minimumFlashcardAppears < 1 ||
-    req.body.minimumFlashcardAppears > 9999
+    Number(req.body.minimumFlashcardAppears) < 1 ||
+    Number(req.body.minimumFlashcardAppears) > 9999
   ) {
-    res.status(409).send("Invalid parameters");
+    res.status(409).send("Invalid parameters 1");
     return false;
   }
   if (
-    req.body.maximumFlashcardAppears < 1 ||
-    req.body.maximumFlashcardAppears > 9999
+    Number(req.body.maximumFlashcardAppears) < 1 ||
+    Number(req.body.maximumFlashcardAppears) > 9999
   ) {
-    res.status(409).send("Invalid parameters");
+    res.status(409).send("Invalid parameters 2");
     return false;
   }
-  if (req.body.minimumFlashcardAppears > req.body.maximumFlashcardAppears) {
-    res.status(409).send("Invalid parameters");
+  if (Number(req.body.minimumFlashcardAppears) > Number(req.body.maximumFlashcardAppears)) {
+    res.status(409).send("Invalid parameters 3");
     return false;
   }
   if (
@@ -194,7 +194,7 @@ router.post("/preferences/user/change", authorizeToken, (req, res) => {
     req.body.promptWith !== "definition" &&
     req.body.promptWith !== "both"
   ) {
-    res.status(409).send("Invalid parameters");
+    res.status(409).send("Invalid parameters 4");
     return false;
   }
   const preferences = pool.query(
@@ -211,9 +211,9 @@ router.post("/preferences/user/change", authorizeToken, (req, res) => {
           `INSERT INTO preferences (user_id, minimum_flashcard_appears, maximum_flashcard_appears, prompt_with) VALUES ($1, $2, $3, $4)`,
           [
             req.user_id,
-            req.body.minimumFlashcardAppears,
-            req.body.maximumFlashcardAppears,
-            req.body.promptWith,
+            Number(req.body.minimumFlashcardAppears),
+            Number(req.body.maximumFlashcardAppears),
+            Number(req.body.promptWith),
           ],
           (err, results) => {
             if (err) {

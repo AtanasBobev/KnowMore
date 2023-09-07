@@ -156,8 +156,8 @@
   "button.FlipAll": "Flip all",
   "button.FlipBack": "Flip back",
   "label.Flashcard": "Flashcard",
-  "label.Term": "Term",
-  "label.Definition": "Definition",
+  "label.Term": "Answer",
+  "label.Definition": "Prompt",
   "label.Add": "Add",
   "error.offlineNavigator": "You are offline! Please check your internet connection",
   "label.editingBackstage": "Flashcard set is being editied backstage. Redirecting you to all your sets...",
@@ -224,5 +224,7 @@
   "label.changeUsernameDescription": "Changing your username will change the username you use to login. You will be logged out and will have to login again with the new username",
   "label.newUsername": "New username",
   "button.newUsername": "Change to a new username",
-  "label.goneThroughtThisSet": "You have go through this set "
+  "label.goneThroughtThisSet": "You have go through this set ",
+  "label.yourCurrentEmailIs": "Your current email is:",
+  "label.changePassword": "Change password"
 }

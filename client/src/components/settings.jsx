@@ -184,11 +184,11 @@ const Settings = () => {
           <li>{translate("label.changeEmail")}</li>
           <div>
             <p>{translate("label.changeEmailDescription")}</p>
-            <p>Your current email is: someemail@gmail.com</p>
+            <p>{translate("label.yourCurrentEmailIs")} someemail@gmail.com</p>
             <input type="text" placeholder="New email" />
-            <button>Change email</button>
+            <button>{translate("button.changeEmail")}</button>
           </div>
-          <li>Change password</li>
+          <li>{translate("label.changePassword")}</li>
           <div>
             <p>
               Password must be at least 8 characters long and contain at least
@@ -288,7 +288,7 @@ const Settings = () => {
               <option value="15">15</option>
             </select>
           </div>
-          <li>Prompt with</li>
+          <li>Prompt with <sup><p><i>experimental</i></p></sup></li> 
           <div>
             <p>Choose what to be prompted with in study mode</p>
             <select
