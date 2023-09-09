@@ -191,66 +191,56 @@ const Settings = () => {
           <li>{translate("label.changePassword")}</li>
           <div>
             <p>
-              Password must be at least 8 characters long and contain at least
-              one number and one letter. You will be logged out and will have to
-              login again with the new password.
+             {translate("label.passwordExplanation")}
             </p>
-            <input type="text" placeholder="Enter current password" />
-            <input type="text" placeholder="Enter new password" />
-            <input type="text" placeholder="Repeat new password" />
-            <button>Change password</button>
+            <input type="text" placeholder={translate("placeholder.currentPassword")} />
+            <input type="text" placeholder={translate("placeholder.newPassword")} />
+            <input type="text" placeholder={translate("placeholder.repeatNewPassword")} />
+            <button>{translate("button.changePassword")}</button>
           </div>
-          <li>Change language</li>
+          <li>{translate("label.changeLanguage")}</li>
           <div>
             <p>
-              Changing the languages changes the UI language, but doesn't change
-              the speaking language.
+             {translate("label.changeLanguageDescription")}
             </p>
             <select
               onChange={changeLanguage}
               value={localStorage.getItem("language")}
             >
-              <option value="en-US">English</option>
-              <option value="bg-BG">Bulgarian</option>
+              <option value="en-US">{translate("option.English")}</option>
+              <option value="bg-BG">{translate("option.Bulgarian")}</option>
             </select>
           </div>
-          <li>Export data</li>
+          <li>{translate("label.exportData")}</li>
           <div>
             <p>
-              Exporting your data will download a .json file with all your sets
-              and preferences. You can use this file to import your data in
-              another account.
+             {translate("label.exportDataDescription")}
             </p>
-            <button onClick={exportAll}>Export all data</button>
+            <button onClick={exportAll}>{translate("button.exportAllData")}</button>
           </div>
-          <li>Delete data</li>
+          <li>{translate("label.deleteData")}</li>
           <div>
             <p>
-              Deleting your data all sets and preferences are going to be
-              deleted, but your account is going to be preserved. Use this
-              option if you want to start fresh.
+              {translate("label.deleteDataDescription")}
             </p>
-            <button onClick={deleteData}>Delete all data</button>
+            <button onClick={deleteData}>{translate("button.deleteAllData")}</button>
           </div>
-          <li>Delete account</li>
+          <li>{translate("label.deleteEverything")}</li>
           <div>
             <p>
-              Once you delete your data and account the request may take up to a
-              couple of minutes depending on the size of the account. We advise
-              you to download your data beforehand.
+              {translate("label.deleteEverythingDescription")}
             </p>
             <button onClick={deleteEverything}>
-              Delete all data & account
+              {translate("button.deleteEverything")}
             </button>
           </div>
         </ul>
-        <h2>Study</h2>
+        <h2>{translate("label.Study")}</h2>
         <ul>
-          <li>Minimum number of times a flashcard is shown</li>
+          <li>{translate("label.minFlashcardsShown")}</li>
           <div>
             <p>
-              The minimum number of times a flashcard is going to be seen in a
-              study session
+              {translate("label.minFlashcardsShownDescription")}
             </p>
             <select
               onChange={(e) =>
@@ -267,11 +257,10 @@ const Settings = () => {
               <option value="5">5</option>
             </select>
           </div>
-          <li>Maximum number a flashcard is shown</li>
+          <li>{translate("label.maxFlashcardsShown")}</li>
           <div>
             <p>
-              The maximum number of times a flashcard is going to be seen in a
-              study session
+            {translate("label.maxFlashcardsShownDescription")}
             </p>
             <select
               onChange={(e) =>
@@ -282,25 +271,25 @@ const Settings = () => {
               }
               value={userPreferences.maximumFlashcardAppears}
             >
-              <option value="9999">No maximum</option>
+              <option value="9999">-</option>
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
             </select>
           </div>
-          <li>Prompt with <sup><p><i>experimental</i></p></sup></li> 
+          <li>{translate("label.promptWith")}</li> 
           <div>
-            <p>Choose what to be prompted with in study mode</p>
+            <p>{translate("label.promptWithDescription")}</p>
             <select
               onChange={(e) =>
                 handlePreferenceChange("promptWith", e.target.value)
               }
               value={userPreferences.promptWith}
             >
-              <option value="term">Term</option>
-              <option value="definition">Definition</option>
-              <option value="both">Both</option>
-              <option value="auto">Auto</option>
+              <option value="term">{translate("option.Term")}</option>
+              <option value="definition">{translate("option.Definition")}</option>
+              <option value="both">{translate("option.Both")}</option>
+              <option value="auto">{translate("option.Auto")}</option>
             </select>
           </div>
         </ul>

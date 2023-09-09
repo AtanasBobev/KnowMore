@@ -173,5 +173,9 @@
   "label.setLiked": "Сетът е харесан!",
   "error.cannotCombineTooManyFlashcards": "Не можете да комбинирате тези сетове, защото общият брой на картичките надвишава 2000",
   "success.setsCombined": "Сетовете са комбинирани! Пренасочване към новия ви сет!",
-  "success.exportedSet": "Сетът е експортиран като .csv файл! Проверете папката за изтегляния"
+  "success.exportedSet": "Сетът е експортиран като .csv файл! Проверете папката за изтегляния",
+  "label.communityCreations": "Създадено от общността",
+  "label.Explore": "Разгледай",
+  "option.Show": "Покажи",
+  "label.searchAllSets": "Търсене на всички сетове",
 }
