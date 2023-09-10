@@ -16,7 +16,7 @@ import Folder from "./components/folders/folder";
 import Folders from "./components/folders/folders";
 import FolderEdit from "./components/folders/editFolder";
 import Settings from "./components/settings";
-import jwtDecode from "jwt-decode";
+import "./app.css"
 
 export const App = () => {
   const [verified, setVerified] = useState(true);

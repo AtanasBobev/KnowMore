@@ -33,10 +33,9 @@ const AddToFolderModal = (props) => {
       {props.addToFolderPopup.open ? (
         <div className="modal">
           <div className="modal-content">
-            <h1>Add to folder</h1>
+            <h1>{translate("label.addToFolder")}</h1>
             <p>
-              Select a folder to add this set to. You can also create a new
-              folder.
+            {translate("label.addToFolderDescription")}
             </p>
             <div className="folderContainer">
               {props.addToFolderPopup.allFolders ? (
@@ -82,14 +81,14 @@ const AddToFolderModal = (props) => {
                         {props.addToFolderPopup.foldersChosen.includes(
                           el.folder_id
                         )
-                          ? "Deselect"
-                          : "Select"}
+                          ? translate("button.Deselect")
+                          : translate("button.Select")}
                       </button>
                     </center>
                   </section>
                 ))
               ) : (
-                <h1>No folders found</h1>
+                <h1>{translate("label.noFolderFound")}</h1>
               )}
             </div>
           </div>

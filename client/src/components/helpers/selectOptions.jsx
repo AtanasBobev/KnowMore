@@ -28,7 +28,7 @@ const SelectOptions = (props) => {
     <option value="otherLang">{translate("options.otherLanguages")}</option>
     <option value="literature">{translate("options.Literature")}</option>
     <option value="generalKnowledge">{translate("options.generalKnowledge")}</option>
-    <option value="other">{translate("Other")}</option>
+    <option value="other">{translate("options.Others")}</option>
   </select>
   );
 };

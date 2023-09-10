@@ -87,7 +87,7 @@ const SetsComponent = () => {
             <SelectOptions setCategory={setCategory} />
             <SelectSort setSortBy={setSortBy} />
             <button className="searchBtn" onClick={search}>
-              {translate("button.search")}
+              {translate("button.Search")}
             </button>
           </center>
           {/*  */}
@@ -118,7 +118,7 @@ const SetsComponent = () => {
                         style={{ backgroundColor: "transparent" }}
                         onClick={() => Share(el.set_id)}
                       >
-                        Share
+                        {translate("button.Share")}
                       </button>
                       {el.user_id === token.user_id ? (
                         <button

@@ -86,7 +86,7 @@ const Folders = () => {
         />
         <SelectOptions setCategory={setCategory} />
         <button className="searchBtn" onClick={search}>
-          {translate("label.search")}
+          {translate("button.Search")}
         </button>
       </center>
       {folders.length ? (
@@ -118,7 +118,7 @@ const Folders = () => {
                         style={{ backgroundColor: "transparent" }}
                         onClick={() => shareFolderOutside(el.folder_id)}
                       >
-                        {translate("button.share")}
+                        {translate("button.Share")}
                       </button>
                       {el.user_id === token.user_id ? (
                         <button
@@ -127,7 +127,7 @@ const Folders = () => {
                             navigate("/folder/edit/" + el.folder_id);
                           }}
                         >
-                          {translate("button.edit")}
+                          {translate("button.Edit")}
                         </button>
                       ) : (
                         ""
@@ -137,7 +137,7 @@ const Folders = () => {
                           style={{ backgroundColor: "transparent" }}
                           onClick={() => removeFolder(el.folder_id, el.user_id)}
                         >
-                          {translate("button.delete")}
+                          {translate("button.Delete")}
                         </button>
                       ) : (
                         ""

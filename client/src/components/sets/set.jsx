@@ -762,7 +762,7 @@ const ViewSet = () => {
                 set.length + " " +
                 translate("label.flashcards")}{". "}
             {translate("label.knownBestFlashcard")}{" "}
-            {convertToText(flashcardStats[flashcardStats.length - 1].term)}{" "}
+            {convertToText(flashcardStats[flashcardStats.length - 1].term)}{". "}
             {translate("label.leastFamiliarWith")}{" "}
             {convertToText(flashcardStats[0].term)}.{" "}
           </div>

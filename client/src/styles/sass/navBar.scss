@@ -18,11 +18,11 @@
   .create-options {
     position: absolute;
     background: white;
-    padding:1vmax;
-    border-radius: .3vmax;
+    padding: 1vmax;
+    border-radius: 0.3vmax;
     box-shadow: 0 3px 6px rgba(18, 9, 9, 0.16), 0 3px 6px rgba(246, 6, 6, 0.23);
     z-index: 9999;
-    margin-top:1vmax;
+    margin-top: 1vmax;
     & > * {
       margin: 1vmax;
     }
@@ -53,7 +53,7 @@
 
     li {
       margin-right: 20px;
-
+      font-weight: 500;
       a {
         text-decoration: none;
         color: black;

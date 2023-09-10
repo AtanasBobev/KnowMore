@@ -146,7 +146,7 @@ const Explore = () => {
                         style={{ backgroundColor: "transparent" }}
                         onClick={() => multiShare(el.folder_id, el)}
                       >
-                        {translate("button.share")}
+                        {translate("button.Share")}
                       </button>
                       {el.user_id === token.user_id ? (
                         <button
@@ -159,7 +159,7 @@ const Explore = () => {
                             }
                           }}
                         >
-                          {translate("button.edit")}
+                          {translate("button.Edit")}
                         </button>
                       ) : (
                         ""
@@ -175,7 +175,7 @@ const Explore = () => {
                               window.location.href = `/set/delete/${el.set_id}`;
                           }}
                         >
-                          {translate("button.delete")}
+                          {translate("button.Delete")}
                         </button>
                       ) : (
                         ""

@@ -1,27 +1,18 @@
-const removedText = [
-  "Flashcard successfully deleted!",
-  "The flashcard has been removed.",
-  "Flashcard removed successfully!",
-  "Say goodbye to the flashcard!",
-  "Flashcard successfully eliminated.",
-  "Farewell, flashcard!",
-  "The flashcard has been taken away.",
-  "Flashcard successfully erased!",
-  "You've bid farewell to the flashcard.",
-  "The flashcard has been discarded.",
-];
+import { translate } from "../utils/languagesHandler.js";
+
+
 
 const handleFlashcardDelete = (index, setFlashcards, toast) => {
   setFlashcards((prev) =>
     prev.filter((flashcard) => Number(flashcard.flashcard_id) !== index)
   );
 
-  toast(removedText[Math.floor(Math.random() * removedText.length)]);
+  toast(translate("success.flashcardDeleted"));
 };
 
 const handleTermChange = (el, value, flashcards, setFlashcards, toast) => {
   if (value.length > 1e6) {
-    toast("Flashcard size is too big! We are not going to save it.");
+    toast(translate("error.flashcardTooBig"));
     return;
   }
   const index = flashcards.findIndex(
@@ -39,7 +30,7 @@ const handleDefinitionChange = (
   toast
 ) => {
   if (value.length > 1e6) {
-    toast("Flashcard size too big! We are not going to save it.");
+    toast(translate("error.flashcardTooBig"));
     return;
   }
   const index = flashcards.findIndex(
@@ -74,7 +65,7 @@ const handleFlipAll = (
   }));
   setFlashcards(updatedFlashcards);
   setFlipped(!flipped);
-  toast("Flipped all flashcards!");
+  toast(translate("success.flippedAll"));
 };
 const handleAddFlashcard = (
   flashcardsContainerRef,
@@ -106,7 +97,7 @@ const handleImportSet = (
 ) => {
   const { importText, importChar, importChar2 } = importModal;
   if (!importText || !importChar) {
-    toast("Please provide import text and characters.");
+    toast(translate("error.importSet"));
     return;
   }
 
@@ -126,7 +117,7 @@ const handleImportSet = (
   setFlashcards(updatedFlashcards);
   setImportModal({ open: false });
 
-  toast(`Imported ${flashcardsToAdd.length} flashcards.`);
+  toast(`${tranlate("label.Imported")} ${flashcardsToAdd.length} ${translate("label.flashcards")}`);
 };
 const handleCopyToClipboard = (index, flashcards, toast) => {
   //index is the flashcard_id
@@ -210,7 +201,7 @@ const handleSearchTermOnline = (el, flashcards, setFlashcards, toast) => {
     toast("Please enter a term to search for");
     return;
   }
-  const url = `https://www.google.com/search?q=define:${termText}`;
+  const url = `https://www.google.com/search?q=${translate("label.define")}:${termText}`;
   window.open(url, "_blank");
 };
 export {

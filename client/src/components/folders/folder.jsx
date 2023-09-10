@@ -66,7 +66,7 @@ const Folder = () => {
   return (
     <div id="page">
       {loading ? (
-        <h1>{translate("label.loading")}</h1>
+        <h1>...</h1>
       ) : (
         <>
           <ToastContainer
@@ -78,40 +78,40 @@ const Folder = () => {
           />
           <h1>{parse(`${folder.title} 🗂️`)}</h1>
           <h2 style={{ color: "gray" }}>{parse(folder.description)}</h2>
-          <h3 style={{ color: "gray" }}>{translate("label.createdBy")} {folder.owner}</h3>
+          <h3 style={{ color: "gray" }}>
+            {translate("label.createdBy")} {folder.owner}
+          </h3>
           <div className="setContainer">
-            {sets.set_title
-              ? sets[0].set_id
-                ? sets.map((el) => (
-                    <section className="card">
-                      <Link
-                        style={{ textDecoration: "none" }}
-                        to={`/set/${el.set_id}`}
-                        key={el.id}
-                      >
-                        <section className="card-body">
-                          <div className="card-title">
-                            {parse(
-                              el.set_title.length > 50
-                                ? el.set_title.slice(0, 50) + "..."
-                                : el.set_title
-                            )}
-                          </div>
-                          <div className="card-text">
-                            {parse(
-                              el.set_description.length > 50
-                                ? el.set_description.slice(0, 50) + "..."
-                                : el.set_description
-                            )}
-                          </div>
-                        </section>
-                      </Link>
-                      <button onClick={() => removeFromFolder(el.set_id)}>
-                        {translate("button.Remove")}
-                      </button>
-                    </section>
-                  ))
-                : ""
+            {sets.length > 0
+              ? sets.map((el) => (
+                  <section className="card">
+                    <Link
+                      style={{ textDecoration: "none" }}
+                      to={`/set/${el.set_id}`}
+                      key={el.id}
+                    >
+                      <section className="card-body">
+                        <div className="card-title">
+                          {parse(
+                            el.set_title.length > 50
+                              ? el.set_title.slice(0, 50) + "..."
+                              : el.set_title
+                          )}
+                        </div>
+                        <div className="card-text">
+                          {parse(
+                            el.set_description.length > 50
+                              ? el.set_description.slice(0, 50) + "..."
+                              : el.set_description
+                          )}
+                        </div>
+                      </section>
+                    </Link>
+                    <button onClick={() => removeFromFolder(el.set_id)}>
+                      {translate("button.Remove")}
+                    </button>
+                  </section>
+                ))
               : ""}
           </div>
         </>

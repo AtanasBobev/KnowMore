@@ -248,11 +248,11 @@ const CreateFolder = () => {
                       {el.flashcard_count} {translate("label.flashcards")}
                     </h3>
                     <h3>
-                      Created{" "}
+                      {translate("label.Created")}{" "}
                       {formatDistance(new Date(el.date_created), new Date(), {
                         addSufix: true,
                       })}{" "}
-                      ago
+                      {translate("label.ago")}
                     </h3>
                     <center>
                       <button onClick={() => selectItem(el.set_id)}>
@@ -265,7 +265,7 @@ const CreateFolder = () => {
                 ))
               ) : (
                 <p>
-                  We searched all galaxies but couldn't find a set like this 😢
+                  {translate("label.noSetsFound")}
                 </p>
               )}
             </div>
@@ -282,7 +282,7 @@ const CreateFolder = () => {
                 {translate("button.createFolder")}
                 {setsChosen.length
                   ? ` ${setsChosen.length} ${translate("label.setS")}`
-                  : translate("label.noSets")}
+                  : translate("label.noSetsLowercase")}
               </button>
             </center>
           </div>

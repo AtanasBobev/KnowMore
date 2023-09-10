@@ -275,7 +275,7 @@ const Create = () => {
                 )
               }
             >
-              {flipped ? "Flip Back" : "Flip All"}
+              {flipped ? translate("button.flipBack") : translate("button.flipAll")}
             </button>
           ) : (
             ""

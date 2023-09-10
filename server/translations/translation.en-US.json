@@ -256,5 +256,8 @@
   "option.Term": "Term",
   "option.Definition": "Definition",
   "option.Both": "Both",
-  "option.Auto": "Auto"
+  "option.Auto": "Auto",
+  "options.Others": "Others",
+  "button.flipBack": "Flip back",
+  "button.flipAll": "Flip all"
 }
