@@ -52,7 +52,7 @@ const Folder = () => {
     axiosInstance
       .post("/folder/set/remove", { folder_id: id, set_id })
       .then((res) => {
-        toast.success(translate("setRemovedFromFolder"));
+        toast.success(translate("success.setRemovedFromFolder"));
         setSets((prev) => prev.filter((el) => el.set_id !== set_id));
       })
       .catch((err) => {
@@ -82,7 +82,7 @@ const Folder = () => {
             {translate("label.createdBy")} {folder.owner}
           </h3>
           <div className="setContainer">
-            {sets.length > 0
+            {sets.length > 0 && sets[0].set_id !== null
               ? sets.map((el) => (
                   <section className="card">
                     <Link

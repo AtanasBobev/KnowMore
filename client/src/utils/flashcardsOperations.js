@@ -1,4 +1,4 @@
-import { translate } from "../utils/languagesHandler.js";
+import translate from "../utils/languagesHandler.js";
 
 
 

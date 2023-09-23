@@ -202,7 +202,11 @@ const CreateFolder = () => {
                   width="50ch"
                   placeholder={translate("placeholder.searchSets")}
                 />
-                <select onChange={(e) => setSetCombineModal(e.target.value)}>
+                <select
+                  onChange={(e) =>
+                    setOnlyPersonalSets(e.target.value === "true")
+                  }
+                >
                   <option value={true}>{translate("option.mySets")}</option>
                   <option value={false}>
                     {translate("option.communitySets")}
@@ -264,9 +268,7 @@ const CreateFolder = () => {
                   </div>
                 ))
               ) : (
-                <p>
-                  {translate("label.noSetsFound")}
-                </p>
+                <p>{translate("label.noSetsFound")}</p>
               )}
             </div>
             <center>

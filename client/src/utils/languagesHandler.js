@@ -18,6 +18,16 @@ const loadLanguageData = async (language) => {
 
 const initializeLanguageData = async () => {
   languageData = await loadLanguageData(currentLanguage);
+  //check if there are missing translations
+  const missingTranslations = Object.keys(languageData).filter(
+    (key) => languageData[key] === ""
+  );
+  if (missingTranslations.length > 0) {
+    console.warn(
+      "Missing translations for the following keys:",
+      missingTranslations
+    );
+  }
 };
 
 const translate = (key, lang) => {

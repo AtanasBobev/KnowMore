@@ -754,7 +754,7 @@ const ViewSet = () => {
         {setStats.length && flashcardStats.length ? (
           <div id="statisticsBox">
             {translate("label.goneThroughtThisSet")} {setStats.length}{" "}
-            {translate("label.timesYouHaveCovered")}{" "}
+            {translate("label.timesYouHaveCovered")}{" "}{translate("label.andYouKnow")}{" "}
             {flashcardStats.length == set.length
               ? translate("label.allFlashcardsLowercase")
               : flashcardStats.length +
