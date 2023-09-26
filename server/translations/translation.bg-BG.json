@@ -262,5 +262,6 @@
   "button.IdontKnow": "Не знам",
   "button.Skip": "Пропусни",
   "label.writeCorrectAnswer": "Напишете правилния отговор: ",
-  "button.IWasRight": "Бях прав"
+  "button.IWasRight": "Бях прав",
+  "success.Done": "Готово"
 }
