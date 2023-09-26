@@ -50,9 +50,9 @@ router.post("/register", async (req, res) => {
     return;
   }
 
-  const { username, email, password, age, gender } = req.body;
+  let { username, email, password, age, gender } = req.body;
 
-  password = await bcyrpt.hash(password, env.SALT_ROUNDS);
+  password = await bcyrpt.hash(password, process.env.SALT_ROUNDS);
 
   pool.query(
     "INSERT INTO users (username, email, password, age, gender,date, language) VALUES ($1, $2, $3, $4, $5,$6, $7)",
@@ -108,7 +108,7 @@ router.post("/login", (req, res) => {
     return;
   }
   const { username, password } = req.body;
-  password = bcyrpt.hash(password, env.SALT_ROUNDS);
+  password = bcyrpt.hash(password, process.envSALT_ROUNDS);
   pool.query(
     "SELECT * FROM users WHERE username = $1 AND password = $2",
     [username, password],
@@ -163,7 +163,7 @@ router.post("/delete/all", authorizeToken, (req, res) => {
     return;
   }
   const { password } = req.body;
-  password = bcyrpt.hash(password, env.SALT_ROUNDS);
+  password = bcyrpt.hash(password, process.envSALT_ROUNDS);
   pool.query(
     "SELECT * FROM users WHERE username = $1 AND password = $2",
     [req.user, password],
@@ -257,7 +257,7 @@ router.post("/delete/data", authorizeToken, (req, res) => {
     return;
   }
   const { password } = req.body;
-  password = bcyrpt.hash(password, env.SALT_ROUNDS);
+  password = bcyrpt.hash(password, process.envSALT_ROUNDS);
   pool.query(
     "SELECT * FROM users WHERE username = $1 AND password = $2",
     [req.user, password],
